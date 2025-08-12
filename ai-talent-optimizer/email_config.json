@@ -1,0 +1,44 @@
+{
+  "email_settings": {
+    "primary_email": "matthewdscott7@gmail.com",
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 465,
+    "use_ssl": true
+  },
+  "bcc_tracking": {
+    "enabled": true,
+    "addresses": {
+      "applications": "matthewdscott7+jobapps@gmail.com",
+      "followups": "matthewdscott7+followups@gmail.com",
+      "networking": "matthewdscott7+networking@gmail.com"
+    }
+  },
+  "gmail_oauth": {
+    "enabled": true,
+    "monitored_companies": [
+      "Anthropic",
+      "Netflix",
+      "CoreWeave",
+      "Scale AI",
+      "Airtable",
+      "Canva",
+      "Checkr",
+      "Flexport",
+      "Gusto",
+      "Instacart",
+      "Plaid",
+      "Robinhood",
+      "Samsara",
+      "Snowflake",
+      "Affirm"
+    ]
+  },
+  "followup_schedule": {
+    "initial": 3,
+    "second": 7,
+    "final": 14
+  },
+  "templates": {
+    "signature": "\n\nBest regards,\nMatthew Scott\nmatthewdscott7@gmail.com\n(502) 345-0525\nlinkedin.com/in/mscott77"
+  }
+}

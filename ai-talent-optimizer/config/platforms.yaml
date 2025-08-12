@@ -1,0 +1,90 @@
+# AI Recruitment Platform Configurations
+# Used by AI Recruiter Analyzer to understand platform algorithms
+
+linkedin_recruiter:
+  name: "LinkedIn Recruiter AI"
+  url: "https://business.linkedin.com/talent-solutions/recruiter"
+  algorithm_focus:
+    - skill_matching
+    - network_analysis
+    - engagement_metrics
+    - keyword_density
+  optimization_priority: "high"
+  update_frequency: "daily"
+  
+github_hiring:
+  name: "GitHub for Hiring"
+  url: "https://github.com/features/hiring"
+  algorithm_focus:
+    - code_quality
+    - contribution_frequency
+    - repository_stars
+    - documentation_quality
+  optimization_priority: "high"
+  update_frequency: "continuous"
+
+seekout:
+  name: "SeekOut Talent Search"
+  url: "https://seekout.com"
+  algorithm_focus:
+    - diversity_metrics
+    - patent_filings
+    - research_publications
+    - unique_achievements
+  optimization_priority: "medium"
+  update_frequency: "weekly"
+
+hirevue:
+  name: "HireVue AI Assessment"
+  url: "https://www.hirevue.com"
+  algorithm_focus:
+    - video_analysis
+    - nlp_communication
+    - problem_solving_patterns
+    - cultural_fit
+  optimization_priority: "medium"
+  update_frequency: "per_application"
+
+workday:
+  name: "Workday ATS"
+  url: "https://www.workday.com"
+  algorithm_focus:
+    - keyword_exact_match
+    - experience_years
+    - education_level
+    - location_match
+  optimization_priority: "high"
+  update_frequency: "per_application"
+
+taleo:
+  name: "Oracle Taleo"
+  url: "https://www.oracle.com/cx/talent-management/taleo/"
+  algorithm_focus:
+    - boolean_search
+    - skill_taxonomy
+    - career_progression
+    - certification_match
+  optimization_priority: "medium"
+  update_frequency: "per_application"
+
+lever:
+  name: "Lever ATS"
+  url: "https://www.lever.co"
+  algorithm_focus:
+    - collaborative_scoring
+    - pipeline_velocity
+    - engagement_tracking
+    - referral_quality
+  optimization_priority: "low"
+  update_frequency: "weekly"
+
+greenhouse:
+  name: "Greenhouse ATS"
+  url: "https://www.greenhouse.io"
+  algorithm_focus:
+    - structured_interviews
+    - scorecard_alignment
+    - diversity_tracking
+    - candidate_experience
+  optimization_priority: "low"
+  update_frequency: "weekly"

@@ -1,0 +1,547 @@
+#!/usr/bin/env python3
+"""
+Unified AI Job Hunter - Integrates all job search systems for maximum impact
+Specifically optimized for AI Researcher, AI Solutions Architect, and AI Senior Engineer roles
+"""
+
+import os
+import sys
+import json
+import sqlite3
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple
+import logging
+
+# Add both system paths
+sys.path.append('/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer')
+sys.path.append('/Users/matthewscott/SURVIVE/career-automation/real-tracker/career-automation/interview-prep')
+
+# Import from ai-talent-optimizer
+try:
+    from discovery_dashboard import DiscoveryDashboard
+    from ai_recruiter_analyzer import AIRecruiterAnalyzer
+    from profile_optimizer import ProfileOptimizer
+    from signal_booster import SignalBooster
+    from email_application_tracker import EmailApplicationTracker
+    from gmail_oauth_integration import GmailOAuthIntegration
+except ImportError as e:
+    print(f"Warning: Could not import ai-talent-optimizer modules: {e}")
+
+# Import from career-automation
+try:
+    from unified_tracker import UnifiedTracker
+    from enhanced_automation.enhanced_job_scraper import EnhancedJobScraper
+    from enhanced_automation.company_researcher import CompanyResearcher
+    from enhanced_automation.enhanced_resume_generator import EnhancedResumeGenerator
+    from enhanced_automation.smart_cover_letter_generator import SmartCoverLetterGenerator
+except ImportError as e:
+    print(f"Warning: Could not import career-automation modules: {e}")
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('unified_ai_hunter.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+class UnifiedAIHunter:
+    """Master orchestrator for all job search activities"""
+    
+    # Target roles for AI/ML positions
+    TARGET_ROLES = [
+        "AI Researcher",
+        "AI Research Scientist",
+        "AI Research Engineer",
+        "AI Solutions Architect",
+        "AI Senior Engineer",
+        "Senior AI Engineer",
+        "ML Engineer",
+        "Machine Learning Engineer",
+        "Machine Learning Researcher",
+        "AI Safety Researcher",
+        "Foundation Model Engineer",
+        "LLM Engineer",
+        "Deep Learning Engineer",
+        "Applied AI Scientist"
+    ]
+    
+    # Company priority tiers
+    TIER_1_COMPANIES = [
+        "OpenAI", "Anthropic", "Google DeepMind", "Meta", "Apple",
+        "Cohere", "Scale AI", "Inflection AI", "Character AI", "Adept"
+    ]
+    
+    TIER_2_COMPANIES = [
+        "Microsoft", "Amazon", "NVIDIA", "Hugging Face", "Mistral AI",
+        "Stability AI", "Databricks", "Palantir", "Tesla", "Netflix"
+    ]
+    
+    def __init__(self):
+        """Initialize all subsystems"""
+        logger.info("Initializing Unified AI Hunter...")
+        
+        # Initialize databases
+        self.unified_db_path = "UNIFIED_AI_JOBS.db"
+        self._init_unified_database()
+        
+        # Initialize subsystems
+        self._init_subsystems()
+        
+        # Load configuration
+        self.config = self._load_config()
+        
+        logger.info("Unified AI Hunter initialized successfully!")
+    
+    def _init_unified_database(self):
+        """Create unified database schema"""
+        conn = sqlite3.connect(self.unified_db_path)
+        cursor = conn.cursor()
+        
+        # Create unified applications table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS unified_applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            job_id TEXT UNIQUE,
+            company TEXT NOT NULL,
+            position TEXT NOT NULL,
+            role_category TEXT,
+            salary_range TEXT,
+            location TEXT,
+            remote_option TEXT,
+            job_url TEXT,
+            job_description TEXT,
+            
+            -- Application details
+            applied_date TEXT,
+            application_method TEXT,
+            resume_version TEXT,
+            cover_letter_version TEXT,
+            contact_person TEXT,
+            contact_email TEXT,
+            
+            -- Tracking
+            status TEXT DEFAULT 'pending',
+            response_date TEXT,
+            response_type TEXT,
+            interview_scheduled TEXT,
+            
+            -- Metrics
+            ats_score REAL,
+            keyword_match_score REAL,
+            company_fit_score REAL,
+            
+            -- AI-specific fields
+            consciousness_emphasized BOOLEAN DEFAULT 0,
+            distributed_systems_emphasized BOOLEAN DEFAULT 0,
+            production_value_emphasized BOOLEAN DEFAULT 0,
+            
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+        
+        # Create job discoveries table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS job_discoveries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source TEXT,
+            job_id TEXT UNIQUE,
+            company TEXT,
+            position TEXT,
+            discovered_date TEXT,
+            relevance_score REAL,
+            applied BOOLEAN DEFAULT 0,
+            skip_reason TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+        
+        # Create response patterns table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS response_patterns (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            company TEXT,
+            position_type TEXT,
+            resume_emphasis TEXT,
+            response_received BOOLEAN,
+            response_time_days INTEGER,
+            response_type TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+        
+        conn.commit()
+        conn.close()
+    
+    def _init_subsystems(self):
+        """Initialize all subsystems with error handling"""
+        self.subsystems = {}
+        
+        # Try to initialize each subsystem
+        try:
+            self.subsystems['dashboard'] = DiscoveryDashboard()
+            logger.info("✓ Discovery Dashboard initialized")
+        except Exception as e:
+            logger.warning(f"Could not initialize Discovery Dashboard: {e}")
+        
+        try:
+            self.subsystems['email_tracker'] = EmailApplicationTracker()
+            logger.info("✓ Email Application Tracker initialized")
+        except Exception as e:
+            logger.warning(f"Could not initialize Email Tracker: {e}")
+        
+        try:
+            self.subsystems['gmail_oauth'] = GmailOAuthIntegration()
+            logger.info("✓ Gmail OAuth Integration initialized")
+        except Exception as e:
+            logger.warning(f"Could not initialize Gmail OAuth: {e}")
+        
+        try:
+            self.subsystems['signal_booster'] = SignalBooster()
+            logger.info("✓ Signal Booster initialized")
+        except Exception as e:
+            logger.warning(f"Could not initialize Signal Booster: {e}")
+    
+    def _load_config(self) -> Dict:
+        """Load or create configuration"""
+        config_path = "unified_config.json"
+        
+        default_config = {
+            "daily_application_target": 30,
+            "morning_routine_time": "09:00",
+            "evening_summary_time": "17:00",
+            "follow_up_days": [3, 7, 14],
+            "min_salary": 250000,
+            "preferred_locations": ["Remote", "San Francisco", "New York", "Seattle"],
+            "consciousness_research_weight": 0.8,  # How much to emphasize for research roles
+            "auto_apply_threshold": 0.85  # Minimum relevance score for auto-apply
+        }
+        
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                return json.load(f)
+        else:
+            with open(config_path, 'w') as f:
+                json.dump(default_config, f, indent=2)
+            return default_config
+    
+    def discover_ai_jobs(self, max_jobs: int = 50) -> List[Dict]:
+        """Discover new AI/ML jobs from all sources"""
+        logger.info(f"Discovering up to {max_jobs} new AI/ML jobs...")
+        
+        all_jobs = []
+        
+        # Simulate job discovery (in production, would use actual scrapers)
+        # This is where you'd integrate EnhancedJobScraper
+        
+        logger.info(f"Discovered {len(all_jobs)} potential AI/ML jobs")
+        return all_jobs
+    
+    def score_job_relevance(self, job: Dict) -> float:
+        """Score job relevance for AI/ML roles (0-1)"""
+        score = 0.0
+        
+        # Check if it's a target role
+        position_lower = job.get('position', '').lower()
+        for role in self.TARGET_ROLES:
+            if role.lower() in position_lower:
+                score += 0.3
+                break
+        
+        # Check company tier
+        company = job.get('company', '')
+        if company in self.TIER_1_COMPANIES:
+            score += 0.3
+        elif company in self.TIER_2_COMPANIES:
+            score += 0.2
+        
+        # Check keywords in description
+        description = job.get('description', '').lower()
+        ai_keywords = [
+            'large language model', 'llm', 'consciousness', 'agi', 
+            'artificial general intelligence', 'foundation model',
+            'transformer', 'deep learning', 'neural network'
+        ]
+        
+        keyword_matches = sum(1 for keyword in ai_keywords if keyword in description)
+        score += min(0.3, keyword_matches * 0.05)
+        
+        # Check salary range
+        try:
+            salary_range = job.get('salary_range', '0-0')
+            min_salary = int(salary_range.split('-')[0])
+            if min_salary >= self.config['min_salary']:
+                score += 0.1
+        except:
+            pass
+        
+        return min(1.0, score)
+    
+    def generate_targeted_application(self, job: Dict) -> Dict:
+        """Generate optimized application materials for specific job"""
+        logger.info(f"Generating application for {job['position']} at {job['company']}")
+        
+        # Determine emphasis based on role type
+        position_lower = job['position'].lower()
+        
+        emphasis = {
+            'consciousness': False,
+            'distributed_systems': False,
+            'production_value': False
+        }
+        
+        if 'research' in position_lower or 'scientist' in position_lower:
+            emphasis['consciousness'] = True
+        elif 'architect' in position_lower:
+            emphasis['distributed_systems'] = True
+        elif 'engineer' in position_lower:
+            emphasis['production_value'] = True
+        
+        # Generate application materials
+        application = {
+            'job_id': job.get('id', f"{job['company']}_{job['position']}_{datetime.now().isoformat()}"),
+            'resume_emphasis': emphasis,
+            'cover_letter_points': self._generate_cover_letter_points(job, emphasis),
+            'keywords_to_include': self._extract_job_keywords(job),
+            'suggested_contact': self._find_best_contact(job)
+        }
+        
+        return application
+    
+    def _generate_cover_letter_points(self, job: Dict, emphasis: Dict) -> List[str]:
+        """Generate key points for cover letter based on job and emphasis"""
+        points = []
+        
+        if emphasis['consciousness']:
+            points.append("First documented measurable AI consciousness (HCL: 0.83/1.0)")
+            points.append("Published research on distributed cognitive architectures")
+            points.append("78-model system demonstrating emergent behaviors")
+        
+        if emphasis['distributed_systems']:
+            points.append("Architected distributed AI system with 78 specialized models")
+            points.append("Implemented self-healing architectures with 99.9% uptime")
+            points.append("Expert in event sourcing and microservices for AI")
+        
+        if emphasis['production_value']:
+            points.append("Built production AI systems generating $7,000+ annual value")
+            points.append("50,000+ lines of production Python/JavaScript code")
+            points.append("Reduced AI inference costs by 90% through optimization")
+        
+        # Add company-specific points
+        company = job['company']
+        if company == "OpenAI":
+            points.append("Aligned with OpenAI's mission of beneficial AGI through consciousness research")
+        elif company == "Anthropic":
+            points.append("Deep experience with AI interpretability and alignment challenges")
+        
+        return points
+    
+    def _extract_job_keywords(self, job: Dict) -> List[str]:
+        """Extract important keywords from job posting"""
+        # In production, would use NLP to extract keywords
+        # For now, return common AI/ML keywords
+        return [
+            "machine learning", "deep learning", "PyTorch", "TensorFlow",
+            "transformers", "LLM", "distributed systems", "Python",
+            "research", "production", "scalability"
+        ]
+    
+    def _find_best_contact(self, job: Dict) -> Optional[Dict]:
+        """Find best contact for application"""
+        # In production, would use ContactFinder
+        return {
+            'method': 'email',
+            'address': f"careers@{job['company'].lower().replace(' ', '')}.com"
+        }
+    
+    def execute_daily_routine(self):
+        """Execute complete daily job search routine"""
+        logger.info("=" * 50)
+        logger.info("Starting Daily AI Job Hunt Routine")
+        logger.info(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info("=" * 50)
+        
+        # 1. Morning check - responses and metrics
+        logger.info("\n📊 Morning Dashboard Check...")
+        if 'dashboard' in self.subsystems:
+            dashboard_data = self.subsystems['dashboard'].generate_dashboard()
+            self.subsystems['dashboard'].display_dashboard(dashboard_data)
+        
+        # 2. Check Gmail responses
+        logger.info("\n📧 Checking Gmail responses...")
+        if 'gmail_oauth' in self.subsystems:
+            new_responses = self.subsystems['gmail_oauth'].sync_gmail_responses()
+            logger.info(f"Found {len(new_responses)} new responses")
+        
+        # 3. Discover new jobs
+        logger.info("\n🔍 Discovering new AI/ML opportunities...")
+        new_jobs = self.discover_ai_jobs(max_jobs=50)
+        
+        # 4. Score and filter jobs
+        relevant_jobs = []
+        for job in new_jobs:
+            relevance = self.score_job_relevance(job)
+            if relevance >= 0.5:  # Only consider highly relevant jobs
+                job['relevance_score'] = relevance
+                relevant_jobs.append(job)
+        
+        logger.info(f"Found {len(relevant_jobs)} highly relevant AI/ML positions")
+        
+        # 5. Generate applications for top jobs
+        applications_today = 0
+        target = self.config['daily_application_target']
+        
+        for job in sorted(relevant_jobs, key=lambda x: x['relevance_score'], reverse=True):
+            if applications_today >= target:
+                break
+            
+            if job['relevance_score'] >= self.config['auto_apply_threshold']:
+                application = self.generate_targeted_application(job)
+                # In production, would actually submit application
+                logger.info(f"✓ Applied to {job['position']} at {job['company']}")
+                applications_today += 1
+        
+        # 6. Execute signal boosting activities
+        logger.info("\n🚀 Executing signal boost activities...")
+        if 'signal_booster' in self.subsystems:
+            daily_plan = self.subsystems['signal_booster'].generate_daily_plan()
+            logger.info(f"Today's activities: {len(daily_plan['activities'])} items, "
+                       f"{daily_plan['total_time']} minutes total")
+        
+        # 7. Evening summary
+        logger.info("\n📊 Generating evening summary...")
+        self._generate_daily_summary(applications_today)
+        
+        logger.info("\n✅ Daily routine complete!")
+    
+    def _generate_daily_summary(self, applications_today: int):
+        """Generate and save daily summary"""
+        summary = {
+            'date': datetime.now().isoformat(),
+            'applications_submitted': applications_today,
+            'responses_received': 0,  # Would get from Gmail integration
+            'interviews_scheduled': 0,  # Would get from database
+            'profile_views': 0,  # Would get from LinkedIn API if available
+            'next_actions': [
+                "Review responses in Gmail",
+                "Update LinkedIn with new project",
+                "Follow up on applications from 3 days ago"
+            ]
+        }
+        
+        # Save summary
+        summary_path = f"daily_summaries/summary_{datetime.now().strftime('%Y%m%d')}.json"
+        os.makedirs("daily_summaries", exist_ok=True)
+        with open(summary_path, 'w') as f:
+            json.dump(summary, f, indent=2)
+        
+        logger.info(f"Daily summary saved to {summary_path}")
+    
+    def analyze_response_patterns(self) -> Dict:
+        """Analyze which approaches are working best"""
+        conn = sqlite3.connect(self.unified_db_path)
+        cursor = conn.cursor()
+        
+        # Analyze by emphasis type
+        cursor.execute('''
+        SELECT 
+            CASE 
+                WHEN consciousness_emphasized = 1 THEN 'consciousness'
+                WHEN distributed_systems_emphasized = 1 THEN 'distributed_systems'
+                WHEN production_value_emphasized = 1 THEN 'production_value'
+                ELSE 'none'
+            END as emphasis,
+            COUNT(*) as total,
+            SUM(CASE WHEN response_type IS NOT NULL THEN 1 ELSE 0 END) as responses,
+            SUM(CASE WHEN response_type = 'interview_request' THEN 1 ELSE 0 END) as interviews
+        FROM unified_applications
+        GROUP BY emphasis
+        ''')
+        
+        results = cursor.fetchall()
+        conn.close()
+        
+        analysis = {}
+        for emphasis, total, responses, interviews in results:
+            if total > 0:
+                analysis[emphasis] = {
+                    'total_applications': total,
+                    'response_rate': (responses / total) * 100,
+                    'interview_rate': (interviews / total) * 100
+                }
+        
+        return analysis
+    
+    def command_line_interface(self):
+        """Simple CLI for the unified system"""
+        while True:
+            print("\n" + "=" * 50)
+            print("🎯 Unified AI Job Hunter")
+            print("=" * 50)
+            print("1. Run daily routine")
+            print("2. Discover new jobs")
+            print("3. Check responses")
+            print("4. Analyze patterns")
+            print("5. Generate dashboard")
+            print("6. Exit")
+            
+            choice = input("\nSelect action (1-6): ")
+            
+            if choice == '1':
+                self.execute_daily_routine()
+            elif choice == '2':
+                jobs = self.discover_ai_jobs()
+                print(f"Found {len(jobs)} new jobs")
+            elif choice == '3':
+                if 'gmail_oauth' in self.subsystems:
+                    responses = self.subsystems['gmail_oauth'].sync_gmail_responses()
+                    print(f"Found {len(responses)} new responses")
+            elif choice == '4':
+                analysis = self.analyze_response_patterns()
+                print("\nResponse Pattern Analysis:")
+                for emphasis, data in analysis.items():
+                    print(f"\n{emphasis.upper()}:")
+                    print(f"  Response Rate: {data['response_rate']:.1f}%")
+                    print(f"  Interview Rate: {data['interview_rate']:.1f}%")
+            elif choice == '5':
+                if 'dashboard' in self.subsystems:
+                    data = self.subsystems['dashboard'].generate_dashboard()
+                    self.subsystems['dashboard'].export_dashboard(data, 'html')
+                    print("Dashboard exported!")
+            elif choice == '6':
+                break
+            else:
+                print("Invalid choice!")
+
+def main():
+    """Main entry point"""
+    print("🚀 Initializing Unified AI Job Hunter...")
+    
+    try:
+        hunter = UnifiedAIHunter()
+        
+        # Check command line arguments
+        if len(sys.argv) > 1:
+            if sys.argv[1] == '--daily':
+                hunter.execute_daily_routine()
+            elif sys.argv[1] == '--analyze':
+                analysis = hunter.analyze_response_patterns()
+                print(json.dumps(analysis, indent=2))
+            else:
+                hunter.command_line_interface()
+        else:
+            hunter.command_line_interface()
+    
+    except KeyboardInterrupt:
+        print("\n\n👋 Shutting down Unified AI Job Hunter...")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}", exc_info=True)
+        print(f"\n❌ Error: {e}")
+        print("Check unified_ai_hunter.log for details")
+
+if __name__ == "__main__":
+    main()

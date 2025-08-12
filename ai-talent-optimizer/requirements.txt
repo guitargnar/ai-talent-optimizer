@@ -1,0 +1,55 @@
+# AI Talent Optimizer Requirements
+
+# Core Dependencies
+python>=3.9
+pyyaml>=6.0
+requests>=2.28.0
+
+# Data Processing
+pandas>=1.5.0
+numpy>=1.23.0
+
+# NLP and Text Processing
+nltk>=3.8
+spacy>=3.4.0
+textstat>=0.7.3
+
+# Web Scraping (optional for enhanced features)
+beautifulsoup4>=4.11.0
+selenium>=4.8.0
+
+# API Clients
+python-linkedin-api>=2.0.0
+PyGithub>=1.57
+
+# Visualization
+matplotlib>=3.6.0
+seaborn>=0.12.0
+plotly>=5.11.0
+
+# Document Generation
+reportlab>=3.6.0
+python-docx>=0.8.11
+markdown>=3.4.0
+jinja2>=3.1.0
+
+# Testing
+pytest>=7.2.0
+pytest-cov>=4.0.0
+
+# Development Tools
+black>=22.10.0
+flake8>=5.0.0
+mypy>=0.990
+
+# Optional: API Framework (if building web interface)
+fastapi>=0.87.0
+uvicorn>=0.19.0
+
+# Optional: Database (for tracking)
+sqlalchemy>=1.4.44
+sqlite3
+
+# Optional: Background Jobs
+celery>=5.2.0
+redis>=4.4.0

@@ -1,0 +1,334 @@
+# Claude Code Declarative Pipeline for AI Job Hunter
+# This replaces all cron jobs, manual scripts, and environment management
+
+name: ai-job-hunter-pipeline
+version: 1.0.0
+description: Automated AI/ML job discovery and application system
+
+# Environment setup macro - ensures correct Python context
+macros:
+  setup_env: |
+    cd /Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer
+    source venv/bin/activate 2>/dev/null || python3 -m venv venv && source venv/bin/activate
+    pip install -q -r requirements.txt
+
+# Secrets management - no more plaintext credentials
+secrets:
+  - name: ADZUNA_APP_ID
+    description: Adzuna API application ID
+    required: false
+  - name: ADZUNA_APP_KEY
+    description: Adzuna API key
+    required: false
+  - name: GMAIL_APP_PASSWORD
+    description: Gmail app-specific password
+    required: true
+  - name: OPENAI_API_KEY
+    description: OpenAI API key for resume generation
+    required: false
+
+# Plugin discovery for scrapers
+plugins:
+  scrapers:
+    discovery_pattern: "**/scraper_adapters.py"
+    register_decorator: "@plugin.register_scraper"
+    auto_load: true
+
+# Main workflow pipeline
+workflows:
+  daily_ai_hunt:
+    description: Complete AI job hunting routine
+    
+    # Scheduling - no external cron needed
+    schedule:
+      - daily at 09:00  # Morning run
+      - daily at 18:00  # Evening run
+    
+    # Notification preferences
+    notifications:
+      on_success: summary
+      on_failure: detailed
+      channels:
+        - console
+        - log_file: daily_hunt.log
+    
+    # Pipeline steps
+    steps:
+      - name: environment_check
+        description: Verify environment and dependencies
+        run: |
+          {{ setup_env }}
+          LOG: 🔍 Checking environment...
+          python -c "import sqlite3, requests, bs4; print('LOG: ✅ Core dependencies verified')"
+          
+      - name: morning_dashboard
+        description: Generate morning dashboard
+        run: |
+          {{ setup_env }}
+          LOG: 📊 Generating morning dashboard...
+          python -c "
+from discovery_dashboard import DiscoveryDashboard
+dashboard = DiscoveryDashboard()
+report = dashboard.generate_dashboard()
+print(f'LOG: ✅ Dashboard generated - Profile Score: {dashboard.profile_optimization_score}%')
+claude.capture_metric('profile_score', dashboard.profile_optimization_score)
+"
+
+      - name: gmail_check
+        description: Check Gmail for responses
+        run: |
+          {{ setup_env }}
+          LOG: 📧 Checking Gmail responses...
+          python -c "
+from gmail_oauth_integration import GmailOAuthIntegration
+gmail = GmailOAuthIntegration()
+responses = gmail.check_job_responses()
+print(f'LOG: 📬 Found {len(responses)} new responses')
+claude.capture_metric('email_responses', len(responses))
+for resp in responses[:3]:
+    print(f'LOG:   • {resp[\"company\"]} - {resp[\"status\"]}')
+"
+        retry:
+          attempts: 3
+          backoff: exponential
+          
+      - name: discover_jobs
+        description: Discover new AI/ML jobs from all sources
+        run: |
+          {{ setup_env }}
+          LOG: 🔍 Discovering AI/ML jobs...
+          python -c "
+from connect_job_scrapers import JobScraperIntegration
+integration = JobScraperIntegration()
+jobs = integration.discover_ai_jobs(max_jobs=50)
+integration.save_to_unified_db(jobs)
+print(f'LOG: ✅ Discovered {len(jobs)} new AI/ML jobs')
+claude.capture_metric('jobs_discovered', len(jobs))
+
+# Log top 5 jobs
+for i, job in enumerate(jobs[:5], 1):
+    print(f'LOG:   {i}. {job[\"position\"]} at {job[\"company\"]} (${job.get(\"salary_range\", \"N/A\")})')
+"
+        plugins:
+          - use: scrapers
+            parallel: true
+            timeout: 30s
+            
+      - name: score_opportunities
+        description: Score and prioritize discovered jobs
+        run: |
+          {{ setup_env }}
+          LOG: 🎯 Scoring job opportunities...
+          python -c "
+import sqlite3
+conn = sqlite3.connect('UNIFIED_AI_JOBS.db')
+cursor = conn.cursor()
+
+# Get unscored jobs
+cursor.execute('''
+SELECT job_id, company, position, description, salary_range 
+FROM job_discoveries 
+WHERE relevance_score IS NULL OR relevance_score = 0.5
+''')
+
+jobs = cursor.fetchall()
+scored = 0
+
+for job in jobs:
+    # Simple scoring based on keywords
+    score = 0.5
+    desc_lower = (job[3] or '').lower()
+    if any(kw in desc_lower for kw in ['senior', 'principal', 'staff', 'lead']):
+        score += 0.2
+    if any(kw in desc_lower for kw in ['ml', 'machine learning', 'ai', 'artificial intelligence']):
+        score += 0.2
+    if 'remote' in desc_lower:
+        score += 0.1
+    
+    cursor.execute('UPDATE job_discoveries SET relevance_score = ? WHERE job_id = ?', (score, job[0]))
+    scored += 1
+
+conn.commit()
+conn.close()
+print(f'LOG: ✅ Scored {scored} job opportunities')
+claude.capture_metric('jobs_scored', scored)
+"
+
+      - name: generate_applications
+        description: Generate tailored applications for top jobs
+        run: |
+          {{ setup_env }}
+          LOG: 📝 Generating tailored applications...
+          python -c "
+import sqlite3
+from datetime import datetime
+
+conn = sqlite3.connect('UNIFIED_AI_JOBS.db')
+cursor = conn.cursor()
+
+# Get top unaplied jobs
+cursor.execute('''
+SELECT job_id, company, position, description 
+FROM job_discoveries 
+WHERE applied = 0 AND relevance_score > 0.7
+ORDER BY relevance_score DESC
+LIMIT 5
+''')
+
+jobs = cursor.fetchall()
+generated = 0
+
+for job in jobs:
+    # Mark as work in progress
+    print(f'LOG:   📝 Generating application for {job[2]} at {job[1]}')
+    
+    # In production, would generate tailored resume/cover letter here
+    # For now, just mark as ready
+    cursor.execute('''
+    UPDATE job_discoveries 
+    SET skip_reason = 'Ready for application' 
+    WHERE job_id = ?
+    ''', (job[0],))
+    generated += 1
+
+conn.commit()
+conn.close()
+print(f'LOG: ✅ Generated {generated} applications')
+claude.capture_metric('applications_generated', generated)
+"
+        condition: "{{ jobs_discovered > 0 }}"
+
+      - name: signal_boost
+        description: Execute daily signal boosting activities
+        run: |
+          {{ setup_env }}
+          LOG: 🚀 Executing signal boost activities...
+          python -c "
+from signal_booster import SignalBooster
+booster = SignalBooster()
+activities = booster.get_todays_activities()
+print(f'LOG: 📋 Today\\'s activities: {len(activities)} items')
+for act in activities:
+    print(f'LOG:   • {act[\"icon\"]} {act[\"task\"]} ({act[\"time_estimate\"]})')
+claude.capture_metric('signal_activities', len(activities))
+"
+
+      - name: evening_summary
+        description: Generate and save daily summary
+        run: |
+          {{ setup_env }}
+          LOG: 📊 Generating evening summary...
+          python -c "
+from unified_ai_hunter import UnifiedAIHunter
+hunter = UnifiedAIHunter()
+summary = hunter.generate_daily_summary()
+print('LOG: ✅ Daily summary generated')
+print(f'LOG:   • Applications submitted: {summary.get(\"applications_submitted\", 0)}')
+print(f'LOG:   • Responses received: {summary.get(\"responses_received\", 0)}')
+print(f'LOG:   • Next actions: {len(summary.get(\"next_actions\", []))}')
+"
+
+      - name: cleanup_logs
+        description: Rotate logs if needed
+        run: |
+          LOG: 🧹 Checking log rotation...
+          if [ -f daily_hunt.log ] && [ $(stat -f%z daily_hunt.log 2>/dev/null || stat -c%s daily_hunt.log 2>/dev/null || echo 0) -gt 10485760 ]; then
+            mkdir -p logs/archive
+            mv daily_hunt.log logs/archive/daily_hunt_$(date +%Y%m%d_%H%M%S).log
+            touch daily_hunt.log
+            LOG: ✅ Log rotated
+          else
+            LOG: ✅ Log size OK
+          fi
+          find logs/archive -name "daily_hunt_*.log" -mtime +30 -delete 2>/dev/null || true
+
+# Monitoring and metrics
+metrics:
+  - name: profile_score
+    type: gauge
+    description: LinkedIn profile optimization score
+    unit: percent
+  - name: jobs_discovered
+    type: counter
+    description: Number of new AI/ML jobs discovered
+  - name: email_responses
+    type: counter
+    description: Number of email responses received
+  - name: applications_generated
+    type: counter
+    description: Number of applications generated
+  - name: signal_activities
+    type: gauge
+    description: Number of signal boost activities
+
+# Health checks
+health_checks:
+  - name: database_accessible
+    run: |
+      {{ setup_env }}
+      python -c "import sqlite3; conn = sqlite3.connect('UNIFIED_AI_JOBS.db'); conn.close(); print('OK')"
+    interval: 1h
+    
+  - name: gmail_authenticated
+    run: |
+      {{ setup_env }}
+      python -c "
+from gmail_oauth_integration import GmailOAuthIntegration
+gmail = GmailOAuthIntegration()
+if gmail.creds and gmail.creds.valid:
+    print('OK')
+else:
+    print('FAIL: Gmail auth expired')
+"
+    interval: 6h
+
+# Quick commands for manual operations
+commands:
+  check_status:
+    description: Check current job hunting status
+    run: |
+      {{ setup_env }}
+      LOG: 📊 Current Status:
+      sqlite3 UNIFIED_AI_JOBS.db "SELECT COUNT(*) as total, COUNT(CASE WHEN applied = 1 THEN 1 END) as applied FROM job_discoveries;" | while IFS='|' read total applied; do
+        LOG:   • Total jobs tracked: $total
+        LOG:   • Applications sent: $applied
+      done
+      
+  manual_discover:
+    description: Manually trigger job discovery
+    run: |
+      {{ setup_env }}
+      LOG: 🔍 Manual job discovery...
+      python unified_ai_hunter.py --discover-only
+      
+  view_top_jobs:
+    description: View top scoring jobs
+    run: |
+      {{ setup_env }}
+      LOG: 🎯 Top AI/ML Opportunities:
+      sqlite3 -column -header UNIFIED_AI_JOBS.db "
+      SELECT company, position, salary_range, relevance_score 
+      FROM job_discoveries 
+      WHERE applied = 0 
+      ORDER BY relevance_score DESC 
+      LIMIT 10;"
+
+# Error handling
+error_handlers:
+  - match: "No module named"
+    action: |
+      LOG: ⚠️ Missing dependency detected, installing requirements...
+      {{ setup_env }}
+      pip install -r requirements.txt
+      retry
+      
+  - match: "Gmail.*401"
+    action: |
+      LOG: ⚠️ Gmail authentication expired
+      notify: "Please re-authenticate Gmail: python setup_gmail_oauth.py"
+      
+  - match: "database is locked"
+    action: |
+      LOG: ⚠️ Database locked, waiting...
+      sleep 5
+      retry

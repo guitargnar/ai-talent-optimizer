@@ -1,0 +1,57 @@
+
+STAR RATINGS ROI ANALYSIS REPORT
+================================
+Generated: 2025-08-11 10:01
+Plan: Baptist Health Medicare Advantage
+Members: 35,000
+
+CURRENT STATE
+------------
+Star Rating: 3.5 stars
+Rebate Percentage: 50%
+Annual Rebate: $19,950,000
+Total Revenue: $78,750,000
+
+PROJECTED IMPROVEMENTS
+---------------------
+CAHPS Score Improvement: 15.0%
+Clinical Score Improvement: 8.0%
+Star Rating Change: +0.47 stars
+New Star Rating: 4.0 stars
+
+FINANCIAL IMPACT
+---------------
+Annual Revenue Increase: $5,985,000
+
+Year 1:
+  Investment: $400,000
+  Net Benefit: $5,585,000
+  ROI: 1396%
+
+Year 2:
+  Investment: $475,000
+  Net Benefit: $5,510,000
+  ROI: 1160%
+
+3-Year Total Net Benefit: $16,605,000
+
+INTERVENTION STRATEGY
+--------------------
+Members Targeted: 7,000
+Cost per Member: $25
+Total Intervention Cost: $175,000
+
+RECOMMENDATIONS
+--------------
+1. Implement AI-powered Star Ratings optimization platform
+2. Focus on CAHPS measures (57% of total score)
+3. Target high-risk members for proactive interventions
+4. Invest in customer service training
+5. Deploy clinical quality improvement programs
+
+RISK MITIGATION
+--------------
+• Performance-based pricing available
+• 90-day pilot before full commitment
+• Guaranteed minimum improvement or money back
+• Monthly tracking and optimization

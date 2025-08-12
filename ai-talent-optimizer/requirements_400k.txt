@@ -1,0 +1,45 @@
+# Requirements for $400K+ Job Search Automation
+
+# Core dependencies
+pandas>=1.5.0
+numpy>=1.21.0
+requests>=2.28.0
+selenium>=4.10.0
+beautifulsoup4>=4.11.0
+
+# Email automation
+smtplib  # Built-in
+email  # Built-in
+
+# Database
+sqlite3  # Built-in
+
+# LinkedIn automation
+python-linkedin-v2>=0.9.4
+
+# Web scraping
+scrapy>=2.9.0
+playwright>=1.35.0
+
+# Data processing
+openpyxl>=3.1.0  # For Excel files
+xlsxwriter>=3.1.0
+
+# Scheduling
+schedule>=1.2.0
+APScheduler>=3.10.0
+
+# Environment
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.3.0
+pytest-cov>=4.1.0
+
+# Logging
+colorlog>=6.7.0
+
+# Optional: AI/ML for smart matching
+scikit-learn>=1.3.0
+transformers>=4.30.0  # For BERT-based job matching
+sentence-transformers>=2.2.0  # For semantic similarity

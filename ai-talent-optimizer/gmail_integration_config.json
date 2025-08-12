@@ -1,0 +1,22 @@
+{
+  "gmail_oauth_path": "/Users/matthewscott/Google Gmail",
+  "monitored_companies": [
+    "Anthropic",
+    "Netflix",
+    "CoreWeave",
+    "Scale AI",
+    "Airtable",
+    "Canva",
+    "Checkr",
+    "Flexport",
+    "Gusto",
+    "Instacart",
+    "Plaid",
+    "Robinhood",
+    "Samsara",
+    "Snowflake",
+    "Affirm"
+  ],
+  "integration_active": true,
+  "last_sync": "2025-08-05T08:36:44.343097"
+}

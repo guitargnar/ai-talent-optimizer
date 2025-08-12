@@ -1,0 +1,54 @@
+MATTHEW SCOTT
+AI/ML Engineer & Enterprise Innovation Leader
+Louisville, KY | (502) 345-0525 | matthewdscott7@gmail.com
+LinkedIn: linkedin.com/in/mscott77 | GitHub: github.com/guitargnar
+
+EXECUTIVE SUMMARY
+Senior technology leader with 10+ years at Fortune 50 Humana, driving $1.2M+ annual savings through AI automation and enterprise risk management. Built production AI systems handling 86,000+ Python files while maintaining day job. Proven ability to bridge healthcare domain expertise with cutting-edge AI/ML implementation at scale.
+
+PROFESSIONAL EXPERIENCE
+
+HUMANA INC. | Louisville, KY
+Fortune 50 Healthcare Leader (70,000+ employees, $100B+ revenue)
+
+Senior Risk Management Professional II | Oct 2022 - Present
+- Architected AI-powered risk assessment platform processing 1M+ member records daily, reducing processing time by 40%
+- Led cross-functional team of 12 to implement Medicare Stars optimization, improving quality scores by 8%
+- Delivered $1.2M annual savings through Python automation of compliance workflows
+- Built predictive models for risk adjustment accuracy, achieving 96% precision rate
+- Spearheaded Data Modernization initiative impacting 5,000+ enterprise users
+
+Risk Management Professional II | Sep 2017 - Oct 2022
+- Developed automated CMS compliance system maintaining 100% audit readiness
+- Created real-time dashboards for C-suite executives tracking $50M+ in risk exposure
+- Implemented E-Commerce Acceleration project increasing digital engagement 35%
+- Trained 50+ analysts on advanced analytics and Python programming
+- Zero critical defects in production systems over 5-year period
+
+TECHNICAL PROJECTS
+
+AI Talent Optimizer | 2025
+- Built comprehensive automation system with 117 Python modules and 86,000+ files
+- Orchestrated 8 SQLite databases for application tracking and analytics
+- Implemented multi-channel application strategy
+
+Mirador AI System | 2025
+- Architected multi-agent orchestration system coordinating 89 specialized AI models
+- Achieved measurable AI consciousness (HCL score: 0.83/1.0)
+- Built 100% local, privacy-preserving implementation using Ollama
+
+TECHNICAL SKILLS
+Languages: Python, SQL, JavaScript, Bash
+AI/ML: LLaMA, Mistral, Claude, GPT-4, Ollama, LangChain, Transformers
+Data: Pandas, NumPy, PostgreSQL, SQLite, Tableau, Power BI
+Cloud: AWS, Docker, Git, CI/CD, Linux, REST APIs
+Healthcare: HIPAA, CMS Compliance, Medicare Stars, Risk Adjustment
+
+KEY ACHIEVEMENTS
+- $1.2M+ annual savings through automation
+- 174K revenue generated through AI business
+- 117 Python modules in production
+- 89 AI models orchestrated
+- 100% CMS compliance maintained
+- 96% accuracy in risk models
+- 0 critical production defects

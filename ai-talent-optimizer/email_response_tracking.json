@@ -1,0 +1,27 @@
+{
+  "email_applications": {
+    "total_sent": 0,
+    "responses_received": 0,
+    "interviews_scheduled": 0,
+    "response_rate": "0%",
+    "average_response_time": "0 days"
+  },
+  "by_company_type": {
+    "big_tech": {
+      "sent": 0,
+      "responses": 0
+    },
+    "ai_startups": {
+      "sent": 0,
+      "responses": 0
+    },
+    "enterprise": {
+      "sent": 0,
+      "responses": 0
+    },
+    "healthcare_ai": {
+      "sent": 0,
+      "responses": 0
+    }
+  }
+}

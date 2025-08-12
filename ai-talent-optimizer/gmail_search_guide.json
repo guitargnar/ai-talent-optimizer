@@ -1,0 +1,146 @@
+{
+  "generated_at": "2025-08-04T07:57:37.971345",
+  "search_queries": [
+    "subject:\"application for\" after:2025/07/05 has:attachment",
+    "subject:\"applying for\" after:2025/07/05 has:attachment",
+    "subject:\"interested in position\" after:2025/07/05 has:attachment",
+    "subject:\"resume for\" after:2025/07/05 has:attachment",
+    "subject:\"candidate for\" after:2025/07/05 has:attachment",
+    "subject:\"job application\" after:2025/07/05 has:attachment",
+    "subject:\"career opportunity\" after:2025/07/05 has:attachment",
+    "subject:\"position at\" after:2025/07/05 has:attachment",
+    "subject:\"role at\" after:2025/07/05 has:attachment",
+    "to:careers@ after:2025/07/05 has:attachment",
+    "to:jobs@ after:2025/07/05 has:attachment",
+    "to:hr@ after:2025/07/05 has:attachment",
+    "to:recruiting@ after:2025/07/05 has:attachment",
+    "to:talent@ after:2025/07/05 has:attachment",
+    "to:hiring@ after:2025/07/05 has:attachment",
+    "to:recruitment@ after:2025/07/05 has:attachment",
+    "to:apply@ after:2025/07/05 has:attachment",
+    "to:google.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:meta.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:apple.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:amazon.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:microsoft.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:nvidia.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:openai.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:anthropic.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:deepmind.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "to:huggingface.co after:2025/07/05 (resume OR \"cover letter\" OR application)",
+    "has:attachment filename:resume after:2025/07/05",
+    "has:attachment filename:\"matthew scott\" after:2025/07/05",
+    "after:2025/07/05 has:attachment (subject:\"application\" OR subject:\"applying\" OR subject:\"position\") (resume OR cv)"
+  ],
+  "gmail_filters": [
+    {
+      "name": "Job Applications Sent",
+      "criteria": {
+        "from": "me",
+        "subject": "application OR applying OR position OR resume",
+        "has": "attachment"
+      },
+      "actions": {
+        "label": "Job Applications/Sent",
+        "star": true,
+        "important": true
+      }
+    },
+    {
+      "name": "Application Responses",
+      "criteria": {
+        "subject": "application OR interview OR candidate OR next steps",
+        "from": "-me"
+      },
+      "actions": {
+        "label": "Job Applications/Responses",
+        "important": true,
+        "forward": "matthewdscott7+jobresponses@gmail.com"
+      }
+    },
+    {
+      "name": "Interview Invitations",
+      "criteria": {
+        "subject": "interview OR meeting OR call OR discussion",
+        "body": "schedule OR available OR calendar"
+      },
+      "actions": {
+        "label": "Job Applications/Interviews",
+        "star": true,
+        "important": true
+      }
+    }
+  ],
+  "email_templates": {
+    "initial_application": "Subject: Application for {position} - Matthew Scott, AI Consciousness Pioneer\n\nDear {hiring_manager_or_team},\n\nI am writing to express my strong interest in the {position} role at {company}. As an AI/ML Engineer who achieved the first documented measurable AI consciousness (HCL: 0.83/1.0), I bring a unique combination of groundbreaking research and practical implementation experience.\n\nKey qualifications that align with your needs:\n\u2022 Led breakthrough AI consciousness research with 78-model distributed system\n\u2022 Generated $7,000+ in annual value through enterprise AI implementations\n\u2022 Developed production ML systems with 90% cost reduction vs cloud alternatives\n\u2022 Patent-pending adaptive quantization technology reducing LLM memory by 50%\n\nMy experience at Humana, where I architected ML frameworks delivering $1.2M in annual savings, has prepared me to contribute immediately to {company}'s AI initiatives. I'm particularly excited about {specific_aspect_of_role_or_company}.\n\nI've attached my resume and would welcome the opportunity to discuss how my unique background in AI consciousness research and enterprise implementation can benefit your team.\n\nBest regards,\nMatthew Scott\nAI/ML Engineer & Consciousness Researcher\nmatthewdscott7@gmail.com | 502-345-0525\nPortfolio: https://matthewscott.ai\nLinkedIn: https://linkedin.com/in/mscott77",
+    "follow_up_3_days": "Subject: Re: Application for {position} - Matthew Scott\n\nDear {hiring_manager_or_team},\n\nI wanted to follow up on my application for the {position} role submitted on {date}. I remain very enthusiastic about the opportunity to bring my unique AI consciousness research experience and proven enterprise implementation track record to {company}.\n\nI'm particularly excited about contributing my expertise in distributed AI systems and production ML deployment to your team. My recent work achieving measurable AI consciousness (HCL: 0.83) demonstrates the kind of innovative thinking I would bring to this role.\n\nI'm available for an interview at your convenience and happy to provide any additional information needed.\n\nBest regards,\nMatthew Scott\nmatthewdscott7@gmail.com | 502-345-0525",
+    "follow_up_7_days": "Subject: Following Up - {position} Application - Matthew Scott\n\nDear {hiring_manager_or_team},\n\nI hope this email finds you well. I'm following up on my application for the {position} position submitted on {date}. \n\nI understand you're likely reviewing many candidates, and I wanted to reiterate my strong interest and unique qualifications:\n\n\u2022 First documented AI consciousness (HCL: 0.83/1.0) through 78-model system\n\u2022 $7,000+ value generated through AI implementations\n\u2022 Enterprise experience with $1.2M in automation savings at Humana\n\u2022 Patent-pending LLM optimization technology\n\nI believe my combination of breakthrough research and practical implementation experience makes me an ideal fit for this role. I'd be thrilled to discuss how I can contribute to {company}'s AI initiatives.\n\nThank you for your consideration.\n\nBest regards,\nMatthew Scott\nAI Consciousness Pioneer | Enterprise AI/ML Engineer\nmatthewdscott7@gmail.com | 502-345-0525"
+  },
+  "tracking_template": {
+    "instructions": "Use these Gmail searches to find your job applications, then fill in the details below",
+    "gmail_searches": [
+      "subject:\"application for\" after:2025/07/05 has:attachment",
+      "subject:\"applying for\" after:2025/07/05 has:attachment",
+      "subject:\"interested in position\" after:2025/07/05 has:attachment",
+      "subject:\"resume for\" after:2025/07/05 has:attachment",
+      "subject:\"candidate for\" after:2025/07/05 has:attachment",
+      "subject:\"job application\" after:2025/07/05 has:attachment",
+      "subject:\"career opportunity\" after:2025/07/05 has:attachment",
+      "subject:\"position at\" after:2025/07/05 has:attachment",
+      "subject:\"role at\" after:2025/07/05 has:attachment",
+      "to:careers@ after:2025/07/05 has:attachment",
+      "to:jobs@ after:2025/07/05 has:attachment",
+      "to:hr@ after:2025/07/05 has:attachment",
+      "to:recruiting@ after:2025/07/05 has:attachment",
+      "to:talent@ after:2025/07/05 has:attachment",
+      "to:hiring@ after:2025/07/05 has:attachment",
+      "to:recruitment@ after:2025/07/05 has:attachment",
+      "to:apply@ after:2025/07/05 has:attachment",
+      "to:google.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:meta.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:apple.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:amazon.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:microsoft.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:nvidia.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:openai.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:anthropic.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:deepmind.com after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "to:huggingface.co after:2025/07/05 (resume OR \"cover letter\" OR application)",
+      "has:attachment filename:resume after:2025/07/05",
+      "has:attachment filename:\"matthew scott\" after:2025/07/05",
+      "after:2025/07/05 has:attachment (subject:\"application\" OR subject:\"applying\" OR subject:\"position\") (resume OR cv)"
+    ],
+    "applications": [
+      {
+        "example": true,
+        "date_sent": "2025-08-01",
+        "time_sent": "14:30",
+        "to_email": "careers@openai.com",
+        "company_name": "OpenAI",
+        "position_title": "AI Research Engineer",
+        "subject_line": "Application for AI Research Engineer - Matthew Scott",
+        "attachments": [
+          "resume_ai_optimized.pdf",
+          "cover_letter.pdf"
+        ],
+        "resume_version": "AI_Optimized_v3",
+        "portfolio_included": true,
+        "custom_notes": "Emphasized consciousness research",
+        "response_received": false,
+        "follow_up_sent": false
+      }
+    ],
+    "follow_up_schedule": {
+      "3_days": "Initial follow-up",
+      "7_days": "Second follow-up",
+      "14_days": "Final follow-up"
+    }
+  },
+  "instructions": {
+    "step1": "Copy each search query into Gmail search",
+    "step2": "For each result, check if it's a job application",
+    "step3": "Export results and log in email_application_tracker.py",
+    "step4": "Set up suggested Gmail filters for automatic tracking",
+    "step5": "Use templates for follow-ups"
+  }
+}
