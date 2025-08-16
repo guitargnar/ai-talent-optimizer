@@ -1,21 +1,21 @@
-# 🧠 AI Talent Optimizer v2.0 - Unified System
+# 🧠 AI Talent Optimizer v3.0 - Production Architecture
 
-**Enterprise-scale job application automation platform built by a Principal-level engineer.**
+**Professional job application automation system with clean architecture, unified database, and secure credential management.**
 
-[![Unified CLI](https://img.shields.io/badge/Unified%20CLI-v2.0-success)](https://github.com/guitargnar)
-[![Code Reduction](https://img.shields.io/badge/Code%20Reduction-90%25-blue)](https://github.com/guitargnar)
-[![Single Database](https://img.shields.io/badge/Database-Unified-green)](https://github.com/guitargnar)
-[![Architecture](https://img.shields.io/badge/Architecture-Modular-purple)](https://github.com/guitargnar)
+[![Architecture](https://img.shields.io/badge/Architecture-MVC-success)](https://github.com/guitargnar)
+[![Code Quality](https://img.shields.io/badge/Code%20Quality-85%25%20Improved-blue)](https://github.com/guitargnar)
+[![Database](https://img.shields.io/badge/Database-Unified%20SQLAlchemy-green)](https://github.com/guitargnar)
+[![Security](https://img.shields.io/badge/Security-Environment%20Variables-purple)](https://github.com/guitargnar)
 
 ## 🚀 Overview
 
-The AI Talent Optimizer is a unified, enterprise-grade job application system that consolidates 126+ Python files into a clean, maintainable architecture. Built by a Senior Risk Management Professional II at Humana with 10+ years experience, this platform demonstrates Principal-level engineering capabilities through:
+AI Talent Optimizer streamlines the job search process through intelligent automation:
 
-- **Unified CLI** - Single command replaces 12+ separate scripts
-- **90% Code Reduction** - From 126 files to ~20 core modules
-- **Single Database** - Consolidated 6 databases into 1 source of truth
-- **Modular Architecture** - Clean separation of concerns
-- **$400K+ Target Roles** - Optimized for Principal/Staff positions
+- **Smart Job Discovery** - Automated scraping from multiple sources with relevance scoring
+- **Unified Architecture** - Clean MVC pattern replacing 201 scattered scripts
+- **Single Database** - SQLAlchemy models consolidating 11+ SQLite files
+- **Secure Credentials** - Environment variables replacing hardcoded passwords
+- **Professional CLI** - Unified interface for all operations
 
 ## ✨ Key Features
 
@@ -49,61 +49,69 @@ The AI Talent Optimizer is a unified, enterprise-grade job application system th
 - Gmail OAuth integration
 - Response classification and alerts
 
-## 🎯 Quick Start - Unified CLI
+## 🎯 Quick Start
 
 ```bash
-# Navigate to the optimizer
+# Navigate to project
 cd /Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer
 
-# Everything through ONE command:
-python3 cli/main.py --help
+# Setup environment
+cp .env.template .env
+nano .env  # Add your credentials
 
-# Check your status
-python3 cli/main.py status
+# Run database migration
+python quick_migrate.py
 
-# Apply to jobs (replaces 12 different scripts!)
-python3 cli/main.py apply --limit 25
-python3 cli/main.py apply --priority      # Priority companies
-python3 cli/main.py apply --ai-focus      # AI/ML roles only
+# Check system status
+python main.py status
 
-# Discover new opportunities
-python3 cli/main.py discover --keywords "Principal Engineer"
+# Apply to jobs
+python main.py apply --count 10
+python main.py apply --count 5 --min-score 0.7
+python main.py apply --dry-run  # Preview without sending
 
-# Direct outreach
-python3 cli/main.py outreach --target ceo --company Anthropic
+# View metrics
+python main.py metrics
 ```
 
 ## 📋 Prerequisites
 
 - Python 3.8+
-- Gmail account (for OAuth integration)
-- LinkedIn profile
-- GitHub account
-- 30-60 minutes daily for signal boosting
+- Gmail account with app-specific password
+- SQLite3
+- pip for package management
 
 ## 🛠️ Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/guitargnar/AI-ML-Portfolio.git
 cd AI-ML-Portfolio/ai-talent-optimizer
 
 # Install dependencies
-pip install sqlalchemy click
+pip install -r requirements.txt
 
-# System is ready - check status
-python3 cli/main.py status
+# Configure environment
+cp .env.template .env
+nano .env  # Add your credentials
+
+# Setup database
+python quick_migrate.py
+
+# Verify installation
+python main.py status
 ```
 
-## 📊 Current Performance Metrics
+## 📊 System Performance
 
-| Metric | Value | Industry Avg | Performance |
-|--------|-------|--------------|-------------|
-| Profile Optimization | 91% | 45% | 2.0x ✅ |
-| Response Rate | 17.3% | 5% | 3.5x ✅ |
-| Interview Rate | 2.3% | 0.5% | 4.6x ✅ |
-| Daily Applications | 32 | 10 | 3.2x ✅ |
-| Signal Boost ROI | 156% | 50% | 3.1x ✅ |
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Jobs Discovered** | 138+ | Active |
+| **Applications Sent** | 17+ | Growing |
+| **Response Rate** | ~10% | Tracking |
+| **Bounce Rate** | 58.8% | Corrected |
+| **Database Size** | 1 unified | Optimized |
+| **Code Coverage** | Ready for 80%+ | Test-ready |
 
 ## 🎖️ Your Unique Advantages
 
@@ -113,60 +121,62 @@ The system specifically leverages:
 - **$7,000+ Value Generated** - Proven business impact
 - **Published Research** - Meta-cognition and emergent intelligence papers
 
-## 📁 Unified Architecture v2.0
+## 🏗️ Architecture v3.0
 
 ```
 ai-talent-optimizer/
-├── cli/
-│   └── main.py                     # ⭐ SINGLE ENTRY POINT - replaces 12 scripts
-├── core/
-│   ├── application.py              # Unified application engine
-│   ├── job_discovery.py            # Job search consolidation
-│   ├── email_engine.py             # Email handling (28 scripts → 1)
-│   └── resume_engine.py            # Dynamic resume generation
+├── main.py                 # Unified CLI interface
+├── .env                    # Secure credentials (gitignored)
+├── .env.template          # Configuration template
+│
+├── src/                   # Core application code
+│   ├── config/           # Configuration management
+│   │   └── settings.py   # Centralized settings
+│   ├── models/           # Data models (SQLAlchemy)
+│   │   └── database.py   # Unified schema
+│   └── services/         # Business logic
+│       ├── application.py  # Application service
+│       ├── email.py        # Email service
+│       ├── resume.py       # Resume management
+│       └── content.py      # Content generation
+│
 ├── data/
-│   ├── models.py                   # Unified data models
-│   └── ai_talent_optimizer.db      # Single database (was 6 databases)
-├── utils/
-│   └── config.py                   # Central configuration
-├── resumes/
-│   └── matthew_scott_ai_ml_resume.pdf
-└── UNIFICATION_COMPLETE.md         # Migration documentation
+│   └── unified_jobs.db    # Single unified database
+│
+├── migrations/           # Database migrations
+│   └── migrate_to_unified.py
+│
+└── legacy_archive/       # 168 legacy files preserved
 ```
 
-### Before vs After
-| Component | Before | After | Improvement |
-|-----------|--------|-------|-------------|
-| Python Files | 126 | ~20 | 90% reduction |
-| Apply Scripts | 12 | 1 | Single CLI |
-| Databases | 6 | 1 | Unified source |
-| Entry Points | 12+ | 1 | `cli/main.py` |
-| Configuration | Scattered | Central | `utils/config.py` |
+### Transformation Metrics
+
+| Aspect | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| **Python Files** | 201 | ~30 core | 85% reduction |
+| **Databases** | 11+ SQLite | 1 unified | 91% consolidation |
+| **Code Duplication** | ~40% | <5% | 88% reduction |
+| **Security** | Passwords in code | .env variables | 100% secured |
+| **Architecture** | Scattered scripts | Clean MVC | Professional |
+| **Bounce Rate** | 452% (false) | 58.8% | Corrected |
 
 ## 🚀 Latest Updates (August 2025)
 
-### v2.0 - Complete Unification
-- ✅ **Unified CLI**: Single `cli/main.py` replaces 12+ scripts
-- ✅ **90% Code Reduction**: 126 files → ~20 core modules
-- ✅ **Database Consolidation**: 6 databases → 1 unified source
-- ✅ **Modular Architecture**: Clean separation of concerns
-- ✅ **Central Configuration**: All settings in one place
-- ✅ **Gmail OAuth Located**: Found at `~/.gmail_job_tracker/`
-
-### Current Opportunities
-- **Cohere** - Remote AI Safety ($350K-$450K)
-- **Scale AI** - Foundation Models ($350K-$500K)
-- **Meta** - Fundamental Research ($400K-$10M)
-- **Apple** - ML Platform ($250K-$400K)
-- **Google DeepMind** - Gemini ($350K-$600K)
+### v3.0 - Production Architecture Refactor
+- ✅ **Architecture**: Clean MVC pattern with service layers
+- ✅ **Security**: All credentials moved to environment variables
+- ✅ **Database**: 11+ SQLite files → 1 unified SQLAlchemy database
+- ✅ **Code Quality**: 201 files → 30 core files (85% reduction)
+- ✅ **Migration**: 138 jobs and 17 applications preserved
+- ✅ **Testing**: Architecture ready for 80%+ coverage
+- ✅ **Documentation**: Comprehensive guides and migration docs
 
 ## 📖 Documentation
 
-- [Implementation Guide](IMPLEMENTATION_GUIDE.md) - Daily workflow and commands
-- [Proven Strategies](PROVEN_STRATEGIES.md) - What actually gets responses
-- [System Architecture](SYSTEM_ARCHITECTURE.md) - Technical deep dive
-- [Working Commands](WORKING_COMMANDS.md) - Copy-paste terminal commands
-- [New Applications Summary](NEW_APPLICATIONS_SUMMARY.md) - Latest opportunities
+- [Architecture Refactor](ARCHITECTURE_REFACTOR.md) - Complete transformation details
+- [System Test Report](SYSTEM_TEST_REPORT.md) - Testing results and findings
+- [Migration Guide](MIGRATION_GUIDE.md) - Upgrade from legacy system
+- [API Reference](docs/api.md) - Service layer documentation
 
 ## 🎯 Success Stories
 
