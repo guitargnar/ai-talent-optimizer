@@ -1,0 +1,65 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║              PROJECT ASCENT - RESPONSE ANALYTICS               ║
+║                   2025-08-12 11:01                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+📊 OVERALL PERFORMANCE
+─────────────────────────────────
+Total Outreach:     15
+Total Responses:    0
+Total Interviews:   0
+Response Rate:      0.0%
+Interview Rate:     0.0%
+Avg Response Time:  N/A days
+
+📈 PERFORMANCE BY TIER
+─────────────────────────────────
+TIER_1:
+  Sent: 6 | Responses: 0 | Rate: 0.0%
+  Interviews: 0
+TIER_2:
+  Sent: 6 | Responses: 0 | Rate: 0.0%
+  Interviews: 0
+TIER_3:
+  Sent: 3 | Responses: 0 | Rate: 0.0%
+  Interviews: 0
+
+🏢 TOP RESPONDING COMPANIES
+─────────────────────────────────
+1. Tempus:
+   Response Rate: 0.0% (0/3)
+2. Oscar Health:
+   Response Rate: 0.0% (0/3)
+3. Meta:
+   Response Rate: 0.0% (0/3)
+4. Humana:
+   Response Rate: 0.0% (0/6)
+
+📧 BEST PERFORMING SUBJECTS
+─────────────────────────────────
+1. "Humana Principal Engineer → Bringing $1.2M AI Impa..."
+   Response Rate: 0.0% (0/3)
+2. "Humana Principal Engineer → Bringing $1.2M AI Impa..."
+   Response Rate: 0.0% (0/3)
+3. "Delivering $1.2M in AI-Driven Savings - Let's Scal..."
+   Response Rate: 0.0% (0/6)
+4. "78-Model Orchestration at 99.9% Uptime - Sharing O..."
+   Response Rate: 0.0% (0/3)
+
+🔔 FOLLOW-UP NEEDED (0 targets)
+─────────────────────────────────
+
+💡 OPTIMIZATION INSIGHTS
+─────────────────────────────────
+• TIER_1 has the best response rate at 0.0%
+
+🎯 RECOMMENDED ACTIONS
+─────────────────────────────────
+1. Send follow-ups to non-responders after 7 days
+2. Double down on best-performing message templates
+3. A/B test new subject lines for lower-performing tiers
+4. Schedule interviews ASAP to maintain momentum
+5. Update LinkedIn with any new achievements
+
+Keep pushing! Every response brings you closer to $400K+ 🚀
