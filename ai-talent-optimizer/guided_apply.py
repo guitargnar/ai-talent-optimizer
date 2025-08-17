@@ -103,30 +103,40 @@ class GuidedApplicationWorkflow:
     def generate_email_content(self, job: Job) -> Dict:
         """Generate personalized email content"""
         
-        # Generate cover letter
-        cover_letter = self.content_gen.generate_cover_letter(job)
-        
-        # Generate subject
-        subject_templates = [
-            f"Application for {job.position} - Matthew Scott",
-            f"{job.position} Role - 10 Years Healthcare AI Experience",
-            f"Re: {job.position} at {job.company}",
-            f"Matthew Scott - {job.position} Application",
-            f"Interested in {job.position} Position at {job.company}"
-        ]
-        
-        # Pick best subject
-        if 'AI' in job.position or 'ML' in job.position:
-            subject = subject_templates[1]
-        elif 'Senior' in job.position or 'Staff' in job.position:
-            subject = subject_templates[1]
-        else:
-            subject = subject_templates[0]
-        
-        return {
-            'subject': subject,
-            'body': cover_letter
-        }
+        # Try to use personalized email composer first
+        try:
+            from src.services.email_composer import EmailComposer
+            composer = EmailComposer()
+            email_content = composer.compose_email(job.__dict__)
+            return {
+                'subject': email_content['subject'],
+                'body': email_content['body']
+            }
+        except Exception as e:
+            # Fallback to basic content generator
+            cover_letter = self.content_gen.generate_cover_letter(job)
+            
+            # Generate subject
+            subject_templates = [
+                f"Application for {job.position} - Matthew Scott",
+                f"{job.position} Role - 10 Years Healthcare AI Experience",
+                f"Re: {job.position} at {job.company}",
+                f"Matthew Scott - {job.position} Application",
+                f"Interested in {job.position} Position at {job.company}"
+            ]
+            
+            # Pick best subject
+            if 'AI' in job.position or 'ML' in job.position:
+                subject = subject_templates[1]
+            elif 'Senior' in job.position or 'Staff' in job.position:
+                subject = subject_templates[1]
+            else:
+                subject = subject_templates[0]
+            
+            return {
+                'subject': subject,
+                'body': cover_letter
+            }
     
     def preview_email(self, job: Job, content: Dict) -> None:
         """Display email preview"""
