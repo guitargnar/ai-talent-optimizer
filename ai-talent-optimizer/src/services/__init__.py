@@ -3,7 +3,7 @@ Services package for AI Talent Optimizer.
 """
 
 from .application import ApplicationService
-from .email import EmailService
+from .email_service import EmailService
 from .resume import ResumeService
 from .content import ContentGenerator
 

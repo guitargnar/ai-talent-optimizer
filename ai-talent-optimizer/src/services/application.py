@@ -11,7 +11,7 @@ import time
 
 from ..models.database import DatabaseManager, Job, Application, Response
 from ..config.settings import settings
-from .email import EmailService
+from .email_service import EmailService
 from .resume import ResumeService
 from .content import ContentGenerator
 
