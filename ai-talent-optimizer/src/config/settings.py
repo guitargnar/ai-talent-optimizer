@@ -56,7 +56,7 @@ class ApplicationConfig:
     max_applications_per_day: int = int(os.getenv('MAX_APPLICATIONS_PER_DAY', '20'))
     auto_apply: bool = os.getenv('AUTO_APPLY', 'False').lower() == 'true'
     min_relevance_score: float = float(os.getenv('MIN_RELEVANCE_SCORE', '0.65'))
-    resume_path: str = os.getenv('RESUME_PATH', './resumes/matthew_scott_ai_ml_resume.pdf')
+    resume_path: str = os.getenv('RESUME_PATH', './resumes/matthew_scott_professional_resume.pdf')
     
     # Retry configuration
     max_retries: int = int(os.getenv('MAX_RETRIES', '3'))
