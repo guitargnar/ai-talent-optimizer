@@ -107,15 +107,25 @@ class ApplicationService:
     
     def _apply_via_email(self, job: Job, session) -> Tuple[bool, str]:
         """Apply to job via email."""
+        logger.info(f"Attempting to apply to {job.company} via email: {job.company_email}")
+        
         # Check email configuration
         if not settings.email.is_configured:
+            logger.error("Email not configured in settings")
             return False, "Email not configured"
         
         # Verify email address
         if not job.company_email:
+            logger.warning(f"No company email available for {job.company}")
             return False, "No company email available"
         
+        # Skip job board emails
+        if 'adzuna.com' in job.company_email or 'indeed.com' in job.company_email:
+            logger.warning(f"Skipping job board email: {job.company_email}")
+            return False, "Job board email - need real company email"
+        
         if job.bounce_detected:
+            logger.warning(f"Email {job.company_email} has bounced previously")
             return False, f"Email {job.company_email} has bounced previously"
         
         # Generate application content
@@ -198,8 +208,18 @@ class ApplicationService:
             ).order_by(Job.relevance_score.desc()).limit(count).all()
             
             logger.info(f"Found {len(jobs)} eligible jobs to apply to")
+            logger.info(f"Min score filter: {min_score}")
+            
+            # Log details about each job
+            for idx, job in enumerate(jobs, 1):
+                logger.info(f"Job {idx}: {job.company} - {job.position}")
+                logger.info(f"  Score: {job.relevance_score}, Email: {job.company_email}")
             
             for job in jobs:
+                logger.info(f"\nProcessing: {job.company} - {job.position}")
+                logger.info(f"  Email: {job.company_email}")
+                logger.info(f"  Score: {job.relevance_score}")
+                
                 # Check daily limit
                 if not self._check_daily_limit():
                     logger.info("Daily limit reached, stopping batch")
@@ -210,13 +230,16 @@ class ApplicationService:
                 
                 if success:
                     results['success'] += 1
+                    logger.info(f"✅ Successfully applied to {job.company}")
                 else:
                     results['failed'] += 1
                     results['errors'].append(f"{job.company}: {message}")
+                    logger.warning(f"❌ Failed to apply to {job.company}: {message}")
                 
                 # Rate limiting
                 time.sleep(settings.email.delay_seconds)
             
+            logger.info(f"\nBatch complete: {results['success']} sent, {results['failed']} failed")
             return results
             
         finally:

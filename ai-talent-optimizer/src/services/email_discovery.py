@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 import sqlite3
 import json
 from datetime import datetime
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +19,10 @@ class EmailDiscoveryService:
     
     def __init__(self, db_path: str = "data/unified_jobs.db"):
         self.db_path = db_path
+        
+        # Load company data from JSON
+        self.company_data = self._load_company_data()
+        
         self.common_patterns = [
             "careers@{domain}",
             "jobs@{domain}",
@@ -32,6 +37,42 @@ class EmailDiscoveryService:
             "info@{domain}",
             "contact@{domain}"
         ]
+    
+    def _load_company_data(self) -> Dict:
+        """Load company domains and verified emails from JSON"""
+        json_path = Path(__file__).parent.parent.parent / 'data' / 'company_emails.json'
+        try:
+            with open(json_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Could not load company data: {e}")
+            return {'company_domains': {}, 'verified_emails': {}}
+    
+    def get_company_domain(self, company_name: str) -> Optional[str]:
+        """Get domain for a company from our mapping"""
+        # Direct match
+        if company_name in self.company_data['company_domains']:
+            return self.company_data['company_domains'][company_name]
+        
+        # Case-insensitive match
+        for company, domain in self.company_data['company_domains'].items():
+            if company.lower() == company_name.lower():
+                return domain
+        
+        return None
+    
+    def get_verified_email(self, company_name: str) -> Optional[str]:
+        """Get verified email for a company"""
+        # Direct match
+        if company_name in self.company_data['verified_emails']:
+            return self.company_data['verified_emails'][company_name]
+        
+        # Case-insensitive match
+        for company, email in self.company_data['verified_emails'].items():
+            if company.lower() == company_name.lower():
+                return email
+        
+        return None
         
     def extract_domain_from_url(self, url: str) -> Optional[str]:
         """Extract domain from company website or job URL"""
@@ -49,10 +90,14 @@ class EmailDiscoveryService:
             if domain.startswith('www.'):
                 domain = domain[4:]
                 
-            # Skip job boards
+            # Skip job boards (expanded list)
             job_boards = ['greenhouse.io', 'lever.co', 'workday.com', 'linkedin.com', 
-                         'indeed.com', 'angel.co', 'wellfound.com', 'ziprecruiter.com']
+                         'indeed.com', 'angel.co', 'wellfound.com', 'ziprecruiter.com',
+                         'adzuna.com', 'glassdoor.com', 'monster.com', 'careerbuilder.com',
+                         'dice.com', 'simplyhired.com', 'remotive.com', 'remoteok.com',
+                         'weworkremotely.com']
             if any(board in domain for board in job_boards):
+                logger.debug(f"Skipping job board domain: {domain}")
                 return None
                 
             return domain
@@ -158,20 +203,39 @@ class EmailDiscoveryService:
             logger.info(f"Found {len(jobs)} jobs needing email discovery")
             
             for job_id, company_name, job_url, company_website in jobs:
-                # Try to extract domain
-                domain = None
-                if company_website:
-                    domain = self.extract_domain_from_url(company_website)
-                if not domain and job_url:
-                    # Try to infer from job URL
-                    if 'greenhouse.io' in job_url:
-                        # Extract company from greenhouse URL
-                        match = re.search(r'boards\.greenhouse\.io/([^/]+)', job_url)
-                        if match:
-                            domain = f"{match.group(1)}.com"
+                # First check for verified email
+                verified_email = self.get_verified_email(company_name)
+                if verified_email:
+                    discovered[job_id] = verified_email
+                    cursor.execute("""
+                        UPDATE jobs
+                        SET company_email = ?,
+                            discovered_date = ?
+                        WHERE id = ?
+                    """, (verified_email, datetime.now().isoformat(), job_id))
+                    logger.info(f"Using verified email for {company_name}: {verified_email}")
+                    continue
+                
+                # Try to get domain from our mapping
+                domain = self.get_company_domain(company_name)
+                
+                # If no domain from mapping, try to extract from URL (but skip job boards)
+                if not domain and company_website:
+                    extracted = self.extract_domain_from_url(company_website)
+                    if extracted and 'adzuna' not in extracted:  # Extra check
+                        domain = extracted
+                
+                # Skip if we only have job board URLs
+                if not domain and job_url and 'adzuna.com' in job_url:
+                    logger.debug(f"Skipping {company_name} - only has Adzuna URL")
+                    continue
                     
-                # Generate candidates
-                candidates = self.generate_email_candidates(company_name, domain)
+                # Generate candidates if we have a domain
+                if domain:
+                    candidates = self.generate_email_candidates(company_name, domain)
+                else:
+                    # Try generating from company name as last resort
+                    candidates = self.generate_email_candidates(company_name, None)
                 
                 if candidates:
                     email = candidates[0]  # Use most likely candidate

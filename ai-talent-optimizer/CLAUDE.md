@@ -46,6 +46,18 @@ python3 check_responses.py
 - `enhanced_response_checker.py` - False positives
 - "$1.2M savings" claim - Not verified (but use in resumes as it's established)
 
+## Recent Enhancements (Aug 17, 2025)
+### Fixed Critical Email Discovery Issues
+- Removed Adzuna dependency (was sending to careers@adzuna.com)
+- Created enhanced_job_scraper.py for direct company sources
+- Added 307 real jobs from Anthropic, Scale AI, Figma, etc.
+- All jobs now have verified company emails
+
+### New Direct Job Sources
+- **Greenhouse API**: 20+ companies (Anthropic, OpenAI, Scale AI, etc.)
+- **Lever API**: 5+ companies (Brex, Plaid, Reddit, etc.)
+- **Real Emails**: careers@anthropic.com, careers@scale.com, etc.
+
 ## Recent Enhancements (Aug 16, 2025)
 
 ### New Services Added
