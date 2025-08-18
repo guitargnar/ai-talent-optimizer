@@ -50,43 +50,43 @@ class EmailComposer:
             
             "Hi {first_name},\n\nI've been following {company}'s journey since {milestone}, and your approach to {approach} aligns perfectly with the systems I've been building.",
             
-            "Hi {first_name},\n\nYour recent {announcement} caught my attention - we implemented something remarkably similar at Humana that saved $1.2M annually.",
+            "Hi {first_name},\n\nYour recent {announcement} caught my attention - we implemented something remarkably similar that saved $1.2M annually.",
             
-            "Hi {first_name},\n\nI'm writing from Louisville where I've spent the last decade transforming healthcare operations at Humana. {company}'s work in {field} represents exactly the kind of challenge I'm passionate about.",
+            "Hi {first_name},\n\nI'm writing from Louisville where I've spent the last decade transforming healthcare operations. {company}'s work in {field} represents exactly the kind of challenge I'm passionate about.",
             
             "Hi {first_name},\n\nI discovered {company} while researching {topic}, and I'm genuinely impressed by your approach. It mirrors the philosophy I've applied building AI systems at scale.",
             
-            "Hi {first_name},\n\nThe {position} role at {company} feels like it was written for my exact background - 10 years at Humana, deep healthcare domain knowledge, and a passion for {focus_area}.",
+            "Hi {first_name},\n\nThe {position} role at {company} feels like it was written for my exact background - 10 years in healthcare tech, deep domain knowledge, and a passion for {focus_area}.",
             
-            "Hi {first_name},\n\nI'm reaching out because {company}'s commitment to {value} resonates deeply with me. At Humana, I've built my career around similar principles.",
+            "Hi {first_name},\n\nI'm reaching out because {company}'s commitment to {value} resonates deeply with me. I've built my career around similar principles in Fortune 50 environments.",
             
-            "Hi {first_name},\n\nWhile researching companies actually making a difference in {industry}, {company} stood out. Your approach to {specific_approach} is exactly what drew me to technology.",
+            "Hi {first_name},\n\nWhile researching companies actually making a difference in {industry}, {company} stood out. Your innovative approach is exactly what drew me to this field.",
             
-            "Hi {first_name},\n\nI've been quietly building AI systems at Humana for a decade, but {company}'s recent {development} made me realize it's time to bring this experience to a more innovative environment."
+            "Hi {first_name},\n\nI've been quietly building AI systems for a decade, but {company}'s recent {development} made me realize it's time to bring this experience to a more innovative environment."
         ]
     
     def _load_connection_templates(self) -> List[str]:
         """Load connection/relevance paragraphs"""
         return [
-            "At Humana, I architected a privacy-first AI platform managing 86,279+ production files with 117 Python modules. What excites me about {company} is the opportunity to apply this enterprise-scale experience to {company_challenge}.",
+            "I architected a privacy-first AI platform managing enterprise-scale systems across multiple teams. What excites me about {company} is the opportunity to apply this proven experience to help scale your operations.",
             
-            "My work orchestrating 7 specialized LLMs through our Mirador system at Humana directly relates to {company}'s needs in {area}. The difference is you're pushing boundaries I can only dream about in a Fortune 50 environment.",
+            "My work orchestrating 7 specialized LLMs through the Mirador system directly relates to {company}'s needs in {area}. The difference is you're pushing boundaries I can only dream about in a Fortune 50 environment.",
             
-            "I've spent years ensuring 100% CMS/Medicare compliance while innovating - a balance I know {company} values as you scale {product}. This unique perspective could help navigate {challenge}.",
+            "I've spent years ensuring 100% regulatory compliance while innovating - a balance I know {company} values as you scale {product}. This unique perspective could help navigate similar challenges.",
             
-            "The $1.2M in savings I delivered through automation at Humana came from deeply understanding both the technical and human sides of healthcare. {company}'s human-centered approach to {area} speaks to this same philosophy.",
+            "The $1.2M in savings I delivered through automation came from deeply understanding both the technical and human sides of complex systems. {company}'s human-centered approach to {area} speaks to this same philosophy.",
             
             "What sets me apart isn't just the technical skills - it's 10 years of building AI in one of the most regulated industries. For {company}'s work in {field}, this experience navigating compliance while innovating is invaluable.",
             
-            "I built our AI systems at Humana from scratch, growing from manual processes to automated intelligence. {company} is at a similar inflection point with {product}, and I know exactly how to scale it.",
+            "I built AI systems from scratch, growing from manual processes to automated intelligence. {company} is at a similar inflection point with {product}, and I know exactly how to scale it.",
             
-            "My experience spans both enterprise (Humana) and startup (Mightily) environments. I understand the speed {company} needs while maintaining the reliability your {stakeholders} expect.",
+            "My experience spans both enterprise and startup (Mightily) environments. I understand the speed {company} needs while maintaining the reliability your customers expect.",
             
-            "Beyond Humana, I've built passion projects like FretForge (guitar learning platform) and a phishing detector achieving 95% accuracy. This shows the creativity and initiative I'd bring to {company}.",
+            "Beyond my day job, I've built passion projects like FretForge (guitar learning platform) and security tools achieving 95% accuracy. This shows the creativity and initiative I'd bring to {company}.",
             
-            "Having managed 1,000+ deployments with zero critical defects at Humana, I understand the reliability {company} needs as you scale {service} to {target_scale}.",
+            "Having managed 1,000+ deployments with zero critical defects, I understand the reliability {company} needs as you scale {service} to millions of users.",
             
-            "The healthcare domain expertise from Humana combined with my personal AI projects (check my GitHub) gives me a unique lens for {company}'s challenges in {area}."
+            "The healthcare domain expertise combined with my personal AI projects (check my GitHub) gives me a unique lens for {company}'s challenges in {area}."
         ]
     
     def _load_value_templates(self) -> List[str]:
@@ -110,13 +110,13 @@ class EmailComposer:
             
             "I see {company} facing challenges I've solved:\n• Privacy-first architecture at scale\n• AI adoption in traditional industries\n• Balancing innovation with reliability",
             
-            "My experience directly addresses {company}'s needs:\n• {specific_need_1} (did this at Humana)\n• {specific_need_2} (built this in Mirador)\n• {specific_need_3} (proven in production)"
+            "My experience directly addresses {company}'s needs:\n• Scalable AI architecture (did this at Humana)\n• Healthcare compliance (built this in Mirador)\n• Production reliability (proven in production)"
         ]
     
     def _load_closing_templates(self) -> List[str]:
         """Load closing paragraphs"""
         return [
-            "I've attached my resume highlighting relevant experience. Would love to discuss how my Humana experience could accelerate {company}'s mission.\n\nWarmly,\nMatthew",
+            "I've attached my resume highlighting relevant experience. Would love to discuss how my background could accelerate {company}'s mission.\n\nWarmly,\nMatthew",
             
             "The attached resume provides details, but I'd prefer to show you what I can build. Happy to share my GitHub projects or do a technical deep-dive.\n\nBest,\nMatthew",
             

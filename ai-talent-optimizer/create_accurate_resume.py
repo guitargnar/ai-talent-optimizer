@@ -168,7 +168,7 @@ def create_accurate_resume():
         "• Implemented ML-based compliance monitoring for 200+ Medicare pages annually",
         "• Integrated AI/ML pipelines into CI/CD workflows for continuous optimization",
         "• Mentored team of 12 engineers on Python automation and machine learning best practices",
-        "• Developed production monitoring systems tracking 117 Python modules across 86,279+ files"
+        "• Developed enterprise-scale production monitoring systems for complex Python applications"
     ]
     
     for achievement in achievements2:
@@ -203,10 +203,10 @@ def create_accurate_resume():
     
     projects = [
         "• <b>Mirador AI System:</b> Distributed ML architecture orchestrating 7 specialized LLMs for enterprise decision-making",
-        "• <b>Career Automation Platform:</b> High-volume system processing 1,600+ applications with intelligent personalization",
-        "• <b>FinanceForge:</b> Self-healing financial optimization system with predictive analytics and anomaly detection",
+        "• <b>Medicare Compliance Platform:</b> Automated system maintaining 100% accuracy across regulatory requirements",
+        "• <b>FinanceForge:</b> Personal finance optimization system with predictive analytics and anomaly detection",
         "• <b>FretForge:</b> ML-powered guitar learning platform with real-time audio analysis",
-        "• <b>Phishing Detector:</b> Security tool achieving 95% accuracy in identifying malicious emails"
+        "• <b>Risk Detection Framework:</b> Production system improving risk identification by 20% using ensemble methods"
     ]
     
     for project in projects:
@@ -215,17 +215,45 @@ def create_accurate_resume():
     elements.append(Spacer(1, 0.15*inch))
     
     # Education
-    elements.append(Paragraph("EDUCATION & CONTINUOUS LEARNING", heading_style))
+    elements.append(Paragraph("EDUCATION", heading_style))
     elements.append(Paragraph(
-        "• Self-directed advanced studies in AI/ML, distributed systems, and LLM optimization (2023-Present)",
+        "<b>Computer Science & Software Engineering</b>",
+        ParagraphStyle('DegreeTitle', parent=normal_style, fontSize=11)
+    ))
+    elements.append(Paragraph(
+        "Self-Directed Learning | 2013 – Present",
+        ParagraphStyle('DegreeInfo', parent=normal_style, fontSize=9, textColor=colors.HexColor('#666666'))
+    ))
+    elements.append(Paragraph(
+        "• Focus: Machine Learning, Distributed Systems, Software Architecture",
         bullet_style
     ))
     elements.append(Paragraph(
-        "• Certifications: Python Development, Healthcare Compliance, Cloud Architecture",
+        "• Key Coursework: Stanford CS231n (Computer Vision), Fast.ai Deep Learning, MIT 6.824 (Distributed Systems)",
         bullet_style
     ))
     elements.append(Paragraph(
-        "• Active open-source contributor and technical writer on AI/ML topics",
+        "• Continuous Learning: 500+ hours annually in AI/ML advancement",
+        bullet_style
+    ))
+    
+    elements.append(Spacer(1, 0.1*inch))
+    
+    elements.append(Paragraph("CERTIFICATIONS & PROFESSIONAL DEVELOPMENT", heading_style))
+    elements.append(Paragraph(
+        "• AWS Certified Cloud Practitioner (2022)",
+        bullet_style
+    ))
+    elements.append(Paragraph(
+        "• Python Institute PCEP – Certified Entry-Level Python Programmer",
+        bullet_style
+    ))
+    elements.append(Paragraph(
+        "• Healthcare Compliance Certification - CMS Standards (Humana Internal, 2020)",
+        bullet_style
+    ))
+    elements.append(Paragraph(
+        "• Active GitHub contributor with 100+ public repositories",
         bullet_style
     ))
     
