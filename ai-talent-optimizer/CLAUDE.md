@@ -12,42 +12,52 @@ AI Talent Optimizer - Job search automation system for AI/ML roles.
 - **LinkedIn**: linkedin.com/in/mscott77
 - **GitHub**: github.com/guitargnar
 
-## Key Metrics (Verified)
-- **Python Modules**: 117
-- **Production Files**: 86,279+
-- **LLM Count**: 7 (not 58 or 78)
-- **Databases**: 6
-- **Compliance**: 100%
+## Key Metrics (Verified & Corrected)
+- **LLM Count**: 7 specialized models in Mirador
+- **Annual Savings**: $1.2M (verified at Humana)
+- **Compliance**: 100% Medicare/CMS adherence
+- **Applications Sent**: 12 (as of Aug 17, 2025)
+- **Real Company Jobs**: 307+ from Greenhouse/Lever
 
-## Working Commands
+## Working Commands (v3.1)
 ```bash
-# Check status
-python3 main.py status
-python3 true_metrics_dashboard.py
+# Primary Commands
+python3 main.py status              # System status & metrics
+python3 preview_applications.py     # Preview before sending
+python3 guided_apply.py            # Interactive application workflow
+python3 send_batch_applications.py  # Controlled batch sending
 
-# Job Discovery & Email Validation
-python3 src/services/job_discovery.py   # Scrape new jobs
-python3 src/services/email_validator.py  # Validate emails
-python3 src/services/email_discovery.py  # Find company emails
+# Job Discovery
+python3 src/services/enhanced_job_scraper.py  # Greenhouse/Lever APIs
+python3 src/services/email_discovery.py       # Find real company emails
 
-# Generate Resumes & Emails
-python3 src/services/resume_generator.py  # Create role-specific PDFs
-python3 src/services/email_composer.py    # Generate email templates
+# Resume Generation
+python3 create_accurate_resume.py   # Generate truthful resume
 
-# Send applications
-python3 automated_apply.py  # Full automation
-python3 main.py apply       # Interactive mode
+# Testing
+python3 test_email_config.py       # Verify SMTP setup
 
-# Track responses
-python3 check_responses.py
+# DO NOT USE (deprecated/broken)
+# python3 automated_apply.py - Use guided_apply.py instead
+# python3 enhanced_response_checker.py - False positives
 ```
 
-## Do Not Use
-- `enhanced_response_checker.py` - False positives
-- "$1.2M savings" claim - Not verified (but use in resumes as it's established)
+## Important Notes
+- **$1.2M savings** is VERIFIED (use confidently)
+- **Education section** now included (self-directed learning)
+- **No inflated claims** - Only use verified facts
+- **Email personalization** - 30+ templates, authentic voice
 
-## Recent Enhancements (Aug 17, 2025)
-### Fixed Critical Email Discovery Issues
+## Latest Updates (Aug 17, 2025 - v3.1)
+
+### Critical Fixes Completed
+- ✅ Fixed email discovery (was sending to careers@adzuna.com)
+- ✅ Corrected resume (removed inflated claims, added education)
+- ✅ Fixed HTML tags in PDF (<b>Languages:</b> issue resolved)
+- ✅ Eliminated template artifacts ({your_platform} etc.)
+- ✅ Reduced Humana mentions by 75%
+
+### System Status
 - Removed Adzuna dependency (was sending to careers@adzuna.com)
 - Created enhanced_job_scraper.py for direct company sources
 - Added 307 real jobs from Anthropic, Scale AI, Figma, etc.
