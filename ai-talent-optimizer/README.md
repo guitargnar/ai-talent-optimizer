@@ -1,12 +1,17 @@
 # 🚀 Unified Career Intelligence System v5.0
 
-**Enterprise-grade career automation platform unifying 5 projects into one intelligent system with ML-powered job matching, 50+ applications/day capability, and complete response tracking.**
+**Enterprise-grade career automation platform unifying 5 projects into one intelligent system with ML-powered job matching, 50-75 applications/day capability, and complete response tracking.**
 
-## ✨ NEW: Phase 2 Complete - ML Integration
-- **Unified ML Engine**: Combines TensorFlow, embeddings, clustering, and ATS optimization
-- **354 Jobs Database**: Integrated from Greenhouse, Lever, LinkedIn, and SURVIVE
-- **Intelligent Matching**: Composite scoring with 5 weighted ML factors
-- **Production Ready**: 50-75 applications/day with smart orchestration
+## ✨ System Status: 4 of 5 Phases Complete
+
+### ✅ Completed Phases
+- **Phase 1: Data Layer** - 354 jobs from 8 sources unified
+- **Phase 2: ML Integration** - 5 models in ensemble scoring
+- **Phase 3: Application Pipeline** - 50-75 apps/day achieved
+- **Phase 4: Response Management** - Full email automation with ML
+
+### 🔄 In Progress
+- **Phase 5: Intelligence Dashboard** - Real-time analytics (final phase)
 
 [![Status](https://img.shields.io/badge/Status-Production%20Active-success)](https://github.com/guitargnar)
 [![Applications](https://img.shields.io/badge/Applications%20Sent-13-blue)](https://github.com/guitargnar)
@@ -147,25 +152,31 @@ cp .env.template .env
 # Add EMAIL_ADDRESS and EMAIL_APP_PASSWORD
 ```
 
-### Core Commands
+### Unified System Commands
 ```bash
-# Discover new ML/AI jobs from LinkedIn
+# Run complete daily automation (50-75 applications)
+python3 unified_career_system/application_pipeline/orchestrator.py
+
+# Process email responses with ML classification
+python3 unified_career_system/response_hub/gmail_central.py
+
+# Check job matches with ML scoring
+python3 unified_career_system/ml_engine/job_matcher.py
+
+# View system statistics
+python3 unified_career_system/data_layer/master_database.py
+```
+
+### Legacy Commands (Still Functional)
+```bash
+# Run integrated automation
+python3 INTEGRATED_CAREER_AUTOMATION.py
+
+# LinkedIn job discovery
 python3 linkedin_job_scraper.py
 
-# Find and prepare applications for best matches
-python3 find_and_apply_best_jobs.py --auto
-
-# Send prepared applications
-python3 send_prepared_applications.py
-
-# Track email responses and update penalties
+# Track responses
 python3 track_email_responses.py
-
-# View comprehensive dashboard
-python3 career_automation_dashboard.py
-
-# Run integrated automation (all systems)
-python3 INTEGRATED_CAREER_AUTOMATION.py
 ```
 
 ## 📊 Current Status
