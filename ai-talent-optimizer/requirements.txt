@@ -1,7 +1,7 @@
 # AI Talent Optimizer Requirements
+# Requires Python 3.9 or higher
 
 # Core Dependencies
-python>=3.9
 pyyaml>=6.0
 requests>=2.28.0
 
@@ -25,7 +25,7 @@ beautifulsoup4>=4.11.0
 selenium>=4.8.0
 
 # API Clients
-python-linkedin-api>=2.0.0
+# python-linkedin-api - not available in PyPI
 PyGithub>=1.57
 
 # Visualization
@@ -54,7 +54,7 @@ uvicorn>=0.19.0
 
 # Optional: Database (for tracking)
 sqlalchemy>=1.4.44
-sqlite3
+# sqlite3 is built-in to Python
 
 # Optional: Background Jobs
 celery>=5.2.0
