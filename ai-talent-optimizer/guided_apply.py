@@ -55,7 +55,16 @@ class GuidedApplicationWorkflow:
         session = self.db.get_session()
         
         try:
-            job = session.query(Job).filter(
+            # Check blocked companies
+            blocked = []
+            try:
+                import json
+                with open('config/blocked_companies.json', 'r') as f:
+                    blocked = json.load(f).get('blocked_companies', [])
+            except:
+                pass
+            
+            query = session.query(Job).filter(
                 Job.applied == False,
                 Job.relevance_score >= 0.65,
                 Job.company_email != None,
@@ -63,7 +72,13 @@ class GuidedApplicationWorkflow:
                 ~Job.company_email.contains('adzuna'),
                 ~Job.company_email.contains('indeed'),
                 Job.source.in_(['Greenhouse', 'Lever'])
-            ).order_by(
+            )
+            
+            # Apply blocked companies filter if any exist
+            if blocked:
+                query = query.filter(~Job.company.in_(blocked))
+            
+            job = query.order_by(
                 Job.relevance_score.desc()
             ).first()
             
@@ -103,11 +118,11 @@ class GuidedApplicationWorkflow:
     def generate_email_content(self, job: Job) -> Dict:
         """Generate personalized email content"""
         
-        # Try to use personalized email composer first
+        # Try premium composer first for better quality
         try:
-            from src.services.email_composer import EmailComposer
-            composer = EmailComposer()
-            email_content = composer.compose_email(job.__dict__)
+            from src.services.premium_email_composer import upgrade_email_quality
+            email_content = upgrade_email_quality(job.__dict__)
+            print(f"   📊 Email Quality Score: {email_content.get('quality_score', 0):.0%}")
             return {
                 'subject': email_content['subject'],
                 'body': email_content['body']

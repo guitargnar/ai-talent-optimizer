@@ -1,0 +1,16 @@
+{
+  "job": {
+    "job_id": "gh_scale_4520320005",
+    "company": "Scale AI",
+    "position": "AI Infrastructure Engineer, Model Serving Platform",
+    "location": "San Francisco, CA; New York, NY",
+    "remote_option": null,
+    "salary_range": null,
+    "url": "https://job-boards.greenhouse.io/scaleai/jobs/4520320005",
+    "company_email": "careers@scale.com"
+  },
+  "cover_letter": "Dear Hiring Team at Scale AI,\n\nI am writing to express my strong interest in the AI Infrastructure Engineer, Model Serving Platform position. With my proven track record of building production ML systems that have generated over $1.2M in value, I am excited about the opportunity to contribute to Scale AI's mission.\n\nI'm particularly excited about Scale AI's mission to accelerate AI development through better data. Your work on RLHF and model evaluation aligns perfectly with my experience building production ML systems that have processed millions of data points with 99.3% accuracy.\n\nMy recent technical accomplishments include:\n\n\u2022 **Job Intelligence Platform**: Built an end-to-end ML platform with TensorFlow 2.20, achieving 92% salary prediction accuracy using advanced NLP and clustering algorithms processing 1000+ jobs daily.\n\n\u2022 **Mirador AI Platform**: Architected a 79+ model orchestration system achieving 99.3% success rate, implementing RAG pipelines, vector databases, and multi-modal AI capabilities serving 250K+ requests monthly.\n\n\u2022 **Enterprise Impact**: During my 10 years at Humana, I built ML systems that automated Medicare compliance workflows, saving $1.2M annually while maintaining 100% CMS adherence.\n\nMy technical expertise includes:\n- Deep proficiency in TensorFlow, PyTorch, and modern ML frameworks\n- Production deployment of LLMs, embeddings, and neural architectures\n- Strong foundation in MLOps, distributed systems, and scalable infrastructure\n- Proven ability to translate ML research into measurable business value\n\nI would welcome the opportunity to discuss how my experience can contribute to Scale AI's continued success in the AI Infrastructure Engineer, Model Serving Platform role.\n\nBest regards,\nMatthew Scott\nmatthewdscott7@gmail.com\n(502) 345-0525\nlinkedin.com/in/mscott77\ngithub.com/guitargnar\n",
+  "resume_path": "/Users/matthewscott/Desktop/MATTHEW_SCOTT_AI_ML_ENGINEER_2025.pdf",
+  "subject": "Application for AI Infrastructure Engineer, Model Serving Platform - Matthew Scott",
+  "to_email": "careers@scale.com"
+}

@@ -1,0 +1,8 @@
+{
+  "blocked_companies": [
+    "Anthropic"
+  ],
+  "reason": "Sent 24 applications on 2025-08-17 and 2025-08-18. Need cooldown period.",
+  "blocked_until": "2025-09-01",
+  "notes": "Resume sending after 2 weeks with better quality emails"
+}

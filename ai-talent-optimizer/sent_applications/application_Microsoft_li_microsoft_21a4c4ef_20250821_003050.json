@@ -1,0 +1,26 @@
+{
+  "job": {
+    "job_id": "li_microsoft_21a4c4ef",
+    "company": "Microsoft",
+    "position": "Senior ML Engineer - Azure AI",
+    "location": "Redmond, WA",
+    "remote_option": "Remote",
+    "hours_ago": 12,
+    "url": "https://careers.microsoft.com/azure-ai-ml",
+    "description": "Develop Azure AI services and infrastructure",
+    "salary_range": "$180,000 - $260,000",
+    "can_apply": true,
+    "apply_status": "No previous applications"
+  },
+  "cover_letter": "Dear Hiring Team at Microsoft,\n\nI am writing to express my strong interest in the Senior ML Engineer - Azure AI position. Your company's innovative work in AI/ML has caught my attention, and I'm excited about the opportunity to contribute to your team's success.\n\nSince my last application, I've achieved significant milestones:\n\n\u2022 **Enhanced ML Platform**: Expanded my Job Intelligence Platform to process 1000+ jobs daily with 92% accuracy, demonstrating production-ready ML engineering skills directly applicable to Microsoft's scale.\n\n\u2022 **Advanced Integration**: Built a comprehensive career automation system integrating multiple data sources, OAuth authentication, and intelligent matching algorithms - skills valuable for Microsoft's complex systems.\n\n\u2022 **Real-World Impact**: My work at Humana continues to save $1.2M annually through ML-driven automation, showing my ability to deliver measurable business value.\n\nMy technical expertise aligns perfectly with the Senior ML Engineer - Azure AI role:\n- Deep proficiency in TensorFlow, PyTorch, and modern ML frameworks\n- Production deployment of LLMs and neural architectures\n- Proven ability to scale ML systems handling millions of data points\n\nI would welcome the opportunity to discuss how my experience and recent accomplishments can contribute to Microsoft's continued innovation.\n\nBest regards,\nMatthew Scott\nmatthewdscott7@gmail.com\n(502) 345-0525\nlinkedin.com/in/mscott77\ngithub.com/guitargnar\n",
+  "resume_path": "/Users/matthewscott/Desktop/MATTHEW_SCOTT_AI_ML_ENGINEER_2025.pdf",
+  "subject": "Application for Senior ML Engineer - Azure AI - Matthew Scott",
+  "to_email": "careers@microsoft.com",
+  "application_history": {
+    "total_applications": 0,
+    "last_application": null,
+    "responses": 0,
+    "rejections": 0,
+    "positions": []
+  }
+}

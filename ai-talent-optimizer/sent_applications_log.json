@@ -1,0 +1,106 @@
+[
+  {
+    "timestamp": "2025-08-21T00:16:48.572263",
+    "company": "Anthropic",
+    "position": "Machine Learning Systems Engineer, Research Tools",
+    "email": "careers@anthropic.com",
+    "status": "sent",
+    "job_id": "gh_anthropic_4579550008"
+  },
+  {
+    "timestamp": "2025-08-21T00:17:57.641099",
+    "company": "Anthropic",
+    "position": "Machine Learning Systems Engineer, Research Tools",
+    "email": "careers@anthropic.com",
+    "status": "sent",
+    "job_id": "gh_anthropic_4579550008"
+  },
+  {
+    "timestamp": "2025-08-21T00:18:03.699768",
+    "company": "Anthropic",
+    "position": "Machine Learning Engineer, Safeguards",
+    "email": "careers@anthropic.com",
+    "status": "sent",
+    "job_id": "gh_anthropic_4461625008"
+  },
+  {
+    "timestamp": "2025-08-21T00:18:09.745622",
+    "company": "Anthropic",
+    "position": "Machine Learning Engineering Manager, Safeguards",
+    "email": "careers@anthropic.com",
+    "status": "sent",
+    "job_id": "gh_anthropic_4501730008"
+  },
+  {
+    "timestamp": "2025-08-21T00:18:15.735251",
+    "company": "Anthropic",
+    "position": "Machine Learning Systems Engineer, Research Tools",
+    "email": "careers@anthropic.com",
+    "status": "sent",
+    "job_id": "gh_anthropic_4579550008"
+  },
+  {
+    "timestamp": "2025-08-21T00:19:58.467496",
+    "company": "Scale AI",
+    "position": "Applied AI Engineering Manager, Enterprise",
+    "email": "careers@scale.com",
+    "status": "sent",
+    "job_id": "gh_scale_4591411005"
+  },
+  {
+    "timestamp": "2025-08-21T00:20:04.607663",
+    "company": "Scale AI",
+    "position": "Applied AI Engineer, Enterprise GenAI",
+    "email": "careers@scale.com",
+    "status": "sent",
+    "job_id": "gh_scale_4514173005"
+  },
+  {
+    "timestamp": "2025-08-21T00:20:10.638725",
+    "company": "Scale AI",
+    "position": "AI Strategy Consultant, Frontier Tech",
+    "email": "careers@scale.com",
+    "status": "sent",
+    "job_id": "gh_scale_4472223005"
+  },
+  {
+    "timestamp": "2025-08-21T00:20:16.919737",
+    "company": "Scale AI",
+    "position": "AI Learning Experience Lead",
+    "email": "careers@scale.com",
+    "status": "sent",
+    "job_id": "gh_scale_4588237005"
+  },
+  {
+    "timestamp": "2025-08-21T00:20:22.924037",
+    "company": "Scale AI",
+    "position": "AI Infrastructure Engineer, Model Serving Platform",
+    "email": "careers@scale.com",
+    "status": "sent",
+    "job_id": "gh_scale_4520320005"
+  },
+  {
+    "timestamp": "2025-08-21T04:09:22.463307",
+    "company": "Apple",
+    "position": "Machine Learning Engineer - LLM Specialist",
+    "email": "careers@apple.com",
+    "status": "sent",
+    "job_id": "li_apple_88f9007f"
+  },
+  {
+    "timestamp": "2025-08-21T04:09:29.254662",
+    "company": "Microsoft",
+    "position": "Senior ML Engineer - Azure AI",
+    "email": "careers@microsoft.com",
+    "status": "sent",
+    "job_id": "li_microsoft_21a4c4ef"
+  },
+  {
+    "timestamp": "2025-08-21T04:09:35.263878",
+    "company": "Meta",
+    "position": "ML Engineer - Recommendations",
+    "email": "careers@meta.com",
+    "status": "sent",
+    "job_id": "li_meta_b260bd6f"
+  }
+]

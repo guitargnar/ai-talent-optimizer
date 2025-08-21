@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-08-21T00:17:01.536820",
+  "systems": {
+    "job_database": {
+      "total_jobs": 345,
+      "sources": {
+        "Greenhouse": 275,
+        "Lever": 32,
+        "Remotive": 2,
+        "company_page": 3,
+        "free_api": 26,
+        "multi_source": 7
+      },
+      "top_companies": [
+        [
+          "Anthropic",
+          106
+        ],
+        [
+          "Scale AI",
+          59
+        ],
+        [
+          "Figma",
+          34
+        ],
+        [
+          "Plaid",
+          32
+        ],
+        [
+          "Zocdoc",
+          24
+        ]
+      ],
+      "applied": 26
+    },
+    "email_tracking": {
+      "sent": 0,
+      "responses": 0
+    },
+    "gmail_oauth": "Active",
+    "ml_models": "Active"
+  },
+  "metrics": {
+    "Jobs Available": 345,
+    "Applications Sent": 0,
+    "Responses Received": 0,
+    "Response Rate": "0%",
+    "Top Source": "Greenhouse"
+  },
+  "pipeline": {
+    "recent_applications": []
+  },
+  "recommendations": [
+    "Increase application volume to 10-20 per day"
+  ]
+}

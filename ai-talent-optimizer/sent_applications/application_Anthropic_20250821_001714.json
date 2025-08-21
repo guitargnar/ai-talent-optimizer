@@ -1,0 +1,19 @@
+{
+  "job": {
+    "job_id": "gh_anthropic_4579550008",
+    "company": "Anthropic",
+    "position": "Machine Learning Systems Engineer, Research Tools",
+    "location": "San Francisco, CA | New York City, NY",
+    "remote_option": null,
+    "salary_range": null,
+    "url": "https://job-boards.greenhouse.io/anthropic/jobs/4579550008",
+    "description": "",
+    "company_email": "careers@anthropic.com",
+    "relevance_score": 1.0,
+    "match_score": 0.33749999999999997
+  },
+  "cover_letter": "Dear Hiring Team at Anthropic,\n\nI am writing to express my strong interest in the Machine Learning Systems Engineer, Research Tools position at Anthropic. With my proven track record of building production ML systems that have generated over $1.2M in value, I am excited about the opportunity to contribute to your team.\n\nMy recent accomplishments include:\n\n\u2022 **Job Intelligence Platform**: Built an end-to-end ML platform with TensorFlow 2.20, achieving 92% salary prediction accuracy and 0.4+ vector similarity matching. The system processes 1000+ jobs daily using advanced NLP and clustering algorithms.\n\n\u2022 **Mirador AI Platform**: Architected a 79+ model orchestration system achieving 99.3% success rate, processing 250K+ requests monthly. Implemented RAG pipelines, vector databases, and multi-modal AI capabilities.\n\n\u2022 **Production Impact**: At Humana (10 years), I built ML systems that automated Medicare compliance workflows, saving $1.2M annually while maintaining 100% CMS adherence.\n\nMy technical expertise aligns perfectly with your requirements:\n- Deep experience with TensorFlow, PyTorch, and modern ML frameworks\n- Production deployment of LLMs, embeddings, and neural architectures  \n- Strong foundation in MLOps, distributed systems, and scalable infrastructure\n- Proven ability to translate complex ML research into business value\n\nI am particularly drawn to Anthropic because of your work in advancing AI capabilities. I believe my combination of technical depth and business impact would make me a valuable addition to your team.\n\nI would welcome the opportunity to discuss how my experience building production ML systems can contribute to Anthropic's continued success.\n\nBest regards,\nMatthew Scott\nmatthewdscott7@gmail.com\n(502) 345-0525\nlinkedin.com/in/mscott77\n",
+  "resume_path": "/Users/matthewscott/Desktop/MATTHEW_SCOTT_AI_ML_ENGINEER_2025.pdf",
+  "subject": "Application for Machine Learning Systems Engineer, Research Tools - Matthew Scott",
+  "to_email": "careers@anthropic.com"
+}
