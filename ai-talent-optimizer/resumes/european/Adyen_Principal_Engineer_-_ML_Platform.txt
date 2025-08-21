@@ -1,0 +1,58 @@
+MATTHEW SCOTT
+Senior AI/ML Engineer | 10+ Years Experience
+Highly Skilled Migrant eligible
+
+📧 matthewdscott7@gmail.com | 🔗 linkedin.com/in/mscott77
+📍 Open to relocation to Amsterdam, Netherlands
+
+═══════════════════════════════════════════════════════════
+TAILORED FOR: Principal Engineer - ML Platform at Adyen
+═══════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━
+Senior ML Engineer with proven track record at Humana (Fortune 50), 
+delivering $1.2M+ annual savings through production ML systems.
+Ready for immediate relocation to Netherlands with visa sponsorship.
+
+WHY I'M A PERFECT FIT FOR ADYEN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Direct experience with Platform engineering
+✓ Direct experience with ML infrastructure
+✓ Scaled systems processing 2M+ records daily
+✓ Direct experience with Payment systems knowledge
+
+RELEVANT EXPERIENCE - HUMANA INC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Principal Machine Learning Engineer | 2015-Present
+
+🎯 Financial ML Systems:
+• Fraud detection system with 0.01% false positive rate
+• Real-time transaction monitoring (1M+ daily)
+• Regulatory compliance automation (100% accuracy)
+
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━
+Languages: Python, SQL, Go, JavaScript
+ML/AI: TensorFlow, PyTorch, JAX, Scikit-learn
+Infrastructure: AWS, Docker, Kubernetes, Spark
+Specializations: NLP, Computer Vision, Time Series
+
+EUROPEAN MARKET ADVANTAGES
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Native English speaker
+• Experience with GDPR compliance
+• Worked with distributed teams across 5 time zones
+• Available for immediate relocation
+• Highly Skilled Migrant eligible
+
+EDUCATION & CERTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━
+• Self-directed CS/ML education (10+ years)
+• AWS ML Specialty Certified
+• TensorFlow Developer Certificate
+
+═══════════════════════════════════════════════════════════
+Ready to bring American enterprise ML expertise to Adyen
+Salary Expectation: €120K-€170K
+═══════════════════════════════════════════════════════════
