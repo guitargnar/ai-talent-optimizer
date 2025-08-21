@@ -166,11 +166,11 @@ def run_unified_monitor():
         try:
             # 1. Check Gmail for responses
             print(f"\\n[{datetime.now().strftime('%H:%M')}] Checking Gmail...")
-            subprocess.run(['python', '/Users/matthewscott/Google Gmail/check_job_replies.py'])
+            subprocess.run(['python3', '/Users/matthewscott/Google Gmail/check_job_replies.py'])
             
             # 2. Update email tracker
             print("\\nUpdating email tracker...")
-            subprocess.run(['python', 'gmail_oauth_integration.py'])
+            subprocess.run(['python3', 'gmail_oauth_integration.py'])
             
             # 3. Check AI optimizer metrics (if needed)
             print("\\nAI Optimizer Status: Profile Optimized ✓")

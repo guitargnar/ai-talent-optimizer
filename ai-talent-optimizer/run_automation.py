@@ -59,7 +59,7 @@ class AIJobHunterAutomation:
         
         try:
             result = subprocess.run(
-                ['python', 'unified_ai_hunter.py', '--daily'],
+                ['python3', 'unified_ai_hunter.py', '--daily'],
                 capture_output=True,
                 text=True,
                 cwd=self.base_dir
@@ -102,7 +102,7 @@ class AIJobHunterAutomation:
             
             # Run applications
             result = subprocess.run(
-                ['python', 'automated_apply.py', '--batch', str(batch_size)],
+                ['python3', 'automated_apply.py', '--batch', str(batch_size)],
                 capture_output=True,
                 text=True,
                 cwd=self.base_dir
@@ -126,7 +126,7 @@ class AIJobHunterAutomation:
         
         try:
             result = subprocess.run(
-                ['python', 'gmail_recent_monitor.py'],
+                ['python3', 'gmail_recent_monitor.py'],
                 capture_output=True,
                 text=True,
                 cwd=self.base_dir

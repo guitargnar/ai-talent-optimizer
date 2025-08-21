@@ -26,15 +26,15 @@ def run_job_discovery():
     
     try:
         # Run unified AI hunter
-        subprocess.run(['python', 'unified_ai_hunter.py', '--daily'], check=True)
+        subprocess.run(['python3', 'unified_ai_hunter.py', '--daily'], check=True)
         logging.info("✅ Job discovery complete")
         
         # Run automated applications
-        subprocess.run(['python', 'automated_apply.py', '--batch', '10'], check=True)
+        subprocess.run(['python3', 'automated_apply.py', '--batch', '10'], check=True)
         logging.info("✅ Automated applications complete")
         
         # Send daily report
-        subprocess.run(['python', 'unified_email_automation.py', '--report'], check=True)
+        subprocess.run(['python3', 'unified_email_automation.py', '--report'], check=True)
         logging.info("✅ Daily report sent")
         
     except subprocess.CalledProcessError as e:
@@ -47,7 +47,7 @@ def run_email_sync():
     logging.info("📧 Syncing email systems...")
     
     try:
-        subprocess.run(['python', 'unified_email_automation.py', '--sync'], check=True)
+        subprocess.run(['python3', 'unified_email_automation.py', '--sync'], check=True)
         logging.info("✅ Email sync complete")
     except Exception as e:
         logging.error(f"❌ Error in email sync: {e}")
