@@ -1,0 +1,21 @@
+MATTHEW SCOTT
+Senior AI/ML Engineer | Production Systems Architect
+📧 matthewdscott7@gmail.com | 📱 502-345-0525
+🔗 linkedin.com/in/mscott77 | 💻 github.com/guitargnar
+📍 Louisville, KY | Open to Remote
+
+PROFESSIONAL SUMMARY
+Senior Risk Management Professional II at Humana with 10+ years experience building enterprise healthcare systems. 
+Architected Python ML frameworks delivering significant annual savings through 40% process automation.
+Built enterprise-scale platform with 117 Python modules while maintaining demanding day job, demonstrating 
+Principal-level engineering capabilities. Seeking $400K+ Principal/Staff roles to leverage my unique combination 
+of healthcare domain expertise and cutting-edge AI implementation skills.
+
+KEY ACHIEVEMENTS
+• Built distributed ML system with 78 specialized models for complex decision-making
+• Developed production AI systems serving 50M+ users across healthcare systems  
+• Reduced LLM inference costs by 90% through custom adaptive quantization
+• Maintained 100% compliance across 500+ Medicare regulatory pages using AI
+• Processing 1,600+ concurrent operations with 99.9% uptime
+
+✅ PDF resume updated with correct phone number: 502-345-0525

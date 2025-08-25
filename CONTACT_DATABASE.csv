@@ -1,0 +1,32 @@
+Type,Company,Name,Title,Email,LinkedIn,Phone,Priority,Last_Contact,Next_Action,Notes
+CEO,Abridge,Shiv Rao,CEO,TBD,linkedin.com/in/shivrao,TBD,URGENT,Never,Email today,$550M raised - hot lead
+CTO,Abridge,Zack Lipton,CTO,TBD,linkedin.com/in/zacklipton,TBD,URGENT,Never,LinkedIn message,CMU professor - needs lieutenants
+CEO,Tempus AI,Eric Lefkofsky,CEO,TBD,linkedin.com/in/ericlefkofsky,TBD,HIGH,Never,Research contact,Public company CEO
+CEO,Oscar Health,Mario Schlosser,CEO,TBD,linkedin.com/in/marioschlosser,TBD,HIGH,Never,LinkedIn outreach,InsurTech leader
+CEO,Sully.ai,TBD,CEO,TBD,Research,TBD,HIGH,Never,Find on LinkedIn,$25M YC funding
+CEO,Infinitus,Ankit Jain,CEO,TBD,linkedin.com/in/ankitjain,TBD,HIGH,Never,Email outreach,Voice AI for healthcare
+CEO,Healthee,Guy Benjamin,CEO,TBD,linkedin.com/in/guybenjamin,TBD,HIGH,Never,LinkedIn message,$32M Series A
+CEO,Apero Health,TBD,CEO,TBD,Research,TBD,MEDIUM,Never,Find contact,YC-backed
+CEO,Notable Health,Pranay Kapadia,CEO,TBD,linkedin.com/in/pranaykapadia,TBD,MEDIUM,Never,Email outreach,Medical documentation
+CEO,Regard,Eli Ben-Joseph,CEO,TBD,linkedin.com/in/elibenjoseph,TBD,MEDIUM,Never,LinkedIn message,Diagnosis AI
+CEO,Pieces Technologies,Ruben Amarasingham,CEO,TBD,linkedin.com/in/rubenamarasingham,TBD,MEDIUM,Never,Email outreach,Clinical AI
+CEO,Medium,Tony Stubblebine,CEO,TBD,linkedin.com/in/tonystubblebine,TBD,HIGH,Never,Direct email,VP Eng reports to him
+CTO,UnitedHealth,TBD,CTO,TBD,Research,TBD,HIGH,Never,Find on LinkedIn,Fortune 10
+CTO,CVS Health,TBD,CTO,TBD,Research,TBD,HIGH,Never,Find on LinkedIn,Major transformation
+CTO,Anthem,TBD,CTO,TBD,Research,TBD,MEDIUM,Never,Find on LinkedIn,AI initiatives
+RECRUITER,Kaye/Bassman,TBD,Healthcare IT Lead,TBD,kbic.com,TBD,URGENT,Never,Call today,Top healthcare recruiter
+RECRUITER,Direct Recruiters,TBD,Executive Search,TBD,directrecruiters.com,TBD,HIGH,Never,Email today,PE/VC connections
+RECRUITER,Korn Ferry,TBD,Healthcare Practice,TBD,kornferry.com,TBD,HIGH,Never,Contact form,Fortune 500 focus
+RECRUITER,Elite Technical,TBD,AI Recruiter,TBD,elitetechnical.com,TBD,MEDIUM,Never,Submit profile,Healthcare ops
+RECRUITER,Russell Reynolds,TBD,Healthcare Lead,TBD,russellreynolds.com,TBD,MEDIUM,Never,Email inquiry,C-suite placements
+RECRUITER,Spencer Stuart,TBD,Tech Practice,TBD,spencerstuart.com,TBD,MEDIUM,Never,Contact form,Executive search
+RECRUITER,Heidrick & Struggles,TBD,Healthcare,TBD,heidrick.com,TBD,LOW,Never,Research,Global firm
+VC,General Catalyst,TBD,Healthcare Partner,TBD,generalcatalyst.com,TBD,MEDIUM,Never,Research partners,Major healthcare investor
+VC,Oak HC/FT,Annie Lamont,Co-founder,TBD,oakhcft.com,TBD,MEDIUM,Never,Portfolio companies,Healthcare focused
+VC,Bessemer,Steve Kraus,Partner,TBD,bvp.com,TBD,MEDIUM,Never,Portfolio review,Healthcare investments
+VC,NEA,Mohamad Makhzoumi,Partner,TBD,nea.com,TBD,LOW,Never,Research portfolio,Healthcare focus
+PE,Warburg Pincus,TBD,Healthcare Lead,TBD,warburgpincus.com,TBD,LOW,Never,Portfolio companies,Healthcare PE
+PE,KKR,TBD,Healthcare Partner,TBD,kkr.com,TBD,LOW,Never,Research team,Major healthcare portfolio
+NETWORK,Humana Alumni,TBD,Various,TBD,LinkedIn search,TBD,HIGH,Never,Reconnect,Former colleagues
+NETWORK,Louisville Tech,TBD,Community,TBD,LinkedIn groups,TBD,MEDIUM,Never,Join groups,Local connections
+NETWORK,Healthcare IT Groups,TBD,Various,TBD,Slack/Discord,TBD,MEDIUM,Never,Join communities,Industry networking

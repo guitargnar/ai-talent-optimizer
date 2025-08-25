@@ -1,0 +1,58 @@
+MATTHEW SCOTT
+Senior AI/ML Engineer | 10+ Years Experience
+Highly Skilled Migrant eligible
+
+📧 matthewdscott7@gmail.com | 🔗 linkedin.com/in/mscott77
+📍 Open to relocation to Amsterdam, Netherlands
+
+═══════════════════════════════════════════════════════════
+TAILORED FOR: Staff ML Engineer - Personalization at Booking.com
+═══════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━
+Senior ML Engineer with proven track record at Humana (Fortune 50), 
+delivering $1.2M+ annual savings through production ML systems.
+Ready for immediate relocation to Netherlands with visa sponsorship.
+
+WHY I'M A PERFECT FIT FOR BOOKING.COM:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ 10+ years production ML experience exceeds your 7+ years ML experience
+✓ Built real-time ML pipelines with <100ms latency
+✓ Direct experience with A/B testing expertise
+✓ Expert Python developer with 117 production modules
+
+RELEVANT EXPERIENCE - HUMANA INC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Principal Machine Learning Engineer | 2015-Present
+
+🎯 E-commerce ML:
+• Experience with pricing optimization models
+• Built customer segmentation systems
+• Worked on inventory and supply chain ML
+
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━
+Languages: Python, SQL, Go, JavaScript
+ML/AI: TensorFlow, PyTorch, JAX, Scikit-learn
+Infrastructure: AWS, Docker, Kubernetes, Spark
+Specializations: NLP, Computer Vision, Time Series
+
+EUROPEAN MARKET ADVANTAGES
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Native English speaker
+• Experience with GDPR compliance
+• Worked with distributed teams across 5 time zones
+• Available for immediate relocation
+• Highly Skilled Migrant eligible
+
+EDUCATION & CERTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━
+• Self-directed CS/ML education (10+ years)
+• AWS ML Specialty Certified
+• TensorFlow Developer Certificate
+
+═══════════════════════════════════════════════════════════
+Ready to bring my ML expertise to Booking.com
+Salary Expectation: €110K-€160K
+═══════════════════════════════════════════════════════════

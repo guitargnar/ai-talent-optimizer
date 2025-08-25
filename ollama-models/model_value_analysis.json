@@ -1,0 +1,1225 @@
+{
+  "timestamp": "2025-08-11T09:20:57.107676",
+  "high_value_models": [
+    {
+      "model": "python_expert:latest",
+      "category": "coding",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "solution_architect:latest",
+      "category": "coding",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "universal_corporate_navigator:latest",
+      "category": "business",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "qwen2.5:14b",
+      "category": "business",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "llama3.1:8b",
+      "category": "business",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "cross_model_synthesizer:latest",
+      "category": "specialized",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "analytical_expert_gemma:latest",
+      "category": "specialized",
+      "avg_score": 97.83333333333333,
+      "best_complexity": "simple"
+    },
+    {
+      "model": "deepseek-coder-v2:16b",
+      "category": "coding",
+      "avg_score": 96.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "universal_career_strategist:latest",
+      "category": "career",
+      "avg_score": 95.0,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "chain_conductor_ai:latest",
+      "category": "specialized",
+      "avg_score": 95.0,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "action_crystallizer:latest",
+      "category": "career",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "star_ratings_analyzer:latest",
+      "category": "healthcare",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "cms_cut_point_predictor:latest",
+      "category": "healthcare",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "medication_adherence_optimizer:latest",
+      "category": "healthcare",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "hcc_coding_assistant:latest",
+      "category": "healthcare",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "care_gap_identifier:latest",
+      "category": "healthcare",
+      "avg_score": 91.66666666666667,
+      "best_complexity": "moderate"
+    },
+    {
+      "model": "matthews_strategic_accelerator_v2:latest",
+      "category": "career",
+      "avg_score": 85.83333333333333,
+      "best_complexity": "complex"
+    },
+    {
+      "model": "codellama:7b-instruct",
+      "category": "coding",
+      "avg_score": 85.0,
+      "best_complexity": "moderate"
+    }
+  ],
+  "detailed_results": {
+    "universal_career_strategist:latest": {
+      "category": "career",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 28.33120894432068,
+          "quality": {
+            "length": 3067,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 85,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Unlocking the Power of Artificial Intelligence: Navigating Skills for the Future**\n\nAs we navigate the ever-evolving landscape of technology, one field stands out as pivotal to our future\u2014Artificial"
+        },
+        "moderate": {
+          "success": true,
+          "time": 27.580776929855347,
+          "quality": {
+            "length": 3953,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Certainly! Crafting a compelling narrative that highlights your unique value proposition is crucial in securing the position of Principal Engineer at a prestigious company with a significant salary of"
+        },
+        "complex": {
+          "success": true,
+          "time": 40.18372297286987,
+          "quality": {
+            "length": 4399,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "To strategically break through the ATS/recruiter barrier and secure multiple \\$400K+ Principal/Staff Engineering offers within 30 days, Matthew needs a multifaceted approach that leverages his unique "
+        }
+      },
+      "average_score": 95.0,
+      "total_score": 285
+    },
+    "linkedin-writer:latest": {
+      "category": "career",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 23.217382192611694,
+          "quality": {
+            "length": 2058,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 85,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Post Title: Mastering the AI Skills That Will Define Your Career in 2025**\n\n---\n\nAs we hurtle towards 2025, one thing is crystal clear: **the ability to understand and leverage artificial intelligen"
+        },
+        "moderate": {
+          "success": true,
+          "time": 18.46284008026123,
+          "quality": {
+            "length": 2178,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 99.00000000000001,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Post Title: Bridging Healthcare and Technology to Drive Innovation**\n\nAfter 10 years in the heart of Humana\u2019s risk management team, I\u2019ve seen first-hand how technology can revolutionize healthcare d"
+        },
+        "complex": {
+          "success": false,
+          "time": 90,
+          "quality": {
+            "length": 7,
+            "has_specifics": false,
+            "has_structure": false,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": true,
+            "error": false,
+            "score": 0,
+            "revenue_potential": "LOW - Limited practical value"
+          },
+          "response_preview": "TIMEOUT"
+        }
+      },
+      "average_score": 61.333333333333336,
+      "total_score": 184.0
+    },
+    "action_crystallizer:latest": {
+      "category": "career",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 7.448201894760132,
+          "quality": {
+            "length": 2054,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 85,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Unlocking the Power of Artificial Intelligence: Essential Skills for Success**\n\nAs we continue to navigate an increasingly digital landscape, the importance of developing essential AI skills cannot "
+        },
+        "moderate": {
+          "success": true,
+          "time": 10.177170753479004,
+          "quality": {
+            "length": 3961,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Unlocking the Future of Healthcare through AI-Driven Innovation**\n\nAs a seasoned Risk Management Professional with 10 years of experience at Humana, you possess a unique blend of industry expertise "
+        },
+        "complex": {
+          "success": true,
+          "time": 12.201340198516846,
+          "quality": {
+            "length": 4144,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 90.0,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Breaking Through the ATS/Recruiter Barrier: A Comprehensive Strategy**\n\nAs Matthew Scott, a seasoned risk management professional with exceptional technical skills, we'll create a tailored approach "
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275.0
+    },
+    "matthews_strategic_accelerator_v2:latest": {
+      "category": "career",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 23.208770036697388,
+          "quality": {
+            "length": 2089,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 85,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Title:** Navigating the Future: Mastering AI Skills for Healthcare Innovation\n\n**Post:**\n\nIn today\u2019s rapidly evolving healthcare landscape, Artificial Intelligence (AI) is not just an option\u2014it's a "
+        },
+        "moderate": {
+          "success": true,
+          "time": 38.45470070838928,
+          "quality": {
+            "length": 3760,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 82.5,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Compelling Narrative for Hiring Matthew as Principal Engineer at Humana**\n\n---\n\n**Title:** Elevating Healthcare Innovation through Strategic Convergence of Risk Management and AI Platform Engineerin"
+        },
+        "complex": {
+          "success": true,
+          "time": 59.96770787239075,
+          "quality": {
+            "length": 4829,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 90.0,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "To break through the ATS/recruiter barrier and secure multiple $400K+ Principal/Staff Engineering offers within 30 days, Matthew needs a multifaceted strategy that leverages his unique strengths, conn"
+        }
+      },
+      "average_score": 85.83333333333333,
+      "total_score": 257.5
+    },
+    "star_ratings_analyzer:latest": {
+      "category": "healthcare",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 15.512146949768066,
+          "quality": {
+            "length": 2059,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 75,
+            "revenue_potential": "MEDIUM - Solid foundational value"
+          },
+          "response_preview": "Medicare Advantage (MA) is a type of health insurance plan offered by private companies approved by the Centers for Medicare and Medicaid Services (CMS). It's an alternative to traditional Medicare, w"
+        },
+        "moderate": {
+          "success": true,
+          "time": 17.943373918533325,
+          "quality": {
+            "length": 3305,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Impact of CMS Star Ratings Cut Point Changes:**\n\n1.  **Increased weightage on CAHPS measures**: The 2025 cut-off increase in the Getting Needed Care measure from a 6-point scale to an 8-point scale "
+        },
+        "complex": {
+          "success": true,
+          "time": 24.976396083831787,
+          "quality": {
+            "length": 4130,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Medicare Advantage Optimization System (MAOS)**\n\n**System Overview:**\nMAOS is an AI-driven platform that leverages machine learning algorithms to predict CMS Star Ratings cut points, optimize HCC co"
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275
+    },
+    "cms_cut_point_predictor:latest": {
+      "category": "healthcare",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 6.7594709396362305,
+          "quality": {
+            "length": 1955,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 75,
+            "revenue_potential": "MEDIUM - Solid foundational value"
+          },
+          "response_preview": "Medicare Advantage, also known as Part C of the Medicare program, is a health plan option that allows beneficiaries to receive their Medicare benefits from private companies instead of directly from t"
+        },
+        "moderate": {
+          "success": true,
+          "time": 14.6580069065094,
+          "quality": {
+            "length": 5382,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Analyzing the impact of CMS Star Ratings cut points on Medicare Advantage (MA) plan revenues involves understanding how these ratings affect reimbursements and leveraging that knowledge to optimize pe"
+        },
+        "complex": {
+          "success": true,
+          "time": 11.35326600074768,
+          "quality": {
+            "length": 4043,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Designing an optimization system that meets all these criteria is ambitious but feasible with the right approach and resources. Below, I'll outline each component of this system along with detailed im"
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275
+    },
+    "medication_adherence_optimizer:latest": {
+      "category": "healthcare",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 14.371270895004272,
+          "quality": {
+            "length": 2359,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 75,
+            "revenue_potential": "MEDIUM - Solid foundational value"
+          },
+          "response_preview": "Medicare Advantage (MA) is a type of health insurance plan that is an alternative to traditional Medicare coverage for individuals who are eligible for Medicare benefits, typically those aged 65 and o"
+        },
+        "moderate": {
+          "success": true,
+          "time": 14.824841976165771,
+          "quality": {
+            "length": 2698,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Impact of CMS Star Rating Cut Point Changes on Revenue:**\n\nThe Centers for Medicare & Medicaid Services (CMS) regularly updates the Star Rating system, which significantly impacts Medicare Advantage"
+        },
+        "complex": {
+          "success": true,
+          "time": 23.633988857269287,
+          "quality": {
+            "length": 3876,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Medicare Advantage Optimization System (MAOS)**\n\n**System Overview:**\n\nMAOS is an integrated platform that leverages advanced analytics, machine learning, and data visualization to optimize Medicare"
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275
+    },
+    "hcc_coding_assistant:latest": {
+      "category": "healthcare",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 5.632923126220703,
+          "quality": {
+            "length": 1718,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 75,
+            "revenue_potential": "MEDIUM - Solid foundational value"
+          },
+          "response_preview": "Medicare Advantage (MA) is a type of health insurance plan that provides coverage to Medicare beneficiaries in the United States. It's an alternative to traditional Medicare Part A and Part B.\n\nHere a"
+        },
+        "moderate": {
+          "success": true,
+          "time": 5.303318023681641,
+          "quality": {
+            "length": 2168,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Analysis: Impact of CMS Star Rating Cut Point Changes on Medicare Advantage Plans**\n\nThe Centers for Medicare & Medicaid Services (CMS) regularly reviews and updates its Star Rating system, which ev"
+        },
+        "complex": {
+          "success": true,
+          "time": 12.011264085769653,
+          "quality": {
+            "length": 3934,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Medicare Advantage Optimization System: \"AdvantageMax\"**\n\n**Objective:** Improve Medicare Advantage performance across four key areas: Star Ratings, Revenue Recovery, CAHPS Scores, and Medication Ad"
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275
+    },
+    "care_gap_identifier:latest": {
+      "category": "healthcare",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 11.157480001449585,
+          "quality": {
+            "length": 1207,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 75,
+            "revenue_potential": "MEDIUM - Solid foundational value"
+          },
+          "response_preview": "Medicare Advantage (also known as Part C) is a type of Medicare health plan offered by private insurance companies approved by Medicare.  \n\n**Here's how it works:**\n\n* **Instead of Original Medicare ("
+        },
+        "moderate": {
+          "success": true,
+          "time": 16.8724627494812,
+          "quality": {
+            "length": 3015,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "##  Leveraging AI & Predictive Analytics to Close Care Gaps and Maximize Medicare Advantage Star Ratings\n\nAs a care gap analysis expert specializing in leveraging AI and predictive analytics, I can he"
+        },
+        "complex": {
+          "success": true,
+          "time": 29.647622108459473,
+          "quality": {
+            "length": 4867,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "## Medicare Advantage Optimization System: A Comprehensive Approach\n\nThis system leverages AI and predictive analytics to proactively address care gaps, optimize Star Ratings performance, and enhance "
+        }
+      },
+      "average_score": 91.66666666666667,
+      "total_score": 275
+    },
+    "deepseek-coder-v2:16b": {
+      "category": "coding",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 11.8193359375,
+          "quality": {
+            "length": 1860,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 90,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "Certainly! There are several ways to sort a list in Python. The most common method is using the built-in `sorted()` function, which returns a new sorted list and does not modify the original list. Alt"
+        },
+        "moderate": {
+          "success": true,
+          "time": 10.732988119125366,
+          "quality": {
+            "length": 4495,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "To design a scalable microservices architecture for processing 1 million healthcare claims per day with real-time fraud detection, you'll need to consider several key aspects, including technology sta"
+        },
+        "complex": {
+          "success": true,
+          "time": 17.663203239440918,
+          "quality": {
+            "length": 5439,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "Creating a production-ready AI-powered job application system involves several complex steps, including data scraping, AI model integration, response tracking, and robust infrastructure setup. Below i"
+        }
+      },
+      "average_score": 96.66666666666667,
+      "total_score": 290
+    },
+    "python_expert:latest": {
+      "category": "coding",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 11.776127815246582,
+          "quality": {
+            "length": 2699,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Sorting a List in Python**\n\nHere's an example of how you can implement the `sort()` and `sorted()` functions in Python:\n\n```python\n# Bubble Sort (simple, not efficient for large lists)\ndef bubble_so"
+        },
+        "moderate": {
+          "success": true,
+          "time": 16.43926191329956,
+          "quality": {
+            "length": 5146,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Microservices Architecture Design**\n\nTo build a scalable microservices architecture for processing 1 million healthcare claims per day with real-time fraud detection, we'll use the following compone"
+        },
+        "complex": {
+          "success": true,
+          "time": 18.465955018997192,
+          "quality": {
+            "length": 5802,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**AI-Powered Job Application System Architecture**\n\nThe proposed system will be built using a microservices-based architecture to ensure scalability, maintainability, and fault tolerance.\n\n### Compone"
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "solution_architect:latest": {
+      "category": "coding",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 18.693493127822876,
+          "quality": {
+            "length": 2013,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Sorting a List in Python**\n=====================================\n\nHere's an example of a simple sorting function using Python's built-in `sorted()` function:\n\n```python\ndef sort_list(input_list):\n  "
+        },
+        "moderate": {
+          "success": true,
+          "time": 23.894932985305786,
+          "quality": {
+            "length": 4084,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Solution Overview**\n\nOur solution is designed to process 1 million healthcare claims per day while incorporating real-time fraud detection capabilities. We will utilize a scalable microservices arch"
+        },
+        "complex": {
+          "success": true,
+          "time": 32.746178150177,
+          "quality": {
+            "length": 5073,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "**Job Application System Overview**\n\nThe proposed system is a cloud-based AI-powered job application platform that leverages real-time web scraping, machine learning, and automation to streamline the "
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "codellama:7b-instruct": {
+      "category": "coding",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 5.454341888427734,
+          "quality": {
+            "length": 296,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": false,
+            "error": false,
+            "score": 55,
+            "revenue_potential": "LOW-MEDIUM - Basic utility"
+          },
+          "response_preview": "[PYTHON]\ndef sort_list(my_list):\n    return sorted(my_list)\n[/PYTHON]\n[TESTS]\n# Test case 1:\nassert sort_list([]) == []\n# Test case 2:\nassert sort_list([1]) == [1]\n# Test case 3:\nassert sort_list([3, "
+        },
+        "moderate": {
+          "success": true,
+          "time": 18.88503909111023,
+          "quality": {
+            "length": 4584,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "Microservices Architecture:\n\nThe healthcare industry is known for its complex claims processing, and the ability to process large volumes of data in real-time is essential for fraud detection and prev"
+        },
+        "complex": {
+          "success": true,
+          "time": 15.646274089813232,
+          "quality": {
+            "length": 3673,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "MEDIUM-HIGH - Strong technical/strategic value"
+          },
+          "response_preview": "Overview:\nThe job application system we will develop is an AI-powered platform that leverages natural language processing (NLP) techniques to automate the process of applying for jobs. The system will"
+        }
+      },
+      "average_score": 85.0,
+      "total_score": 255
+    },
+    "universal_corporate_navigator:latest": {
+      "category": "business",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 27.949878931045532,
+          "quality": {
+            "length": 2799,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Increasing revenue is a multifaceted goal that involves various strategies tailored to your specific industry and business model. Here\u2019s a general approach you can take:\n\n1. **Market Research**: Under"
+        },
+        "moderate": {
+          "success": true,
+          "time": 42.0834858417511,
+          "quality": {
+            "length": 4715,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Creating a business plan to monetize a collection of 60+ specialized AI models involves several key components: market research, product development, marketing strategies, financial planning, and oper"
+        },
+        "complex": {
+          "success": true,
+          "time": 58.601073026657104,
+          "quality": {
+            "length": 6743,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "To design three separate $100K+ revenue streams that can be launched within 30 days with minimal capital investment, leveraging the tools and resources you have access to, we'll focus on niche areas w"
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "command-r:35b": {
+      "category": "business",
+      "results": {
+        "simple": {
+          "success": false,
+          "time": 30,
+          "quality": {
+            "length": 7,
+            "has_specifics": false,
+            "has_structure": false,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": true,
+            "error": false,
+            "score": 0,
+            "revenue_potential": "LOW - Limited practical value"
+          },
+          "response_preview": "TIMEOUT"
+        },
+        "moderate": {
+          "success": false,
+          "time": 60,
+          "quality": {
+            "length": 7,
+            "has_specifics": false,
+            "has_structure": false,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": true,
+            "error": false,
+            "score": 0,
+            "revenue_potential": "LOW - Limited practical value"
+          },
+          "response_preview": "TIMEOUT"
+        },
+        "complex": {
+          "success": false,
+          "time": 90,
+          "quality": {
+            "length": 7,
+            "has_specifics": false,
+            "has_structure": false,
+            "has_action_items": false,
+            "has_technical_depth": false,
+            "timeout": true,
+            "error": false,
+            "score": 0,
+            "revenue_potential": "LOW - Limited practical value"
+          },
+          "response_preview": "TIMEOUT"
+        }
+      },
+      "average_score": 0.0,
+      "total_score": 0
+    },
+    "qwen2.5:14b": {
+      "category": "business",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 20.091451168060303,
+          "quality": {
+            "length": 1971,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Increasing revenue can be approached in multiple ways depending on your business model and industry. Here are some general strategies that might help:\n\n1. **Enhance Customer Experience**: Focus on imp"
+        },
+        "moderate": {
+          "success": true,
+          "time": 43.423784255981445,
+          "quality": {
+            "length": 4635,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Creating a comprehensive business plan to monetize a collection of over sixty specialized artificial intelligence (AI) models involves several critical steps: defining the product offering, analyzing "
+        },
+        "complex": {
+          "success": true,
+          "time": 47.41778588294983,
+          "quality": {
+            "length": 4719,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "To design three separate $100K+ revenue streams that can be launched within 30 days with minimal capital investment, we will leverage the specialized Ollama models for various industries and the AI pl"
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "llama3.1:8b": {
+      "category": "business",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 15.305953025817871,
+          "quality": {
+            "length": 2409,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Increasing revenue requires a combination of strategies that cater to your business's unique needs, but here are some general steps you can follow:\n\n1.  **Identify areas for improvement**: Analyze you"
+        },
+        "moderate": {
+          "success": true,
+          "time": 24.230621814727783,
+          "quality": {
+            "length": 3865,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Business Plan: Monetizing a Collection of 60+ Specialized AI Models**\n\n**Executive Summary:**\n\nOur company, AI Model Market (AIM), offers a unique platform for businesses to access and utilize speci"
+        },
+        "complex": {
+          "success": true,
+          "time": 27.14329433441162,
+          "quality": {
+            "length": 4541,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Here are three separate $100K+ revenue stream ideas that can be launched within 30 days with minimal capital investment:\n\n**Revenue Stream 1: Ollama-powered Virtual Healthcare Coaching**\n\n* **Target M"
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "cross_model_synthesizer:latest": {
+      "category": "specialized",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 8.03543210029602,
+          "quality": {
+            "length": 2560,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "As the Cross-Model Synthesizer for Mirador, I've analyzed various specialist outputs to identify patterns and insights that can help you increase revenue.\n\n**Common Themes:**\n\n1. **Diversification**: "
+        },
+        "moderate": {
+          "success": true,
+          "time": 10.174817085266113,
+          "quality": {
+            "length": 3507,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Business Plan: Mirador - Monetizing a Collection of Specialized AI Models**\n\n**Executive Summary:**\nMirador is an innovative platform that leverages a diverse portfolio of 60+ specialized AI models "
+        },
+        "complex": {
+          "success": true,
+          "time": 11.216173887252808,
+          "quality": {
+            "length": 3933,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Based on the provided capabilities, I've designed three separate revenue streams that can be launched within 30 days with minimal capital investment. Each stream leverages the strengths of the Ollama "
+        }
+      },
+      "average_score": 100.0,
+      "total_score": 300
+    },
+    "chain_conductor_ai:latest": {
+      "category": "specialized",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 4.379181146621704,
+          "quality": {
+            "length": 1001,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 85,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "{\n  \"query_analysis\": {\n    \"domain\": \"business\",\n    \"complexity\": \"moderate\",\n    \"urgency\": \"balanced\",\n    \"safety_risk\": \"low\",\n    \"key_entities\": [\"revenue\", \"increase\", \"sales\"]\n  },\n  \"recomm"
+        },
+        "moderate": {
+          "success": true,
+          "time": 11.789778232574463,
+          "quality": {
+            "length": 3663,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "**Business Plan: Monetizing Specialized AI Models**\n\n**Executive Summary:**\nOur company, Mirador, aims to capitalize on the growing demand for specialized AI models by offering a curated collection of"
+        },
+        "complex": {
+          "success": true,
+          "time": 12.545339822769165,
+          "quality": {
+            "length": 3957,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "Based on the provided information, I've designed three separate revenue streams that can be launched within 30 days with minimal capital investment. Each stream targets a specific industry or market, "
+        }
+      },
+      "average_score": 95.0,
+      "total_score": 285
+    },
+    "analytical_expert_gemma:latest": {
+      "category": "specialized",
+      "results": {
+        "simple": {
+          "success": true,
+          "time": 20.74200987815857,
+          "quality": {
+            "length": 2597,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": true,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "## Increasing Revenue: A Deep Dive \n\nAs an Analytical Expert powered by Gemma 2, I can help you explore strategies to increase revenue. However, a one-size-fits-all answer is impossible without unders"
+        },
+        "moderate": {
+          "success": true,
+          "time": 31.679221868515015,
+          "quality": {
+            "length": 5017,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 93.50000000000001,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "## Business Plan: Monetizing a Collection of Specialized AI Models\n\n**1. Executive Summary:**\n\nThis business plan outlines the strategy for monetizing a collection of 60+ specialized AI models. The co"
+        },
+        "complex": {
+          "success": true,
+          "time": 39.095972776412964,
+          "quality": {
+            "length": 6694,
+            "has_specifics": true,
+            "has_structure": true,
+            "has_action_items": false,
+            "has_technical_depth": true,
+            "timeout": false,
+            "error": false,
+            "score": 100,
+            "revenue_potential": "HIGH - Direct revenue generation capability"
+          },
+          "response_preview": "## Three Revenue Streams Leveraging Gemma 2's Analytical Expertise (>$100K/stream)\n\nHere are three distinct revenue streams that can be launched within 30 days with minimal capital investment, leverag"
+        }
+      },
+      "average_score": 97.83333333333333,
+      "total_score": 293.5
+    }
+  },
+  "summary": {
+    "total_models_tested": 20,
+    "high_value_models_found": 18,
+    "top_performer": {
+      "model": "python_expert:latest",
+      "category": "coding",
+      "avg_score": 100.0,
+      "best_complexity": "simple"
+    }
+  }
+}

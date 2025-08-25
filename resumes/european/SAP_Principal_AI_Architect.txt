@@ -1,0 +1,58 @@
+MATTHEW SCOTT
+Senior AI/ML Engineer | 10+ Years Experience
+EU Blue Card eligible
+
+📧 matthewdscott7@gmail.com | 🔗 linkedin.com/in/mscott77
+📍 Open to relocation to Walldorf, Germany
+
+═══════════════════════════════════════════════════════════
+TAILORED FOR: Principal AI Architect at SAP
+═══════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━
+Senior ML Engineer with proven track record at Humana (Fortune 50), 
+delivering $1.2M+ annual savings through production ML systems.
+Ready for immediate relocation to Germany with visa sponsorship.
+
+WHY I'M A PERFECT FIT FOR SAP:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Direct experience with Enterprise architecture
+✓ Direct experience with Cloud platforms
+✓ Direct experience with MLOps
+✓ Direct experience with Customer-facing experience
+
+RELEVANT EXPERIENCE - HUMANA INC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Principal Machine Learning Engineer | 2015-Present
+
+🎯 Production ML Systems:
+• Architected scalable ML platforms
+• Focus on system reliability and performance
+• Experience with latency optimization
+
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━
+Languages: Python, SQL, Go, JavaScript
+ML/AI: TensorFlow, PyTorch, JAX, Scikit-learn
+Infrastructure: AWS, Docker, Kubernetes, Spark
+Specializations: NLP, Computer Vision, Time Series
+
+EUROPEAN MARKET ADVANTAGES
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Native English speaker
+• Experience with GDPR compliance
+• Worked with distributed teams across 5 time zones
+• Available for immediate relocation
+• EU Blue Card eligible
+
+EDUCATION & CERTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━
+• Self-directed CS/ML education (10+ years)
+• AWS ML Specialty Certified
+• TensorFlow Developer Certificate
+
+═══════════════════════════════════════════════════════════
+Ready to bring my ML expertise to SAP
+Salary Expectation: €110K-€160K
+═══════════════════════════════════════════════════════════

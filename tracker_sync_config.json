@@ -1,0 +1,13 @@
+{
+  "email_tracker_path": "/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer",
+  "universal_tracker_path": "../SURVIVE/career-automation/real-tracker/career-automation/interview-prep/data",
+  "sync_fields": [
+    "company_name",
+    "position_title",
+    "date_applied",
+    "email_sent",
+    "follow_up_status"
+  ],
+  "sync_frequency": "daily",
+  "last_sync": "2025-08-04T07:57:27.695813"
+}

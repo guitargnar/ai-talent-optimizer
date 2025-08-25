@@ -1,0 +1,27 @@
+Company,Role,Base_Low,Base_High,TC_Low,TC_High,Your_Target,Equity_Percent,Bonus_Percent,Location,Status,Notes
+Abridge,Principal Engineer,350000,450000,400000,600000,450000,0.1,20,Remote/Pittsburgh,APPLY_NOW,$550M funding - hot opportunity
+Tempus AI,Principal Engineer,350000,425000,400000,550000,425000,0.05,20,Chicago/Remote,APPLY_NOW,Public company - 59 openings
+Oscar Health,Principal/Staff,325000,400000,375000,500000,400000,0.1,25,NYC/Remote,APPLY_NOW,GenAI implementation
+UnitedHealth,Principal AI,375000,450000,425000,600000,450000,0.05,30,Remote,APPLY,Fortune 10 company
+CVS/Aetna,Staff Engineer,325000,400000,375000,500000,400000,0.05,25,Remote,APPLY,Healthcare transformation
+Anthem,Principal Engineer,350000,425000,400000,525000,425000,0.05,25,Remote,APPLY,AI initiatives
+Medium,VP Engineering,400000,500000,450000,700000,500000,0.2,30,Remote,HIGH_PRIORITY,Reports to CEO
+Google,L7 Principal,450000,550000,600000,900000,650000,0.15,20,Multiple,RESEARCH,Top of market
+Meta,E7 Staff,425000,525000,550000,850000,600000,0.2,25,Multiple,RESEARCH,High equity comp
+Amazon,Principal SDE,400000,475000,500000,750000,550000,0.15,10,Multiple,RESEARCH,Healthcare division
+Microsoft,Principal,375000,450000,450000,650000,500000,0.1,20,Multiple,RESEARCH,Healthcare AI team
+Apple,Principal,425000,500000,550000,800000,600000,0.1,15,Cupertino,RESEARCH,Health team
+Airbnb,Staff Engineer,400000,475000,500000,700000,550000,0.15,20,Remote,RESEARCH,Top payer
+Stripe,Staff Engineer,425000,500000,550000,750000,600000,0.2,20,Remote,RESEARCH,High growth
+Netflix,Senior Staff,450000,550000,500000,800000,650000,0.1,0,Remote,RESEARCH,No bonus structure
+Uber,Staff Engineer,375000,450000,450000,650000,500000,0.15,25,Multiple,RESEARCH,Recovery phase
+Lyft,Staff Engineer,350000,425000,425000,600000,475000,0.15,20,Remote,RESEARCH,Competitive
+Databricks,Principal,400000,500000,500000,750000,575000,0.2,25,Remote,RESEARCH,AI focus
+Snowflake,Principal,425000,500000,525000,775000,600000,0.15,25,Remote,RESEARCH,High growth
+Palantir,Principal,375000,475000,475000,700000,550000,0.2,20,Multiple,RESEARCH,Healthcare contracts
+FRACTIONAL_CTO,2 days/week,180000,180000,180000,180000,180000,0,0,Remote,TARGET,$15K/month rate
+FRACTIONAL_CTO,1 day/week,96000,96000,96000,96000,96000,0,0,Remote,TARGET,$8K/month rate
+ADVISORY,5 hrs/month,36000,36000,36000,36000,36000,0,0,Remote,TARGET,$3K/month retainer
+ADVISORY,10 hrs/month,60000,60000,60000,60000,60000,0,0,Remote,TARGET,$5K/month retainer
+CONSULTING,Hourly Rate,1040000,1040000,1040000,1040000,500,0,0,Remote,OPTION,$500/hour x 2080 hours
+CONSULTING,Project Based,240000,240000,240000,240000,20000,0,0,Remote,OPTION,$20K/month average

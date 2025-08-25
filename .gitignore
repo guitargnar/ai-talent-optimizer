@@ -1,0 +1,164 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+google-env/
+ml-env/
+ml_env/
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+.coverage.*
+coverage.xml
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Sensitive Data
+credentials.json
+token.json
+token.pickle
+*.pem
+*.key
+*.cert
+*.crt
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+!test_*.db
+
+# Application Data
+data/
+logs/
+output/
+resumes/*.pdf
+!resumes/sample.pdf
+applications/
+email_logs/
+bcc_tracking_log.json
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+tmp/
+temp/
+
+# Documentation Build
+docs/_build/
+docs/.doctrees/
+
+# Project Specific - Database Files
+MASTER_TRACKER.db
+UNIFIED_AI_JOBS.db
+job_applications.db
+gmail_job_tracker.db
+ai_talent_optimizer.db
+unified_talent_optimizer.db
+principal_jobs_400k.db
+verified_metrics.db
+your_profile.db
+ceo_outreach.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Project Specific - Generated Content
+daily_summaries/
+mirador-memory/
+outputs/
+applications_sent/
+healthcare_messages/
+ready_to_send_messages/
+database_backups_*/
+sessions/
+backups/
+ceo_emails/
+
+# Project Specific - Reports and Logs
+automation.log
+unified_ai_hunter.log
+gmail_*_report_*.json
+*_report_*.json
+*_report_*.csv
+*_report_*.html
+message_history.csv
+manual_applications_log.txt
+results.log
+job_scraper_integration.log
+ceo_outreach_log.txt
+
+# Project Specific - Large CSV Files
+MASTER_TRACKER_*.csv
+healthcare_power_network.csv
+healthcare_power_network.html
+
+# Project Specific - Configuration Overrides
+*_local.json
+*_override.json
+unified_config.json
+ab_testing_config.json
+authentic_config.json
+followup_config.json
+company_research.json
+consolidation_report.json
+system_fix_report.json
+database_migration_report.json
+database_consolidation_analysis.json
+
+# Test Artifacts
+test_reports/
+test_results/
+.mutmut-cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Last job description cache
+last_job_description.txt

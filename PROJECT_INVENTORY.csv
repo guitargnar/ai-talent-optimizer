@@ -1,0 +1,25 @@
+Project_Name,Type,Lines_of_Code,Status,Business_Value,Technologies,Use_Case,Quantified_Impact,Portfolio_Priority
+Mirador AI System,AI Orchestration,111586,Production,High,58+ LLMs/Python/Git,Multi-model orchestration,Unprecedented scale,SHOWCASE
+Humana Automation Platform,Enterprise,50000,Production,$1.2M/year,Python/Kafka/Azure,Process automation,40% efficiency gain,SHOWCASE
+Reflexia,LLM Framework,15000,Production,High,Ollama/Adaptive Quant,Local AI deployment,GPU optimization,SHOWCASE
+FinanceForge,Financial Tool,8000,Production,Personal,React/Python/SQLite,Financial tracking,Personal finance,INCLUDE
+FretForge,Music Education,12000,Production,Educational,React/TensorFlow,Guitar learning,Audio synthesis,INCLUDE
+Guitar Consciousness,AI Music,5000,Production,Research,Python/TensorFlow,Music generation,Creative AI,INCLUDE
+DebtFree Calculator,Financial,3000,Production,Utility,JavaScript/React,Debt management,HELOC optimization,INCLUDE
+Healthcare Compliance System,Compliance,25000,Production,Critical,Python/PostgreSQL,CMS compliance,100% accuracy,SHOWCASE
+Risk Assessment Pipeline,Analytics,18000,Production,High,Python/Spark,Risk scoring,Zero defects,SHOWCASE
+Claims Processing System,Backend,35000,Production,High,Python/Kafka,Distributed processing,1600+ concurrent,SHOWCASE
+Event-Sourced Audit System,Architecture,20000,Production,Critical,Python/EventStore,Audit trails,Complete tracking,SHOWCASE
+Identity System,Security,15000,Production,Critical,Python/LDAP/OAuth,Authentication,Enterprise scale,INCLUDE
+E-commerce Accelerator,Platform,40000,Production,High,React/Node/PostgreSQL,Digital commerce,Revenue growth,INCLUDE
+Data Modernization Platform,Infrastructure,60000,Production,Strategic,Python/Spark/Delta,Data lake,Enterprise transformation,SHOWCASE
+Local Development Tools,DevOps,10000,Active,High,Bash/Python/Docker,Developer productivity,Team efficiency,INCLUDE
+Ollama Orchestration,AI Tools,8000,Active,High,Python/Ollama,Model management,Local AI deployment,INCLUDE
+Career Automation,Productivity,5000,Active,Personal,Python/Selenium,Job applications,Personal use,EXCLUDE
+Healthcare Documentation AI,NLP,12000,Development,High,Python/Transformers,Clinical notes,Efficiency gain,INCLUDE
+Predictive Analytics Platform,ML,22000,Production,High,Python/scikit-learn,Forecasting,Business insights,INCLUDE
+Real-time Monitoring,Observability,15000,Production,Critical,Python/Prometheus,System monitoring,Uptime guarantee,INCLUDE
+API Gateway,Infrastructure,18000,Production,High,Python/FastAPI,Service mesh,Scalability,INCLUDE
+Data Pipeline Framework,ETL,25000,Production,High,Python/Airflow,Data processing,Automation,INCLUDE
+Security Scanner,Security,8000,Production,Critical,Python/OWASP,Vulnerability scan,Risk mitigation,INCLUDE
+Test Automation Suite,QA,20000,Production,High,Python/Pytest,Quality assurance,Zero defects,INCLUDE

@@ -1,0 +1,58 @@
+MATTHEW SCOTT
+Senior AI/ML Engineer | 10+ Years Experience
+Work permit eligible - tech shortage occupation
+
+📧 matthewdscott7@gmail.com | 🔗 linkedin.com/in/mscott77
+📍 Open to relocation to Stockholm, Sweden
+
+═══════════════════════════════════════════════════════════
+TAILORED FOR: Principal Engineer - ML Platform at Spotify
+═══════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━
+Senior ML Engineer with proven track record at Humana (Fortune 50), 
+delivering $1.2M+ annual savings through production ML systems.
+Ready for immediate relocation to Sweden with visa sponsorship.
+
+WHY I'M A PERFECT FIT FOR SPOTIFY:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ 10+ years production ML experience exceeds your 10+ years experience
+✓ Scaled systems processing 2M+ records daily
+✓ Led teams of 5-10 engineers on critical ML initiatives
+✓ Built recommendation systems for 50K+ users
+
+RELEVANT EXPERIENCE - HUMANA INC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Principal Machine Learning Engineer | 2015-Present
+
+🎯 Recommendation Systems:
+• Built recommendation systems
+• Implemented collaborative filtering algorithms
+• Experience with A/B testing and experimentation
+
+TECHNICAL EXPERTISE
+━━━━━━━━━━━━━━━━━
+Languages: Python, SQL, Go, JavaScript
+ML/AI: TensorFlow, PyTorch, JAX, Scikit-learn
+Infrastructure: AWS, Docker, Kubernetes, Spark
+Specializations: NLP, Computer Vision, Time Series
+
+EUROPEAN MARKET ADVANTAGES
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Native English speaker
+• Experience with GDPR compliance
+• Worked with distributed teams across 5 time zones
+• Available for immediate relocation
+• Work permit eligible - tech shortage occupation
+
+EDUCATION & CERTIFICATIONS
+━━━━━━━━━━━━━━━━━━━━━━
+• Self-directed CS/ML education (10+ years)
+• AWS ML Specialty Certified
+• TensorFlow Developer Certificate
+
+═══════════════════════════════════════════════════════════
+Ready to bring my ML expertise to Spotify
+Salary Expectation: SEK 900K-1.3M
+═══════════════════════════════════════════════════════════
