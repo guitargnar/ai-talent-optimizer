@@ -346,8 +346,29 @@ Matthew Scott
         ]
         
         # Special cases for known companies
+        # NOTE: Some companies don't have public recruiting emails
+        # They only accept applications through their job portals
+        
+        # Companies that ONLY accept applications via portals (no email)
+        portal_only_companies = {
+            'Anthropic': 'job-boards.greenhouse.io/anthropic',
+            'Google': 'careers.google.com',
+            'Meta': 'careers.meta.com',
+            'Apple': 'jobs.apple.com',
+            'Amazon': 'amazon.jobs',
+            'Microsoft': 'careers.microsoft.com',
+            'Netflix': 'jobs.netflix.com'
+        }
+        
+        # Check if this is a portal-only company
+        if company_name in portal_only_companies:
+            portal_url = portal_only_companies[company_name]
+            print(f"   ⚠️  {company_name} only accepts applications via their job portal")
+            print(f"       Apply at: {portal_url}")
+            return None  # No email available
+        
+        # Companies with known recruiting email addresses
         known_emails = {
-            'Anthropic': 'careers@anthropic.com',
             'OpenAI': 'careers@openai.com',
             'Tempus': 'careers@tempus.com',
             'Scale AI': 'careers@scale.com',

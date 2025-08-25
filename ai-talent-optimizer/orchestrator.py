@@ -229,7 +229,8 @@ class StrategicCareerOrchestrator:
             if verified_email:
                 job['email'] = verified_email
             else:
-                job['email'] = f"careers@{job['company_name'].lower().replace(' ', '')}.com"
+                # If no email found (portal-only company), set to None
+                job['email'] = None
         
         # Generate personalized content
         research = self.quality_system.research_company(
@@ -271,8 +272,8 @@ class StrategicCareerOrchestrator:
             job.get('db_id'),
             job['company_name'],
             job['job_title'],
-            job['email'],
-            subject,
+            job['email'] if job['email'] else None,  # Store NULL for portal-only
+            subject if job['email'] else f"Cover Letter for {job['job_title']}",
             body,
             resume_path,
             datetime.now().isoformat(),
@@ -289,13 +290,14 @@ class StrategicCareerOrchestrator:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Get pending applications
+        # Get pending applications with job_id to fetch URL if needed
         cursor.execute("""
-            SELECT id, company, role, email_to, email_subject, 
-                   email_body, resume_path, personalization_score
-            FROM staged_applications
-            WHERE status = 'pending_review'
-            ORDER BY personalization_score DESC
+            SELECT sa.id, sa.company, sa.role, sa.email_to, sa.email_subject, 
+                   sa.email_body, sa.resume_path, sa.personalization_score,
+                   sa.job_id
+            FROM staged_applications sa
+            WHERE sa.status = 'pending_review'
+            ORDER BY sa.personalization_score DESC
         """)
         
         pending = cursor.fetchall()
@@ -310,34 +312,65 @@ class StrategicCareerOrchestrator:
         print("="*60)
         
         for i, app in enumerate(pending, 1):
-            app_id, company, role, email_to, subject, body, resume, score = app
+            app_id, company, role, email_to, subject, body, resume, score, job_id = app
+            
+            # Check if this is a portal-only application (email_to is NULL or 'None')
+            is_portal_only = (email_to is None or email_to == 'None' or email_to == '')
             
             # Clear screen for better readability
             print("\n" + "="*60)
-            print(f"📧 APPLICATION {i}/{len(pending)}")
+            if is_portal_only:
+                print(f"🌐 WEB APPLICATION {i}/{len(pending)}")
+            else:
+                print(f"📧 EMAIL APPLICATION {i}/{len(pending)}")
             print("="*60)
             print(f"Company:    {company}")
             print(f"Role:       {role}")
-            print(f"Email To:   {email_to}")
+            
+            if is_portal_only:
+                print(f"Apply Via:  Company Portal (No email available)")
+                # Get the portal URL if we have it
+                portal_url = self._get_portal_url(company, job_id)
+                if portal_url:
+                    print(f"Portal:     {portal_url}")
+            else:
+                print(f"Email To:   {email_to}")
+            
             print(f"Resume:     {Path(resume).name}")
             print(f"Quality:    {'⭐' * int(score * 5)} ({score:.2f})")
-            print(f"\nSubject:    {subject}")
-            print("\n--- Email Preview ---")
+            
+            if not is_portal_only:
+                print(f"\nSubject:    {subject}")
+            
+            print("\n--- Application Preview ---")
             print(body[:400] + "..." if len(body) > 400 else body)
             print("-" * 40)
             
-            # Get user decision
+            # Get user decision - different options for portal vs email
             while True:
-                decision = input("\n(A)pprove & Send, (S)kip, (E)dit, (D)elete, (Q)uit: ").lower()
+                if is_portal_only:
+                    decision = input("\n(P)roceed with Web Application, (S)kip, (D)elete, (Q)uit: ").lower()
+                else:
+                    decision = input("\n(A)pprove & Send Email, (S)kip, (E)dit, (D)elete, (Q)uit: ").lower()
                 
-                if decision == 'a':
-                    # Send the application
+                if decision == 'a' and not is_portal_only:
+                    # Send email application
                     success = self._send_staged_application(app_id, app)
                     if success:
-                        print("✅ Application sent successfully!")
+                        print("✅ Email sent successfully!")
                         self.session_stats['sent'] += 1
                     else:
-                        print("❌ Failed to send application")
+                        print("❌ Failed to send email")
+                    break
+                
+                elif decision == 'p' and is_portal_only:
+                    # Proceed with web application
+                    success = self._proceed_with_web_application(app_id, company, role, portal_url)
+                    if success:
+                        print("✅ Marked for web application!")
+                        self.session_stats['sent'] += 1
+                    else:
+                        print("⚠️  Web automation not yet implemented - apply manually")
                     break
                     
                 elif decision == 's':
@@ -369,7 +402,7 @@ class StrategicCareerOrchestrator:
     
     def _send_staged_application(self, app_id: int, app_data: Tuple) -> bool:
         """Send a staged application"""
-        _, company, role, email_to, subject, body, resume_path, _ = app_data
+        _, company, role, email_to, subject, body, resume_path, _, job_id = app_data
         
         try:
             # Use the quality system to send
@@ -445,6 +478,97 @@ class StrategicCareerOrchestrator:
         
         conn.commit()
         conn.close()
+    
+    def _get_portal_url(self, company: str, job_id: Optional[int]) -> Optional[str]:
+        """Get the portal URL for a company"""
+        # Known portal URLs for major companies
+        portal_urls = {
+            'Anthropic': 'job-boards.greenhouse.io/anthropic',
+            'Google': 'careers.google.com',
+            'Meta': 'careers.meta.com',
+            'Apple': 'jobs.apple.com',
+            'Amazon': 'amazon.jobs',
+            'Microsoft': 'careers.microsoft.com',
+            'Netflix': 'jobs.netflix.com'
+        }
+        
+        # Check if we have a known portal URL
+        if company in portal_urls:
+            return f"https://{portal_urls[company]}"
+        
+        # Try to get URL from job_discoveries table if we have job_id
+        if job_id:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT url FROM job_discoveries WHERE id = ?", (job_id,))
+            result = cursor.fetchone()
+            conn.close()
+            if result and result[0]:
+                return result[0]
+        
+        # Generate a generic careers URL as fallback
+        clean_name = company.lower().replace(' ', '').replace(',', '').replace('.', '')
+        return f"https://careers.{clean_name}.com"
+    
+    def _proceed_with_web_application(self, app_id: int, company: str, role: str, portal_url: Optional[str]) -> bool:
+        """Handle web portal application process"""
+        try:
+            print(f"\n🌐 Initiating web application for {company}")
+            
+            if not portal_url:
+                portal_url = self._get_portal_url(company, None)
+            
+            print(f"   Portal URL: {portal_url}")
+            
+            # Try to use WebFormAutomator if available
+            if hasattr(self.web_automator, 'apply_via_greenhouse') and 'greenhouse' in portal_url:
+                print("   🤖 Attempting automated Greenhouse application...")
+                success = self.web_automator.apply_via_greenhouse(portal_url)
+                if success:
+                    print("   ✅ Automated application submitted!")
+                else:
+                    print("   ⚠️  Automation failed - please apply manually")
+            else:
+                # For now, just mark as ready for manual application
+                print("\n   📋 Instructions for manual application:")
+                print(f"   1. Open browser to: {portal_url}")
+                print(f"   2. Search for: {role}")
+                print(f"   3. Upload resume: base_resume.pdf")
+                print(f"   4. Use the generated cover letter above")
+                print("\n   Press Enter when you've completed the application...")
+                input()
+                print("   ✅ Marked as completed!")
+            
+            # Update database to mark as applied via portal
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE staged_applications 
+                SET status = 'applied_via_portal', 
+                    sent_date = ?,
+                    notes = ?
+                WHERE id = ?
+            """, (datetime.now().isoformat(), f"Applied via portal: {portal_url}", app_id))
+            
+            # Also update job_discoveries
+            cursor.execute("""
+                UPDATE job_discoveries 
+                SET applied = 1, 
+                    applied_date = ?,
+                    application_status = 'portal_application',
+                    application_method = 'web_portal'
+                WHERE company = ? AND position = ?
+            """, (datetime.now().isoformat(), company, role))
+            
+            conn.commit()
+            conn.close()
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error with web application: {str(e)}")
+            return False
     
     def show_status_dashboard(self):
         """Show comprehensive status dashboard"""
