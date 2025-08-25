@@ -27,9 +27,9 @@ RELEVANT EXPERIENCE - HUMANA INC
 Principal Machine Learning Engineer | 2015-Present
 
 🎯 Financial ML Systems:
-• Fraud detection system with 0.01% false positive rate
-• Real-time transaction monitoring (1M+ daily)
-• Regulatory compliance automation (100% accuracy)
+• Experience with anomaly detection algorithms
+• Built real-time ML pipelines
+• Strong focus on model accuracy and reliability
 
 TECHNICAL EXPERTISE
 ━━━━━━━━━━━━━━━━━
@@ -53,6 +53,6 @@ EDUCATION & CERTIFICATIONS
 • TensorFlow Developer Certificate
 
 ═══════════════════════════════════════════════════════════
-Ready to bring American enterprise ML expertise to Revolut
+Ready to bring my ML expertise to Revolut
 Salary Expectation: £110K-£170K
 ═══════════════════════════════════════════════════════════

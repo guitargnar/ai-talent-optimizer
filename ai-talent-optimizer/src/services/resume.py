@@ -57,7 +57,13 @@ class ResumeService:
         Returns:
             Path to selected resume file
         """
-        # Analyze job to determine best resume
+        # PRIORITY: Always use 2025 resume if available
+        # This is the most up-to-date resume with Mirador project
+        for resume_path in self.resumes_dir.glob("*2025*.pdf"):
+            logger.info(f"Using 2025 resume: {resume_path.name}")
+            return str(resume_path)
+        
+        # Fallback to category-based selection only if 2025 resume not found
         position_lower = job.position.lower() if job.position else ""
         description_lower = job.description.lower() if job.description else ""
         

@@ -1,0 +1,16 @@
+AUTOMATIC SENDING DISABLED
+Created: 2025-01-24 19:56
+Reason: Prevent unauthorized application sending
+
+This file acts as a safety flag. When present, all scripts should check for approval before sending.
+
+To re-enable sending:
+1. Delete this file
+2. Use orchestrator.py for human-in-the-loop approval
+
+Scripts affected:
+- maximize_claude_value.py
+- quality_first_apply.py
+- dynamic_apply.py
+- automated_apply.py
+- batch_send_smtp.py

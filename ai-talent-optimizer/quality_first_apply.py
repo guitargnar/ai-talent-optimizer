@@ -11,6 +11,7 @@ import json
 import sqlite3
 import smtplib
 import time
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
@@ -37,14 +38,15 @@ class QualityFirstApplicationSystem:
         # Load environment
         self._load_env()
         
-        # Resume mapping based on role type
+        # Resume mapping - Using base_resume.pdf as single source of truth
+        # This is the matthew_scott_2025_professional_resume.pdf content
         self.resume_map = {
-            'ai_ml': 'resumes/matthew_scott_ai_ml_engineer_resume.pdf',
-            'healthcare': 'resumes/matthew_scott_healthcare_tech_resume.pdf',
-            'platform': 'resumes/matthew_scott_platform_engineer_resume.pdf',
-            'principal': 'resumes/matthew_scott_principal_engineer_resume.pdf',
-            'startup': 'resumes/matthew_scott_startup_resume.pdf',
-            'default': 'resumes/matthew_scott_professional_resume.pdf'
+            'ai_ml': 'resumes/base_resume.pdf',
+            'healthcare': 'resumes/base_resume.pdf',
+            'platform': 'resumes/base_resume.pdf',
+            'principal': 'resumes/base_resume.pdf',
+            'startup': 'resumes/base_resume.pdf',
+            'default': 'resumes/base_resume.pdf'
         }
         
         # High-value target companies (your tier 1 targets)
@@ -245,6 +247,27 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
         
         return ""
     
+    def _markdown_to_plain_text(self, markdown_text: str) -> str:
+        """Convert Markdown formatted text to clean plain text for email"""
+        text = markdown_text
+        
+        # Convert bold **text** to UPPERCASE
+        text = re.sub(r'\*\*([^*]+)\*\*', lambda m: m.group(1).upper(), text)
+        
+        # Convert bullet points • to -
+        text = text.replace('•', '-')
+        
+        # Remove any remaining markdown symbols
+        text = re.sub(r'[*_`]', '', text)
+        
+        # Clean up excessive whitespace
+        text = re.sub(r'\n{3,}', '\n\n', text)
+        
+        # Ensure proper spacing after punctuation
+        text = re.sub(r'([.!?])([A-Z])', r'\1 \2', text)
+        
+        return text.strip()
+    
     def select_resume(self, company: str, role: str) -> str:
         """Select the best resume variant for this application"""
         company_info = self.priority_companies.get(company, {})
@@ -281,16 +304,20 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
         resume_path = self.select_resume(company, role)
         resume_filename = Path(resume_path).name
         
-        # Step 4: Preview (in production, you might want to review)
+        # Step 4: Convert Markdown to plain text
+        print("   🔄 Converting to plain text format...")
+        plain_text_body = self._markdown_to_plain_text(body)
+        
+        # Step 5: Preview (in production, you might want to review)
         print("\n   📧 Email Preview:")
         print("   " + "-"*50)
         print(f"   Subject: {subject}")
         print(f"   Resume: {resume_filename}")
         print("   " + "-"*50)
-        print("   " + body[:200] + "...")
+        print("   " + plain_text_body[:200] + "...")
         print("   " + "-"*50)
         
-        # Step 5: Send email
+        # Step 6: Send email
         try:
             print("   📤 Sending application...")
             
@@ -301,8 +328,8 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
             msg['Subject'] = subject
             msg['Bcc'] = f"{self.email.split('@')[0]}+jobapps@gmail.com"  # BCC for tracking
             
-            # Attach body
-            msg.attach(MIMEText(body, 'plain'))
+            # Attach plain text body (with Markdown converted)
+            msg.attach(MIMEText(plain_text_body, 'plain'))
             
             # Attach resume
             if Path(resume_path).exists():

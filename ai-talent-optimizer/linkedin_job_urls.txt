@@ -1,0 +1,33 @@
+# LinkedIn Job URLs - Fresh ML/AI Positions (August 2025)
+# Add Easy Apply jobs here - one URL per line
+# These are example URLs - replace with actual current postings
+
+# Priority Companies from Tracker
+# Tempus AI - Multiple positions available
+https://www.linkedin.com/jobs/view/3995421234
+https://www.linkedin.com/jobs/view/3995421235
+https://www.linkedin.com/jobs/view/3995421236
+
+# Meta - ML Engineers
+https://www.linkedin.com/jobs/view/3994567890
+https://www.linkedin.com/jobs/view/3994567891
+
+# Google - AI/ML Roles
+https://www.linkedin.com/jobs/view/3993456789
+https://www.linkedin.com/jobs/view/3993456790
+
+# Microsoft - Principal Engineer
+https://www.linkedin.com/jobs/view/3992345678
+
+# Apple - ML Platform
+https://www.linkedin.com/jobs/view/3991234567
+
+# Anthropic - ML Safety
+https://www.linkedin.com/jobs/view/3990123456
+
+# Note: To find real job URLs:
+# 1. Go to LinkedIn.com/jobs
+# 2. Search for "Machine Learning Engineer" or "Principal Engineer AI"
+# 3. Filter by "Easy Apply"
+# 4. Filter by "Past Week" for fresh postings
+# 5. Copy the job URLs here

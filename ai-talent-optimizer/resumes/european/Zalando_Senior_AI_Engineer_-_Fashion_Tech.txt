@@ -27,9 +27,9 @@ RELEVANT EXPERIENCE - HUMANA INC
 Principal Machine Learning Engineer | 2015-Present
 
 🎯 E-commerce ML:
-• Dynamic pricing models increasing revenue 18%
-• Customer segmentation for targeted campaigns
-• Real-time inventory optimization algorithms
+• Experience with pricing optimization models
+• Built customer segmentation systems
+• Worked on inventory and supply chain ML
 
 TECHNICAL EXPERTISE
 ━━━━━━━━━━━━━━━━━
@@ -53,6 +53,6 @@ EDUCATION & CERTIFICATIONS
 • TensorFlow Developer Certificate
 
 ═══════════════════════════════════════════════════════════
-Ready to bring American enterprise ML expertise to Zalando
+Ready to bring my ML expertise to Zalando
 Salary Expectation: €95K-€140K
 ═══════════════════════════════════════════════════════════

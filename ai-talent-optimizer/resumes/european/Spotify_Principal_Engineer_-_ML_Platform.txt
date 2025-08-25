@@ -27,9 +27,9 @@ RELEVANT EXPERIENCE - HUMANA INC
 Principal Machine Learning Engineer | 2015-Present
 
 🎯 Recommendation Systems:
-• Built personalization engine serving 50K+ users
-• Implemented collaborative filtering with 31% engagement lift
-• A/B tested algorithms at scale with statistical rigor
+• Built recommendation systems
+• Implemented collaborative filtering algorithms
+• Experience with A/B testing and experimentation
 
 TECHNICAL EXPERTISE
 ━━━━━━━━━━━━━━━━━
@@ -53,6 +53,6 @@ EDUCATION & CERTIFICATIONS
 • TensorFlow Developer Certificate
 
 ═══════════════════════════════════════════════════════════
-Ready to bring American enterprise ML expertise to Spotify
+Ready to bring my ML expertise to Spotify
 Salary Expectation: SEK 900K-1.3M
 ═══════════════════════════════════════════════════════════

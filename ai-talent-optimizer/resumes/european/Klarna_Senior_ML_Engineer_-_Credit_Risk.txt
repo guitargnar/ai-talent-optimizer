@@ -27,9 +27,9 @@ RELEVANT EXPERIENCE - HUMANA INC
 Principal Machine Learning Engineer | 2015-Present
 
 🎯 Production ML Systems:
-• Architected platform processing 2M+ records daily
-• Achieved 99.9% uptime across all ML services
-• Reduced inference latency by 67% through optimization
+• Architected scalable ML platforms
+• Focus on system reliability and performance
+• Experience with latency optimization
 
 TECHNICAL EXPERTISE
 ━━━━━━━━━━━━━━━━━
@@ -53,6 +53,6 @@ EDUCATION & CERTIFICATIONS
 • TensorFlow Developer Certificate
 
 ═══════════════════════════════════════════════════════════
-Ready to bring American enterprise ML expertise to Klarna
+Ready to bring my ML expertise to Klarna
 Salary Expectation: SEK 750K-1.1M
 ═══════════════════════════════════════════════════════════

@@ -140,9 +140,9 @@ def create_accurate_resume():
     ))
     
     achievements = [
-        "• Architected Python ML frameworks delivering $1.2M in annual savings through process automation",
+        "• Architected Python ML frameworks for healthcare compliance and process automation",
         "• Led development of AI-driven compliance system maintaining 100% accuracy across Medicare regulations",
-        "• Built LLM orchestration system (Mirador) coordinating 7 specialized models for complex workflows",
+        "• Built LLM orchestration system (Mirador) coordinating 7 specialized models for complex workflows (personal project)",
         "• Developed predictive analytics models improving risk detection by 20% using ensemble methods",
         "• Managed cross-functional AI initiatives including E-Commerce Acceleration and Data Modernization",
         "• Created automated testing framework reducing manual review time by 35%"
@@ -202,10 +202,10 @@ def create_accurate_resume():
     elements.append(Paragraph("KEY PROJECTS & INNOVATIONS", heading_style))
     
     projects = [
-        "• <b>Mirador AI System:</b> Distributed ML architecture orchestrating 7 specialized LLMs for enterprise decision-making",
+        "• <b>Mirador AI System:</b> Personal project - ML architecture orchestrating 7 specialized LLMs for document analysis",
         "• <b>Medicare Compliance Platform:</b> Automated system maintaining 100% accuracy across regulatory requirements",
-        "• <b>FinanceForge:</b> Personal finance optimization system with predictive analytics and anomaly detection",
-        "• <b>FretForge:</b> ML-powered guitar learning platform with real-time audio analysis",
+        "• <b>Job Search Automation:</b> Personal ML-powered platform integrating LinkedIn, Greenhouse, and Lever APIs",
+        "• <b>FretForge:</b> Personal project - ML-powered guitar learning platform with real-time audio analysis",
         "• <b>Risk Detection Framework:</b> Production system improving risk identification by 20% using ensemble methods"
     ]
     

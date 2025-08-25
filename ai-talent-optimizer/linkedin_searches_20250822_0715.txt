@@ -1,0 +1,42 @@
+# LinkedIn Job Search URLs
+# Generated: 2025-08-22 07:15
+
+# Principal/Staff ML Engineers - Easy Apply
+https://www.linkedin.com/jobs/search/?keywords=principal%20machine%20learning%20engineer%20OR%20staff%20ML%20engineer&location=United%20States&f_AL=true&f_TPR=r604800
+
+# Senior ML Engineers - Remote
+https://www.linkedin.com/jobs/search/?keywords=senior%20machine%20learning%20engineer&location=United%20States&f_AL=true&f_TPR=r604800&f_WT=2
+
+# AI/ML Platform Engineers
+https://www.linkedin.com/jobs/search/?keywords=ML%20platform%20engineer%20OR%20MLOps%20engineer&location=United%20States&f_AL=true&f_TPR=r86400
+
+# Healthcare AI/ML
+https://www.linkedin.com/jobs/search/?keywords=healthcare%20machine%20learning%20OR%20medical%20AI&location=United%20States&f_AL=true&f_TPR=r604800
+
+# LLM/GenAI Engineers
+https://www.linkedin.com/jobs/search/?keywords=LLM%20engineer%20OR%20generative%20AI%20engineer&location=United%20States&f_AL=true&f_TPR=r604800
+
+# European ML - Visa Sponsorship
+https://www.linkedin.com/jobs/search/?keywords=machine%20learning%20engineer%20visa%20sponsorship&location=European%20Union&f_AL=true&f_TPR=r2592000
+
+# London ML Roles
+https://www.linkedin.com/jobs/search/?keywords=machine%20learning%20engineer&location=London%2C%20United%20Kingdom&f_AL=true&f_TPR=r604800
+
+# Amsterdam Tech Roles
+https://www.linkedin.com/jobs/search/?keywords=ML%20engineer%20OR%20data%20scientist&location=Amsterdam%2C%20Netherlands&f_AL=true&f_TPR=r604800
+
+# Anthropic - ML Roles
+https://www.linkedin.com/jobs/search/?keywords=Anthropic%20machine%20learning&f_AL=true&f_TPR=r2592000
+
+# OpenAI - ML Roles
+https://www.linkedin.com/jobs/search/?keywords=OpenAI%20machine%20learning&f_AL=true&f_TPR=r2592000
+
+# DeepMind - ML Roles
+https://www.linkedin.com/jobs/search/?keywords=DeepMind%20machine%20learning&f_AL=true&f_TPR=r2592000
+
+# Meta - ML Roles
+https://www.linkedin.com/jobs/search/?keywords=Meta%20machine%20learning&f_AL=true&f_TPR=r2592000
+
+# Google - ML Roles
+https://www.linkedin.com/jobs/search/?keywords=Google%20machine%20learning&f_AL=true&f_TPR=r2592000
+

@@ -1,0 +1,48 @@
+{
+  "generated": "2025-08-21T07:39:04.020559",
+  "termination_date": "2025-08-19T00:00:00",
+  "days_since": 2,
+  "week_target": 250,
+  "month_target": 700,
+  "immediate_actions": {
+    "1. LinkedIn (10 minutes)": [
+      "\u2713 Set 'Open to Work' - Recruiters only",
+      "\u2713 Post update: 'Exploring new ML/AI opportunities'",
+      "\u2713 Message 10 connections about opportunities"
+    ],
+    "2. Job Boards (20 minutes)": [
+      "\u2713 Create alerts on Indeed, LinkedIn, AngelList",
+      "\u2713 Upload resume to Dice, Monster, ZipRecruiter",
+      "\u2713 Set up daily email digests"
+    ],
+    "3. Target Companies (30 minutes)": [
+      "\u2713 Apply DIRECTLY to:",
+      "  \u2022 Anthropic (anthropic.com/careers)",
+      "  \u2022 OpenAI (openai.com/careers)",
+      "  \u2022 Scale AI (scale.com/careers)",
+      "  \u2022 Databricks (databricks.com/careers)",
+      "  \u2022 Hugging Face (huggingface.co/jobs)"
+    ]
+  },
+  "week_plan": {
+    "Wednesday (TODAY)": [
+      "Morning: 25 ML Engineer applications",
+      "Afternoon: 25 Senior/Staff applications",
+      "Evening: Update pipeline tracker"
+    ],
+    "Thursday": [
+      "Morning: 25 Platform/Infrastructure roles",
+      "Afternoon: 25 Data Engineering roles",
+      "Evening: Respond to any emails"
+    ],
+    "Friday": [
+      "Morning: 25 AI/GenAI roles",
+      "Afternoon: 25 Startup positions",
+      "Evening: Plan weekend follow-ups"
+    ],
+    "Weekend": [
+      "Saturday: 50 remote-only positions",
+      "Sunday: Prep for next week's interviews"
+    ]
+  }
+}

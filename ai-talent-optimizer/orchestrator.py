@@ -20,6 +20,7 @@ import hashlib
 sys.path.append(str(Path(__file__).parent))
 from quality_first_apply import QualityFirstApplicationSystem
 from dynamic_apply import DynamicJobApplicationSystem
+from company_researcher import CompanyResearcher
 
 # ============================================================================
 # FUTURE INTEGRATION STUBS
@@ -114,6 +115,7 @@ class StrategicCareerOrchestrator:
         self.db_path = "UNIFIED_AI_JOBS.db"
         self.quality_system = QualityFirstApplicationSystem()
         self.dynamic_system = DynamicJobApplicationSystem()
+        self.company_researcher = CompanyResearcher()
         
         # Future integrations (currently stubs)
         self.web_automator = WebFormAutomator()
@@ -189,14 +191,27 @@ class StrategicCareerOrchestrator:
         print(f"✅ Found {len(discovered_jobs)} opportunities")
         self.session_stats['discovered'] += len(discovered_jobs)
         
-        # Step 2: Update database
+        # Step 2: Verify email addresses for discovered jobs
+        print(f"\n📧 Verifying email addresses...")
+        for job in discovered_jobs:
+            # Find and verify email for each company
+            verified_email = self.company_researcher.find_and_verify_email(job['company_name'])
+            if verified_email:
+                job['email'] = verified_email
+                job['email_verified'] = True
+            else:
+                # Fallback to generic pattern
+                job['email'] = job.get('email', f"careers@{job['company_name'].lower().replace(' ', '')}.com")
+                job['email_verified'] = False
+        
+        # Step 3: Update database with verified emails
         new_jobs = self.dynamic_system.update_database_with_discoveries(discovered_jobs)
         
         if not new_jobs:
             print("⚠️  All jobs already in database")
             return
         
-        # Step 3: Generate and stage applications
+        # Step 4: Generate and stage applications
         print(f"\n✍️  Generating personalized applications for {len(new_jobs)} jobs...")
         
         for job in new_jobs:
@@ -208,6 +223,14 @@ class StrategicCareerOrchestrator:
     
     def _stage_application(self, job: Dict):
         """Generate and stage a single application"""
+        # Use verified email or find one if not present
+        if not job.get('email') or not job.get('email_verified'):
+            verified_email = self.company_researcher.find_and_verify_email(job['company_name'])
+            if verified_email:
+                job['email'] = verified_email
+            else:
+                job['email'] = f"careers@{job['company_name'].lower().replace(' ', '')}.com"
+        
         # Generate personalized content
         research = self.quality_system.research_company(
             job['company_name'], 
@@ -231,6 +254,8 @@ class StrategicCareerOrchestrator:
             personalization_score += 0.10
         if 'specific_value' in body:
             personalization_score += 0.05
+        if job.get('email_verified'):
+            personalization_score += 0.04  # Bonus for verified email
         
         # Save to staging table
         conn = sqlite3.connect(self.db_path)
@@ -246,7 +271,7 @@ class StrategicCareerOrchestrator:
             job.get('db_id'),
             job['company_name'],
             job['job_title'],
-            job.get('email', f"careers@{job['company_name'].lower().replace(' ', '')}.com"),
+            job['email'],
             subject,
             body,
             resume_path,

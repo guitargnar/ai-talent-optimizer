@@ -3,7 +3,7 @@
 # Memory System: ~/.claude/memories/
 
 ## Project Overview
-AI Talent Optimizer - Job search automation system for AI/ML roles.
+AI Talent Optimizer - Strategic Career Platform v2.0 with human-in-the-loop workflow
 
 ## Contact Information
 - **Name**: Matthew Scott
@@ -12,86 +12,90 @@ AI Talent Optimizer - Job search automation system for AI/ML roles.
 - **LinkedIn**: linkedin.com/in/mscott77
 - **GitHub**: github.com/guitargnar
 
-## Key Metrics (Verified & Corrected)
-- **LLM Count**: 7 specialized models in Mirador
-- **Annual Savings**: $1.2M (verified at Humana)
-- **Compliance**: 100% Medicare/CMS adherence
-- **Applications Sent**: 12 (as of Aug 17, 2025)
-- **Real Company Jobs**: 307+ from Greenhouse/Lever
+## Key Metrics (as of Aug 23, 2025)
+- **Ollama Models**: 74 specialized models available
+- **Real Source Files**: 274 Python files (NOT 22,247 - that included venv)
+- **Applications Sent**: 17 REAL (some were DB-only)
+- **High-Priority Jobs**: 48 pending (0.65+ score)
+- **Bounce Rate**: 45.5% - needs email verification
 
-## Working Commands (v3.1)
+## 🚀 PRIMARY COMMANDS (v2.0 - Strategic Platform)
 ```bash
-# Primary Commands
-python3 main.py status              # System status & metrics
-python3 preview_applications.py     # Preview before sending
-python3 guided_apply.py            # Interactive application workflow
-python3 send_batch_applications.py  # Controlled batch sending
+# MAIN ENTRY POINT - USE THIS
+python3 orchestrator.py          # Strategic command center with approval workflow
 
-# Job Discovery
-python3 src/services/enhanced_job_scraper.py  # Greenhouse/Lever APIs
-python3 src/services/email_discovery.py       # Find real company emails
+# Alternative Entry Points
+python3 dynamic_apply.py "Job Title"    # Discover and apply to specific roles
+python3 quality_first_apply.py          # Direct quality applications to top companies
 
-# Resume Generation
-python3 create_accurate_resume.py   # Generate truthful resume
+# Metrics & Status
+python3 true_metrics_dashboard.py       # Real metrics (no false positives)
 
-# Testing
-python3 test_email_config.py       # Verify SMTP setup
-
-# DO NOT USE (deprecated/broken)
-# python3 automated_apply.py - Use guided_apply.py instead
-# python3 enhanced_response_checker.py - False positives
+# DO NOT USE - SENDS GENERIC SPAM
+# python3 batch_send_smtp.py - Generic emails, no personalization
+# python3 automated_apply.py - Deprecated, use orchestrator.py
 ```
 
-## Important Notes
-- **$1.2M savings** is VERIFIED (use confidently)
-- **Education section** now included (self-directed learning)
-- **No inflated claims** - Only use verified facts
-- **Email personalization** - 30+ templates, authentic voice
+## 🎯 Strategic Platform Architecture (v2.0)
 
-## Latest Updates (Aug 17, 2025 - v3.1)
+### Workflow: Human-in-the-Loop
+1. **Discover** - Find jobs online
+2. **Generate** - Create personalized content  
+3. **Stage** - Queue for review (staged_applications table)
+4. **Review** - Human approval required
+5. **Send** - Only after explicit approval
 
-### Critical Fixes Completed
-- ✅ Fixed email discovery (was sending to careers@adzuna.com)
-- ✅ Corrected resume (removed inflated claims, added education)
-- ✅ Fixed HTML tags in PDF (<b>Languages:</b> issue resolved)
-- ✅ Eliminated template artifacts ({your_platform} etc.)
-- ✅ Reduced Humana mentions by 75%
+### Quality-First Features
+- Company-specific research and personalization
+- Resume variant selection (ai_ml, healthcare, platform, principal, startup)
+- Smart subject lines (no generic "Application")
+- 30-second professional spacing between sends
+- BCC tracking for all sent applications
 
-### System Status
-- Removed Adzuna dependency (was sending to careers@adzuna.com)
-- Created enhanced_job_scraper.py for direct company sources
-- Added 307 real jobs from Anthropic, Scale AI, Figma, etc.
-- All jobs now have verified company emails
+### Database Changes
+- Added `staged_applications` table for review queue
+- Status tracking: pending_review, sent, deleted
+- Personalization scoring (0.85-0.99)
+- Full email content storage for review
 
-### New Direct Job Sources
-- **Greenhouse API**: 20+ companies (Anthropic, OpenAI, Scale AI, etc.)
-- **Lever API**: 5+ companies (Brex, Plaid, Reddit, etc.)
-- **Real Emails**: careers@anthropic.com, careers@scale.com, etc.
+## ⚠️ CRITICAL DISCOVERIES (Aug 23, 2025)
 
-## Recent Enhancements (Aug 16, 2025)
+### The 22,247 Files Issue - RESOLVED
+- **Reality**: Only 274 actual source files
+- **Problem**: 21,971 files were in ml-env virtual environment (2.5GB)
+- **Largest real file**: 47KB (perfectly reasonable)
+- **Action**: Exclude ml-env from all operations
 
-### New Services Added
-- **Job Discovery**: Scrapes Adzuna, Greenhouse, Lever boards (20+ companies)
-- **Email Validator**: DNS/MX/SMTP validation with confidence scoring
-- **Resume Generator**: 5 role variants (AI/ML, Principal, Healthcare, Startup, Security)
-- **Email Composer**: Authentic, sentimental templates (not generic corporate)
+### Email Sending Truth
+- `batch_send_smtp.py` sends GENERIC SPAM - DO NOT USE
+- Many "sent" applications were database-only (no email sent)
+- Real sent count is likely much lower than reported
+- Use orchestrator.py for quality-controlled sending
 
-### Target Companies
-Top tier: Anthropic, OpenAI, Tempus, Google DeepMind, Meta AI
-Healthcare: Cedar, Zocdoc, Oscar Health, Doximity
-Startups: Perplexity, Runway, Jasper, Replit, Glean
+## Target Companies (Priority)
+**Tier 1**: Anthropic, OpenAI, Tempus, Scale AI, Cohere
+**Tier 2**: Databricks, Perplexity, Mistral AI, Hugging Face
+**Healthcare AI**: Tempus, Flatiron Health, Komodo Health
+**Platform**: Databricks, Snowflake, Weights & Biases
 
-### Resume Variants
-- Each highlights Humana (10 years) + Mightily (4 years) experience
-- Includes notable projects: Mirador, FretForge, FinanceForge, Phishing Detector
-- Emphasizes 117 Python modules, 86,279+ files managed
+## Resume Variants Available
+- `matthew_scott_ai_ml_engineer_resume.pdf` - AI/ML roles
+- `matthew_scott_healthcare_tech_resume.pdf` - Healthcare companies
+- `matthew_scott_platform_engineer_resume.pdf` - Infrastructure roles
+- `matthew_scott_principal_engineer_resume.pdf` - Senior positions
+- `matthew_scott_startup_resume.pdf` - Startup environments
 
-### Email Philosophy
-- Genuine and personal, not corporate speak
-- References specific company news/achievements
-- Connects Humana experience to company needs
-- Always mentions attached resume appropriately
+## Session Handoff Notes
+- **Latest commit**: 98014f1 (Strategic Platform v2.0)
+- **Release tag**: v2.0.0
+- **Key achievement**: Transformed generic system to quality-first platform
+- **Next session**: Start with `python3 orchestrator.py`
+
+## Future Integration Stubs (Ready for Enhancement)
+- `WebFormAutomator` - Puppeteer integration for Greenhouse/Lever
+- `LinkedInResearcher` - Find hiring managers
+- `generate_content_with_ollama` - Chain 74 models for content
 
 ---
 
-*Project-specific configuration for ai-talent-optimizer*
+*Strategic Career Platform v2.0 - Quality First, Human Approved*

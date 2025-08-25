@@ -1,0 +1,18 @@
+{
+  "linkedin_email": "YOUR_EMAIL_HERE",
+  "linkedin_password": "YOUR_PASSWORD_HERE",
+  "profile": {
+    "phone": "(502) 345-0525",
+    "email": "matthewdscott7@gmail.com",
+    "linkedin_url": "linkedin.com/in/mscott77",
+    "current_company": "Independent",
+    "years_experience": "10",
+    "degree": "Self-Directed Learning",
+    "school": "Independent Study",
+    "skills": ["Python", "TensorFlow", "PyTorch", "Machine Learning", "AI"]
+  },
+  "resume_path": "/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer/resumes/matthew_scott_2025_professional_resume.pdf",
+  "cover_letter_template": "I am excited about this opportunity...",
+  "auto_submit": false,
+  "max_applications_per_day": 50
+}

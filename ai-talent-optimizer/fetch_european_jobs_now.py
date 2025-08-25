@@ -297,27 +297,27 @@ Principal Machine Learning Engineer | 2015-Present
 """
         elif 'spotify' in job['company'].lower() or 'recommendation' in job['position'].lower():
             resume += """🎯 Recommendation Systems:
-• Built personalization engine serving 50K+ users
-• Implemented collaborative filtering with 31% engagement lift
-• A/B tested algorithms at scale with statistical rigor
+• Built recommendation systems
+• Implemented collaborative filtering algorithms
+• Experience with A/B testing and experimentation
 """
         elif 'booking' in job['company'].lower() or 'zalando' in job['company'].lower():
             resume += """🎯 E-commerce ML:
-• Dynamic pricing models increasing revenue 18%
-• Customer segmentation for targeted campaigns
-• Real-time inventory optimization algorithms
+• Experience with pricing optimization models
+• Built customer segmentation systems
+• Worked on inventory and supply chain ML
 """
         elif 'revolut' in job['company'].lower() or 'adyen' in job['company'].lower():
             resume += """🎯 Financial ML Systems:
-• Fraud detection system with 0.01% false positive rate
-• Real-time transaction monitoring (1M+ daily)
-• Regulatory compliance automation (100% accuracy)
+• Experience with anomaly detection algorithms
+• Built real-time ML pipelines
+• Strong focus on model accuracy and reliability
 """
         else:
             resume += """🎯 Production ML Systems:
-• Architected platform processing 2M+ records daily
-• Achieved 99.9% uptime across all ML services
-• Reduced inference latency by 67% through optimization
+• Architected scalable ML platforms
+• Focus on system reliability and performance
+• Experience with latency optimization
 """
         
         resume += f"""
@@ -343,7 +343,7 @@ EDUCATION & CERTIFICATIONS
 • TensorFlow Developer Certificate
 
 ═══════════════════════════════════════════════════════════
-Ready to bring American enterprise ML expertise to {job['company']}
+Ready to bring my ML expertise to {job['company']}
 Salary Expectation: {job.get('salary_range', 'Competitive')}
 ═══════════════════════════════════════════════════════════"""
         
