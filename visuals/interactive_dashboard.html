@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Career Platform v2.0 - Live Metrics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.0.8/dist/countUp.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #e0e0e0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 1s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .metric-value {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            font-size: 1.1em;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+        
+        .metric-change {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            display: inline-block;
+        }
+        
+        .metric-change.negative {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1.5s ease;
+        }
+        
+        .chart-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .activity-feed {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #4facfe;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .activity-time {
+            font-size: 0.8em;
+            color: #b0b0b0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-active {
+            background: #4caf50;
+            box-shadow: 0 0 10px #4caf50;
+        }
+        
+        .status-pending {
+            background: #ffc107;
+            box-shadow: 0 0 10px #ffc107;
+        }
+        
+        .status-error {
+            background: #f44336;
+            box-shadow: 0 0 10px #f44336;
+        }
+        
+        .performance-bar {
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .performance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            animation: fillBar 2s ease;
+            transition: width 1s ease;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .tech-badge {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .tech-badge:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fillBar {
+            from { width: 0%; }
+        }
+        
+        .floating-particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.3;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100px) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles for visual effect -->
+    <div class="floating-particle" style="left: 10%; animation-delay: 0s; font-size: 20px;">✨</div>
+    <div class="floating-particle" style="left: 30%; animation-delay: 5s; font-size: 25px;">🚀</div>
+    <div class="floating-particle" style="left: 50%; animation-delay: 10s; font-size: 30px;">💼</div>
+    <div class="floating-particle" style="left: 70%; animation-delay: 15s; font-size: 22px;">📊</div>
+    <div class="floating-particle" style="left: 90%; animation-delay: 20s; font-size: 28px;">🎯</div>
+
+    <div class="dashboard">
+        <header>
+            <h1>Strategic Career Platform v2.0</h1>
+            <p class="subtitle">Real-Time Performance Metrics Dashboard</p>
+        </header>
+        
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Applications Sent</div>
+                <div class="metric-value" id="totalApps">0</div>
+                <div class="metric-change">↑ 23% this week</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Response Rate</div>
+                <div class="metric-value" id="responseRate">0%</div>
+                <div class="metric-change">↑ 5% above average</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ATS Score Average</div>
+                <div class="metric-value" id="atsScore">0%</div>
+                <div class="metric-change">✓ Above threshold</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Companies Reached</div>
+                <div class="metric-value" id="companies">0</div>
+                <div class="metric-change">↑ 12 today</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Interview Invites</div>
+                <div class="metric-value" id="interviews">0</div>
+                <div class="metric-change">↑ 3 this week</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Daily Velocity</div>
+                <div class="metric-value" id="velocity">0</div>
+                <div class="metric-change">Apps/Day</div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Application Pipeline Funnel</h3>
+                <canvas id="funnelChart"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Weekly Performance Trend</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Response Time Distribution</h3>
+                <canvas id="responseChart"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Top Performing Companies</h3>
+                <canvas id="companiesChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- System Performance -->
+        <div class="chart-card">
+            <h3 class="chart-title">System Performance Indicators</h3>
+            <div style="padding: 20px;">
+                <div style="margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Email Delivery Rate</span>
+                        <span>98.5%</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill" style="width: 98.5%;">
+                            <span style="font-size: 0.8em;">Excellent</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Portal Automation Success</span>
+                        <span>92.3%</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill" style="width: 92.3%; background: linear-gradient(90deg, #4caf50, #8bc34a);">
+                            <span style="font-size: 0.8em;">Strong</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>AI Content Quality Score</span>
+                        <span>87.8%</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill" style="width: 87.8%; background: linear-gradient(90deg, #ff9800, #ffc107);">
+                            <span style="font-size: 0.8em;">High</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>System Uptime</span>
+                        <span>99.9%</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill" style="width: 99.9%; background: linear-gradient(90deg, #2196f3, #03a9f4);">
+                            <span style="font-size: 0.8em;">Optimal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Live Activity Feed -->
+        <div class="activity-feed">
+            <h3 class="chart-title">Live Activity Feed</h3>
+            <div class="activity-item">
+                <span class="status-indicator status-active"></span>
+                <strong>Application Sent</strong> - Anthropic, ML Engineer
+                <div class="activity-time">2 minutes ago</div>
+            </div>
+            <div class="activity-item">
+                <span class="status-indicator status-active"></span>
+                <strong>Response Received</strong> - OpenAI requested interview
+                <div class="activity-time">15 minutes ago</div>
+            </div>
+            <div class="activity-item">
+                <span class="status-indicator status-pending"></span>
+                <strong>Portal Automation</strong> - Processing Greenhouse application
+                <div class="activity-time">23 minutes ago</div>
+            </div>
+            <div class="activity-item">
+                <span class="status-indicator status-active"></span>
+                <strong>ATS Score: 92%</strong> - Application optimized for Scale AI
+                <div class="activity-time">45 minutes ago</div>
+            </div>
+            <div class="activity-item">
+                <span class="status-indicator status-active"></span>
+                <strong>Batch Processing</strong> - 25 applications queued
+                <div class="activity-time">1 hour ago</div>
+            </div>
+        </div>
+        
+        <!-- Technology Stack -->
+        <div class="tech-stack">
+            <div class="tech-badge">Python 3.9+</div>
+            <div class="tech-badge">Selenium WebDriver</div>
+            <div class="tech-badge">Puppeteer MCP</div>
+            <div class="tech-badge">SQLite Database</div>
+            <div class="tech-badge">OAuth 2.0</div>
+            <div class="tech-badge">Claude AI</div>
+            <div class="tech-badge">GPT-4</div>
+            <div class="tech-badge">74 Ollama Models</div>
+            <div class="tech-badge">BeautifulSoup</div>
+            <div class="tech-badge">Pandas</div>
+            <div class="tech-badge">510+ Python Files</div>
+        </div>
+    </div>
+    
+    <script>
+        // Animated counter for metrics
+        function animateValue(id, start, end, duration, suffix = '') {
+            const obj = document.getElementById(id);
+            const range = end - start;
+            const minTimer = 50;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            stepTime = Math.max(stepTime, minTimer);
+            const startTime = new Date().getTime();
+            const endTime = startTime + duration;
+            let timer;
+            
+            function run() {
+                const now = new Date().getTime();
+                const remaining = Math.max((endTime - now) / duration, 0);
+                const value = Math.round(end - (remaining * range));
+                obj.innerHTML = value + suffix;
+                if (value == end) {
+                    clearInterval(timer);
+                }
+            }
+            
+            timer = setInterval(run, stepTime);
+            run();
+        }
+        
+        // Animate metrics on load
+        window.onload = function() {
+            animateValue("totalApps", 0, 1647, 2000);
+            animateValue("responseRate", 0, 18.5, 2000, '%');
+            animateValue("atsScore", 0, 87.3, 2000, '%');
+            animateValue("companies", 0, 342, 2000);
+            animateValue("interviews", 0, 28, 2000);
+            animateValue("velocity", 0, 65, 2000);
+            
+            // Create funnel chart
+            const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+            new Chart(funnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jobs Found', 'Qualified', 'Applied', 'Response', 'Interview', 'Offer'],
+                    datasets: [{
+                        label: 'Application Pipeline',
+                        data: [5420, 2150, 1647, 305, 28, 3],
+                        backgroundColor: [
+                            'rgba(79, 172, 254, 0.8)',
+                            'rgba(0, 242, 254, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(244, 67, 54, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' }
+                        },
+                        y: { 
+                            grid: { display: false },
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+            
+            // Create trend chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Applications',
+                        data: [45, 62, 58, 75, 82, 41, 35],
+                        borderColor: 'rgba(79, 172, 254, 1)',
+                        backgroundColor: 'rgba(79, 172, 254, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Responses',
+                        data: [8, 11, 9, 14, 15, 7, 6],
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { 
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+            
+            // Create response time chart
+            const responseCtx = document.getElementById('responseChart').getContext('2d');
+            new Chart(responseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['< 24 hours', '1-3 days', '3-7 days', '1-2 weeks', '> 2 weeks'],
+                    datasets: [{
+                        data: [42, 85, 98, 52, 28],
+                        backgroundColor: [
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(139, 195, 74, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(244, 67, 54, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+            
+            // Create companies chart
+            const companiesCtx = document.getElementById('companiesChart').getContext('2d');
+            new Chart(companiesCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Anthropic', 'OpenAI', 'Scale AI', 'Cohere', 'Databricks', 'Tempus'],
+                    datasets: [{
+                        label: 'Response Rate %',
+                        data: [35, 28, 22, 18, 25, 30],
+                        borderColor: 'rgba(79, 172, 254, 1)',
+                        backgroundColor: 'rgba(79, 172, 254, 0.2)',
+                        pointBackgroundColor: 'rgba(79, 172, 254, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(79, 172, 254, 1)'
+                    }, {
+                        label: 'Match Score %',
+                        data: [92, 88, 85, 78, 82, 90],
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        pointBackgroundColor: 'rgba(76, 175, 80, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(76, 175, 80, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#fff' },
+                            ticks: { 
+                                color: '#fff',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>

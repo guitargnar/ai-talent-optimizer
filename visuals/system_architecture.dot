@@ -1,0 +1,204 @@
+digraph "Strategic_Career_Platform_v2" {
+    // Graph settings for maximum visual impact
+    graph [
+        rankdir=TB,
+        bgcolor="transparent",
+        fontname="Helvetica",
+        fontsize=24,
+        label="Strategic Career Platform v2.0 - Complete System Architecture\nAI-Powered Job Application Automation",
+        labelloc=t,
+        compound=true,
+        nodesep=1.0,
+        ranksep=1.5,
+        splines=curved,
+        style="rounded,filled",
+        fillcolor="#f0f0f0",
+        penwidth=3
+    ];
+    
+    node [
+        shape=box3d,
+        style="filled,rounded",
+        fontname="Helvetica",
+        fontsize=11,
+        penwidth=2,
+        gradientangle=90
+    ];
+    
+    edge [
+        fontname="Helvetica",
+        fontsize=10,
+        penwidth=2,
+        arrowsize=1.2
+    ];
+
+    // Define color schemes for different components
+    // Input Layer
+    subgraph cluster_input {
+        label="DATA SOURCES";
+        style="filled,rounded,dashed";
+        fillcolor="#e8f4fd";
+        color="#2196f3";
+        penwidth=3;
+        
+        linkedin [label="LinkedIn\nJob Board\n10K+ Jobs/Day", fillcolor="#0077b5:#004182", fontcolor=white];
+        indeed [label="Indeed\nAggregator\n50K+ Jobs", fillcolor="#2557a7:#1a3d7a", fontcolor=white];
+        glassdoor [label="Glassdoor\nCompany Intel\nSalary Data", fillcolor="#0caa41:#097530", fontcolor=white];
+        adzuna [label="Adzuna API\nRealtime Feed\nGlobal Reach", fillcolor="#ff6b35:#cc5628", fontcolor=white];
+        greenhouse [label="Greenhouse\nDirect Portal\nEnterprise ATS", fillcolor="#38b2ac:#2d8f8a", fontcolor=white];
+        lever [label="Lever\nStartup ATS\nModern Stack", fillcolor="#7c3aed:#6d28d9", fontcolor=white];
+    }
+    
+    // Discovery & Analysis Layer
+    subgraph cluster_discovery {
+        label="DISCOVERY & ANALYSIS ENGINE";
+        style="filled,rounded";
+        fillcolor="#fff3e0";
+        color="#ff9800";
+        penwidth=3;
+        
+        job_discovery [label="Job Discovery\nMulti-Source Aggregation\nDupe Detection\nRelevance Scoring", fillcolor="#ffa726:#ff9800", fontcolor=white, shape=component];
+        company_research [label="Company Research\nEmail Discovery\nDomain Validation\nPortal Detection", fillcolor="#ff7043:#ff5722", fontcolor=white, shape=component];
+        salary_analyzer [label="Salary Intelligence\nMarket Analysis\nComp Benchmarking\n$150K-$500K Range", fillcolor="#ef5350:#f44336", fontcolor=white, shape=component];
+        
+        job_discovery -> company_research [label="Company\nData"];
+        company_research -> salary_analyzer [label="Market\nIntel"];
+    }
+    
+    // AI/ML Processing Layer
+    subgraph cluster_ai {
+        label="AI/ML PROCESSING CORE";
+        style="filled,rounded";
+        fillcolor="#f3e5f5";
+        color="#9c27b0";
+        penwidth=3;
+        
+        content_generator [label="AI Content Generator\nGPT-4 Integration\nClaude Integration\nOllama Models (74)", fillcolor="#ab47bc:#9c27b0", fontcolor=white, shape=doubleoctagon];
+        resume_selector [label="Resume Optimizer\n6 Variants\nATS Scoring\nKeyword Matching", fillcolor="#7e57c2:#673ab7", fontcolor=white, shape=doubleoctagon];
+        personalization [label="Personalization Engine\nCompany Culture Match\nTone Adjustment\nValue Prop Generation", fillcolor="#5e35b1:#512da8", fontcolor=white, shape=doubleoctagon];
+        quality_scorer [label="Quality Scorer\nATS Validation\n85%+ Required\nGrammar Check", fillcolor="#3f51b5:#3949ab", fontcolor=white, shape=doubleoctagon];
+        
+        content_generator -> personalization [label="Context"];
+        resume_selector -> personalization [label="Resume\nSelection"];
+        personalization -> quality_scorer [label="Draft\nContent"];
+    }
+    
+    // Orchestration Layer
+    subgraph cluster_orchestrator {
+        label="ORCHESTRATION HUB";
+        style="filled,rounded,bold";
+        fillcolor="#e8f5e9";
+        color="#4caf50";
+        penwidth=4;
+        
+        orchestrator [label="ORCHESTRATOR.PY\nMain Command Center\nWorkflow Management\nState Machine\nEvent Router", fillcolor="#66bb6a:#4caf50", fontcolor=white, shape=cylinder, height=1.2];
+        staged_apps [label="Staged Applications\nReview Queue\nPriority Ranking\nBatch Processing", fillcolor="#26a69a:#00897b", fontcolor=white, shape=cylinder];
+        approval_engine [label="Approval Engine\nHuman-in-Loop\nEdit Interface\nValidation Rules", fillcolor="#00acc1:#0097a7", fontcolor=white, shape=cylinder];
+        
+        orchestrator -> staged_apps [label="Queue\nApps", style=bold];
+        staged_apps -> approval_engine [label="Review\nRequired", style=bold];
+        approval_engine -> orchestrator [label="Approved\nApps", style=bold, color=green];
+    }
+    
+    // Delivery Layer
+    subgraph cluster_delivery {
+        label="DELIVERY & AUTOMATION";
+        style="filled,rounded";
+        fillcolor="#fce4ec";
+        color="#e91e63";
+        penwidth=3;
+        
+        email_engine [label="Email Engine\nSMTP/OAuth\nRate Limiting\nBCC Tracking", fillcolor="#ec407a:#e91e63", fontcolor=white, shape=box3d];
+        puppeteer_auto [label="Puppeteer Automation\nWeb Forms\nScreenshots\nDynamic Fields", fillcolor="#ab47bc:#9c27b0", fontcolor=white, shape=box3d];
+        selenium_driver [label="Selenium Driver\nBrowser Control\nLinkedIn Easy Apply\nCookie Management", fillcolor="#7e57c2:#673ab7", fontcolor=white, shape=box3d];
+        api_submitter [label="API Submitter\nDirect Integration\nWebhooks\nREST Endpoints", fillcolor="#5e35b1:#512da8", fontcolor=white, shape=box3d];
+        
+        email_engine -> api_submitter [label="Fallback", style=dotted];
+        puppeteer_auto -> selenium_driver [label="Handoff", style=dotted];
+    }
+    
+    // Analytics & Monitoring Layer
+    subgraph cluster_analytics {
+        label="ANALYTICS & INTELLIGENCE";
+        style="filled,rounded";
+        fillcolor="#e0f2f1";
+        color="#009688";
+        penwidth=3;
+        
+        metrics_dashboard [label="Metrics Dashboard\nReal-time Stats\nConversion Funnel\nROI Tracking", fillcolor="#26a69a:#009688", fontcolor=white];
+        response_tracker [label="Response Tracker\nGmail Integration\nPattern Recognition\nAuto-Classification", fillcolor="#00897b:#00796b", fontcolor=white];
+        ml_optimizer [label="ML Optimizer\nA/B Testing\nSuccess Patterns\nContinuous Learning", fillcolor="#00695c:#004d40", fontcolor=white];
+        
+        metrics_dashboard -> ml_optimizer [label="Performance\nData"];
+        response_tracker -> ml_optimizer [label="Outcome\nData"];
+    }
+    
+    // Database Layer
+    subgraph cluster_database {
+        label="DATA PERSISTENCE";
+        style="filled,rounded";
+        fillcolor="#fff8e1";
+        color="#ffc107";
+        penwidth=3;
+        
+        main_db [label="SQLite Database\nJobs Table (50K+)\nApplications (1.6K+)\nCompanies (500+)", fillcolor="#ffb300:#ffa000", fontcolor=white, shape=cylinder, height=0.8];
+        event_store [label="Event Store\nAudit Trail\nTime Series\nState History", fillcolor="#ff8f00:#ff6f00", fontcolor=white, shape=cylinder, height=0.8];
+        cache_layer [label="Cache Layer\nRedis Compatible\nSession Storage\nTemp Queue", fillcolor="#ef6c00:#e65100", fontcolor=white, shape=cylinder, height=0.8];
+        
+        main_db -> event_store [label="Events", style=bold];
+        event_store -> cache_layer [label="Hot Data", style=bold];
+    }
+    
+    // Main Flow Connections
+    // Input to Discovery
+    {linkedin, indeed, glassdoor} -> job_discovery [color="#2196f3", penwidth=3];
+    {adzuna, greenhouse, lever} -> job_discovery [color="#2196f3", penwidth=3];
+    
+    // Discovery to AI
+    job_discovery -> content_generator [label="Job\nData", color="#ff9800", penwidth=3];
+    company_research -> content_generator [label="Company\nContext", color="#ff9800", penwidth=3];
+    salary_analyzer -> resume_selector [label="Comp\nLevel", color="#ff9800", penwidth=3];
+    
+    // AI to Orchestrator
+    quality_scorer -> orchestrator [label="Validated\nContent", color="#9c27b0", penwidth=3, style=bold];
+    
+    // Orchestrator to Delivery
+    orchestrator -> {email_engine, puppeteer_auto} [label="Send", color="#4caf50", penwidth=3];
+    orchestrator -> selenium_driver [label="Automate", color="#4caf50", penwidth=3];
+    
+    // Delivery to Analytics
+    {email_engine, puppeteer_auto, selenium_driver} -> response_tracker [color="#e91e63", penwidth=2];
+    api_submitter -> metrics_dashboard [color="#e91e63", penwidth=2];
+    
+    // Analytics to Database
+    {metrics_dashboard, response_tracker, ml_optimizer} -> main_db [color="#009688", penwidth=2];
+    
+    // Database to Orchestrator (feedback loop)
+    main_db -> orchestrator [label="Historical\nData", color="#ffc107", penwidth=2, style=dashed];
+    
+    // Special Features (floating nodes)
+    ollama [label="Ollama Integration\n74 Specialized Models\nLocal Inference\nChain Processing", shape=star, fillcolor="#ff5722:#d84315", fontcolor=white, fontsize=12];
+    mcp_servers [label="MCP Servers\nMemory Graph\nFile System\nPuppeteer Control", shape=star, fillcolor="#2196f3:#1976d2", fontcolor=white, fontsize=12];
+    
+    ollama -> content_generator [label="Model\nChains", style=bold, color="#ff5722"];
+    mcp_servers -> puppeteer_auto [label="Browser\nControl", style=bold, color="#2196f3"];
+    
+    // Performance Indicators
+    perf1 [label="85%+ ATS Scores", shape=plaintext, fontsize=14, fontcolor="#4caf50"];
+    perf2 [label="50-75 Apps/Day", shape=plaintext, fontsize=14, fontcolor="#2196f3"];
+    perf3 [label="15-20% Response", shape=plaintext, fontsize=14, fontcolor="#ff9800"];
+    perf4 [label="510+ Python Files", shape=plaintext, fontsize=14, fontcolor="#9c27b0"];
+    
+    {rank=same; perf1; perf2; perf3; perf4;}
+    
+    // Legend
+    subgraph cluster_legend {
+        label="System Capabilities";
+        style="filled,dotted";
+        fillcolor=white;
+        fontsize=12;
+        
+        legend1 [label="✓ Multi-source job aggregation\n✓ AI-powered personalization\n✓ Human-in-the-loop approval", shape=plaintext];
+        legend2 [label="✓ Web portal automation\n✓ Response tracking\n✓ Continuous optimization", shape=plaintext];
+    }
+}
