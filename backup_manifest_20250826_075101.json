@@ -1,0 +1,106 @@
+{
+  "timestamp": "20250826_075101",
+  "backup_file": "database_backup_20250826_075101.zip",
+  "databases": {
+    "ai_talent_optimizer.db": {
+      "size": 24576,
+      "hash": "db4a0b2a8059cad845e8d52cff1158487a7a5fb7ae9e2f35116e3fb45478573b",
+      "modified": "2025-08-09T09:00:04.014478"
+    },
+    "APPLICATION_TRACKING.db": {
+      "size": 12288,
+      "hash": "a053126b0888d89dc4ea05573c23aa58dc63491a6c81bcb39847ca1c56b5948d",
+      "modified": "2025-08-12T13:47:45.930461"
+    },
+    "campaign_tracking.db": {
+      "size": 20480,
+      "hash": "264f529b8e5f9d0cf7763a4dd1c144c1df1853a534de16e2d1a55818671d5143",
+      "modified": "2025-08-12T10:57:34.112674"
+    },
+    "career_automation.db": {
+      "size": 28672,
+      "hash": "a417827aebd82a6b13a761fa42b4be3b80407f8399f37794a1f6ac76275e0ef8",
+      "modified": "2025-08-21T00:09:05.831781"
+    },
+    "ceo_outreach.db": {
+      "size": 12288,
+      "hash": "1fcb25c2f95fc213610929e3ddc2e49593e4d8eafa94be2aa5276f067ba627c7",
+      "modified": "2025-08-07T06:10:58.825175"
+    },
+    "COMPANY_RESEARCH.db": {
+      "size": 16384,
+      "hash": "416f1f609c84573dd307b0c592912165f6859d2c5f695747f844f3793bd318ab",
+      "modified": "2025-08-12T14:00:13.447239"
+    },
+    "data/applications.db": {
+      "size": 0,
+      "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "modified": "2025-08-16T14:48:29.983864"
+    },
+    "data/european_jobs.db": {
+      "size": 16384,
+      "hash": "e07b066a99d5b70ac9a265409607aea22350789bf3ff35d85137fa243829efdc",
+      "modified": "2025-08-22T08:35:07.123823"
+    },
+    "data/linkedin_jobs.db": {
+      "size": 61440,
+      "hash": "935a76acae696e2ef7cc4d2b12e182e2a57276279f0f321511cea4f0ee069dd0",
+      "modified": "2025-08-21T04:08:47.560372"
+    },
+    "data/unified_jobs.db": {
+      "size": 180224,
+      "hash": "8f6d24ac0b29781bc05ace0397668b4ccbde5617fc6e0ca7c86acdc34d83a1d8",
+      "modified": "2025-08-18T11:17:58.817389"
+    },
+    "job_applications.db": {
+      "size": 106496,
+      "hash": "83a381a18ae47737afaf732cbb66f8e28498e955f5ebbc3d7d0efa76d6b1ae1b",
+      "modified": "2025-08-07T05:20:55.449121"
+    },
+    "principal_jobs_400k.db": {
+      "size": 20480,
+      "hash": "8379ac94adeb2cee539086ace9a20ed22c93202af15797b4d1920cc0d2c8d199",
+      "modified": "2025-08-08T08:44:00.617403"
+    },
+    "QUALITY_APPLICATIONS.db": {
+      "size": 12288,
+      "hash": "8be564eaa5ff2e465a25e1965592a3e6d41ee59af8d6a13dd463e75d9bb2a5de",
+      "modified": "2025-08-12T14:03:25.402081"
+    },
+    "REAL_JOBS.db": {
+      "size": 40960,
+      "hash": "e03081804c8853808d5d981e2158f3e727b8ef181792c478dda69c0f6e163e28",
+      "modified": "2025-08-16T08:59:36.523681"
+    },
+    "UNIFIED_AI_JOBS.db": {
+      "size": 278528,
+      "hash": "506bbc4c59b70c0f26001519a49cf8693418b035e005b190da833c4a55a2fc0e",
+      "modified": "2025-08-25T09:09:07.641245"
+    },
+    "unified_career.db": {
+      "size": 81920,
+      "hash": "3fab605bc408d7f22c2c5471c62001c016f439ddd4d10f71bdd7d2ce43f91348",
+      "modified": "2025-08-21T06:56:20.920584"
+    },
+    "unified_career_system/data_layer/unified_career.db": {
+      "size": 323584,
+      "hash": "27b5a628e8412c934cd2c60061079e5890b4998041c442ff84301f865c5b46ab",
+      "modified": "2025-08-21T07:25:32.734816"
+    },
+    "unified_talent_optimizer.db": {
+      "size": 241664,
+      "hash": "4795e0780d4025b8a3511ee8145866a05714361639ccc95f233d04d5c69b9cc6",
+      "modified": "2025-08-11T23:25:05.568691"
+    },
+    "verified_metrics.db": {
+      "size": 20480,
+      "hash": "f955aff0ee4193ef01f970357be4ad765f4472b355d8ec355e9ccc39a4c2fd48",
+      "modified": "2025-08-08T10:55:23.236383"
+    },
+    "your_profile.db": {
+      "size": 49152,
+      "hash": "5035d1bd43966d9e6c6c943c5a9a845add07892e9bc7209a8362602ed6751ba0",
+      "modified": "2025-08-08T15:38:12.455624"
+    }
+  }
+}
