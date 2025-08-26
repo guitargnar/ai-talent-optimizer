@@ -329,7 +329,7 @@ class StrategicCareerOrchestrator:
             print(f"📧 EMAIL APPLICATION {index}/{total}")
         print("="*60)
         print(f"Company:    {company}")
-        print(f"Role:       {role}")
+        print(f"Role:       {position}")
         
         if is_portal_only:
             print(f"Apply Via:  Company Portal (No email available)")
@@ -392,7 +392,7 @@ class StrategicCareerOrchestrator:
                 return 'failed'
         
         elif decision == 'p' and is_portal_only:
-            success = self._proceed_with_web_application(app_id, company, position, portal_url)
+            success = self._proceed_with_web_application(app_id, company, role, portal_url)
             if success:
                 print("✅ Marked for web application!")
                 self.session_stats['sent'] += 1
@@ -618,7 +618,7 @@ class StrategicCareerOrchestrator:
                     application_status = 'portal_application',
                     method = 'web_portal'
                 WHERE company = ? AND title = ?
-            """, (datetime.now().isoformat(), company, position))
+            """, (datetime.now().isoformat(), company, role))
             
             conn.commit()
             conn.close()
