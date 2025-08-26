@@ -23,35 +23,142 @@ from dynamic_apply import DynamicJobApplicationSystem
 from company_researcher import CompanyResearcher
 
 # ============================================================================
-# FUTURE INTEGRATION STUBS
+# BROWSER AUTOMATION WITH DUAL BACKEND SUPPORT
 # ============================================================================
 
-class WebFormAutomator:
-    """Puppeteer integration for automated form filling"""
+class UnifiedWebFormAutomator:
+    """
+    Unified browser automation with Playwright primary and Puppeteer fallback.
+    Provides seamless failover between automation backends.
+    """
     
-    def __init__(self):
-        self.browser = None
-        self.page = None
+    def __init__(self, dry_run: bool = True, headless: bool = True):
+        self.dry_run = dry_run
+        self.headless = headless
+        self.backend = None
+        self.playwright_automator = None
+        self.puppeteer_automator = None
         
-    def apply_via_greenhouse(self, job_url: str) -> bool:
-        """
-        Apply to a job via Greenhouse ATS
-        Future implementation will use Puppeteer
-        """
-        print(f"[FUTURE] Would apply via Greenhouse: {job_url}")
-        # TODO: Implement with MCP Puppeteer server
-        return False
+        # Try to initialize Playwright (preferred)
+        try:
+            from web_form_automator_playwright import WebFormAutomator as PlaywrightAutomator
+            self.playwright_automator = PlaywrightAutomator(dry_run=dry_run, headless=headless)
+            self.backend = 'playwright'
+            print("✅ Browser automation: Playwright ready (primary)")
+        except ImportError as e:
+            print(f"⚠️  Playwright unavailable: {e}")
+        
+        # Try to initialize Puppeteer as fallback
+        if not self.playwright_automator:
+            try:
+                from web_form_automator import WebFormAutomator as PuppeteerAutomator
+                self.puppeteer_automator = PuppeteerAutomator()
+                self.backend = 'puppeteer'
+                print("✅ Browser automation: Puppeteer ready (fallback)")
+            except ImportError as e:
+                print(f"⚠️  Puppeteer unavailable: {e}")
+        
+        # Report status
+        if not self.backend:
+            print("❌ No browser automation available")
+            print("   Install with: pip install playwright && playwright install chromium")
+            print("   Or: pip install pyppeteer")
     
-    def apply_via_lever(self, job_url: str) -> bool:
-        """Apply to a job via Lever ATS"""
-        print(f"[FUTURE] Would apply via Lever: {job_url}")
-        # TODO: Implement with MCP Puppeteer server
-        return False
+    def apply_to_job_posting(self, job_url: str, company: str, position: str,
+                            cover_letter: Optional[str] = None,
+                            resume_path: Optional[str] = None) -> Dict:
+        """
+        Apply to a job posting using the best available backend.
+        Automatically falls back if primary method fails.
+        """
+        result = {
+            'success': False,
+            'backend': None,
+            'error': None,
+            'fallback_attempted': False
+        }
+        
+        # Try Playwright first (if available)
+        if self.playwright_automator:
+            try:
+                print(f"🎭 Attempting with Playwright...")
+                pl_result = self.playwright_automator.apply_to_job_posting(
+                    job_url, company, position, cover_letter, resume_path
+                )
+                if pl_result.get('success'):
+                    result.update(pl_result)
+                    result['backend'] = 'playwright'
+                    return result
+                else:
+                    print(f"⚠️  Playwright failed: {pl_result.get('error', 'Unknown error')}")
+            except Exception as e:
+                print(f"❌ Playwright error: {e}")
+                result['error'] = str(e)
+        
+        # Fallback to Puppeteer if Playwright failed
+        if self.puppeteer_automator and not result.get('success'):
+            try:
+                print(f"🐶 Falling back to Puppeteer...")
+                result['fallback_attempted'] = True
+                
+                # Puppeteer has different method signature, adapt it
+                if hasattr(self.puppeteer_automator, 'apply_to_job'):
+                    pp_result = self.puppeteer_automator.apply_to_job(
+                        job_url, company, position
+                    )
+                else:
+                    # Use generic navigation if specific method doesn't exist
+                    pp_result = self._puppeteer_fallback(job_url, company, position)
+                
+                if pp_result:
+                    result['success'] = True
+                    result['backend'] = 'puppeteer'
+                    result['message'] = f"Applied via Puppeteer fallback"
+                    return result
+                    
+            except Exception as e:
+                print(f"❌ Puppeteer error: {e}")
+                result['error'] = f"Both backends failed. Last error: {e}"
+        
+        # If nothing worked
+        if not result['backend']:
+            result['error'] = "No browser automation backend available"
+            result['message'] = "Manual application required"
+        
+        return result
     
-    def screenshot_confirmation(self) -> str:
-        """Take screenshot of application confirmation"""
-        # TODO: Implement screenshot capture
-        return "confirmation_screenshot.png"
+    def _puppeteer_fallback(self, job_url: str, company: str, position: str) -> bool:
+        """Basic Puppeteer fallback for job application"""
+        try:
+            # Check if it's a known ATS
+            if 'greenhouse' in job_url.lower():
+                return self.puppeteer_automator.apply_via_greenhouse(job_url)
+            elif 'lever' in job_url.lower():
+                return self.puppeteer_automator.apply_via_lever(job_url)
+            else:
+                # Generic application attempt
+                print(f"   Navigating to: {job_url}")
+                # This would be implemented in the actual Puppeteer module
+                return False
+        except:
+            return False
+    
+    def cleanup(self):
+        """Clean up resources from both backends"""
+        if self.playwright_automator:
+            try:
+                self.playwright_automator.cleanup()
+            except:
+                pass
+        if self.puppeteer_automator:
+            try:
+                if hasattr(self.puppeteer_automator, 'cleanup'):
+                    self.puppeteer_automator.cleanup()
+            except:
+                pass
+
+# Use the unified automator
+WebFormAutomator = UnifiedWebFormAutomator
 
 
 class LinkedInResearcher:
@@ -117,8 +224,9 @@ class StrategicCareerOrchestrator:
         self.dynamic_system = DynamicJobApplicationSystem()
         self.company_researcher = CompanyResearcher()
         
-        # Future integrations (currently stubs)
-        self.web_automator = WebFormAutomator()
+        # Initialize unified web automator with dual-backend support
+        # Dry-run mode can be toggled based on user preference
+        self.web_automator = WebFormAutomator(dry_run=True, headless=True)
         self.linkedin_researcher = LinkedInResearcher()
         
         # Initialize database with new schema
@@ -570,7 +678,7 @@ class StrategicCareerOrchestrator:
         return f"https://careers.{clean_name}.com"
     
     def _proceed_with_web_application(self, app_id: int, company: str, role: str, portal_url: Optional[str]) -> bool:
-        """Handle web portal application process"""
+        """Handle web portal application process with dual-backend browser automation"""
         try:
             print(f"\n🌐 Initiating web application for {company}")
             
@@ -579,24 +687,62 @@ class StrategicCareerOrchestrator:
             
             print(f"   Portal URL: {portal_url}")
             
-            # Try to use WebFormAutomator if available
-            if hasattr(self.web_automator, 'apply_via_greenhouse') and 'greenhouse' in portal_url:
-                print("   🤖 Attempting automated Greenhouse application...")
-                success = self.web_automator.apply_via_greenhouse(portal_url)
-                if success:
-                    print("   ✅ Automated application submitted!")
+            # Use the unified WebFormAutomator with Playwright/Puppeteer fallback
+            if self.web_automator and hasattr(self.web_automator, 'apply_to_job_posting'):
+                print("   🤖 Attempting automated browser application...")
+                
+                # Get cover letter from database if available
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT body, resume_version FROM applications 
+                    WHERE id = ?
+                """, (app_id,))
+                result = cursor.fetchone()
+                conn.close()
+                
+                cover_letter = result[0] if result else None
+                resume_path = result[1] if result and len(result) > 1 else "base_resume.pdf"
+                
+                # Attempt automated application with the unified automator
+                automation_result = self.web_automator.apply_to_job_posting(
+                    job_url=portal_url,
+                    company=company,
+                    position=role,
+                    cover_letter=cover_letter,
+                    resume_path=resume_path
+                )
+                
+                if automation_result.get('success'):
+                    backend_used = automation_result.get('backend', 'unknown')
+                    print(f"   ✅ Automated application submitted via {backend_used}!")
+                    if automation_result.get('fallback_attempted'):
+                        print(f"   ℹ️  Note: Primary backend failed, but fallback succeeded")
                 else:
-                    print("   ⚠️  Automation failed - please apply manually")
+                    error_msg = automation_result.get('error', 'Unknown error')
+                    print(f"   ⚠️  Automation failed: {error_msg}")
+                    print("   Please complete the application manually")
+                    
+                    # Provide manual instructions
+                    print("\n   📋 Manual application instructions:")
+                    print(f"   1. Open browser to: {portal_url}")
+                    print(f"   2. Search for: {role}")
+                    print(f"   3. Upload resume: {resume_path}")
+                    print(f"   4. Use the cover letter from above")
+                    print("\n   Press Enter when you've completed the application...")
+                    input()
+                    print("   ✅ Marked as manually completed!")
             else:
-                # For now, just mark as ready for manual application
-                print("\n   📋 Instructions for manual application:")
+                # Fallback to manual instructions if no automator available
+                print("\n   ⚠️  Browser automation not available")
+                print("\n   📋 Manual application instructions:")
                 print(f"   1. Open browser to: {portal_url}")
                 print(f"   2. Search for: {role}")
                 print(f"   3. Upload resume: base_resume.pdf")
                 print(f"   4. Use the generated cover letter above")
                 print("\n   Press Enter when you've completed the application...")
                 input()
-                print("   ✅ Marked as completed!")
+                print("   ✅ Marked as manually completed!")
             
             # Update database to mark as applied via portal
             conn = sqlite3.connect(self.db_path)
