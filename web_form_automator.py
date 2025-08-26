@@ -221,17 +221,13 @@ class WebFormAutomator:
         
         return {'fields': mock_fields, 'total': len(mock_fields)}
     
-    def map_fields_to_knowledge(self, form_fields: List[Dict]) -> Tuple[Dict, List[Dict]]:
-        """Map form fields to known information from memory/knowledge base
+    def _build_knowledge_base(self) -> Dict[str, any]:
+        """Build the knowledge base from user information.
         
         Returns:
-            Tuple of (mapped_fields, unmapped_fields)
+            Dictionary of knowledge base mappings
         """
-        print("\n🧠 KNOWLEDGE MAPPING")
-        print("="*60)
-        
-        # Extended knowledge base with more mappings
-        knowledge_base = {
+        return {
             # Personal Information
             'first_name': self.user_info['first_name'],
             'last_name': self.user_info['last_name'],
@@ -264,44 +260,64 @@ class WebFormAutomator:
             'cover_letter': None,  # Will be provided as parameter
             'resume': None  # Will be provided as parameter
         }
+    
+    def _match_field_to_knowledge(self, field_label: str, knowledge_base: Dict) -> any:
+        """Match a single field to knowledge base.
         
+        Args:
+            field_label: The field label to match
+            knowledge_base: The knowledge base dictionary
+            
+        Returns:
+            Matched value or None
+        """
+        field_label = field_label.lower()
+        
+        # Define field mapping rules
+        mapping_rules = [
+            ('first' in field_label and 'name' in field_label, 'first_name'),
+            ('last' in field_label and 'name' in field_label, 'last_name'),
+            ('email' in field_label, 'email'),
+            ('phone' in field_label, 'phone'),
+            ('city' in field_label and 'residence' in field_label, 'current_location'),
+            ('linkedin' in field_label, 'linkedin'),
+            ('github' in field_label, 'github'),
+            ('visa' in field_label or 'sponsorship' in field_label, 'visa_status'),
+            ('school' in field_label or 'university' in field_label, 'school'),
+            ('degree' in field_label, 'degree'),
+            ('discipline' in field_label or 'major' in field_label, 'discipline'),
+            ('graduation' in field_label, 'graduation_date'),
+            ('cover' in field_label and 'letter' in field_label, 'SPECIAL:PROVIDED'),
+            ('resume' in field_label or 'cv' in field_label, 'SPECIAL:PROVIDED'),
+        ]
+        
+        for condition, key in mapping_rules:
+            if condition:
+                if key.startswith('SPECIAL:'):
+                    return 'PROVIDED'  # Special handling for files
+                return knowledge_base.get(key)
+        
+        return None
+    
+    def map_fields_to_knowledge(self, form_fields: List[Dict]) -> Tuple[Dict, List[Dict]]:
+        """Map form fields to known information from memory/knowledge base
+        
+        Returns:
+            Tuple of (mapped_fields, unmapped_fields)
+        """
+        print("\n🧠 KNOWLEDGE MAPPING")
+        print("="*60)
+        
+        knowledge_base = self._build_knowledge_base()
         mapped = {}
         unmapped = []
         
         for field in form_fields:
-            field_label = field['label'].lower()
             field_id = field['id']
-            mapped_value = None
-            
-            # Try to intelligently match field labels to our knowledge
-            if 'first' in field_label and 'name' in field_label:
-                mapped_value = knowledge_base['first_name']
-            elif 'last' in field_label and 'name' in field_label:
-                mapped_value = knowledge_base['last_name']
-            elif 'email' in field_label:
-                mapped_value = knowledge_base['email']
-            elif 'phone' in field_label:
-                mapped_value = knowledge_base['phone']
-            elif 'city' in field_label and 'residence' in field_label:
-                mapped_value = knowledge_base['current_location']
-            elif 'linkedin' in field_label:
-                mapped_value = knowledge_base['linkedin']
-            elif 'github' in field_label:
-                mapped_value = knowledge_base['github']
-            elif 'visa' in field_label or 'sponsorship' in field_label:
-                mapped_value = knowledge_base['visa_status']
-            elif 'school' in field_label or 'university' in field_label:
-                mapped_value = knowledge_base['school']
-            elif 'degree' in field_label:
-                mapped_value = knowledge_base['degree']
-            elif 'discipline' in field_label or 'major' in field_label:
-                mapped_value = knowledge_base['discipline']
-            elif 'graduation' in field_label:
-                mapped_value = knowledge_base['graduation_date']
-            elif 'cover' in field_label and 'letter' in field_label:
-                mapped_value = 'PROVIDED'  # Will use the cover_letter parameter
-            elif 'resume' in field_label or 'cv' in field_label:
-                mapped_value = 'PROVIDED'  # Will use the resume_path parameter
+            mapped_value = self._match_field_to_knowledge(
+                field['label'], 
+                knowledge_base
+            )
             
             if mapped_value:
                 mapped[field_id] = {

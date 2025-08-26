@@ -1,6 +1,6 @@
 {
-  "linkedin_email": "YOUR_EMAIL_HERE",
-  "linkedin_password": "YOUR_PASSWORD_HERE",
+  "linkedin_email": "${LINKEDIN_EMAIL}",
+  "linkedin_password": "${LINKEDIN_PASSWORD}",
   "profile": {
     "phone": "(502) 345-0525",
     "email": "matthewdscott7@gmail.com",

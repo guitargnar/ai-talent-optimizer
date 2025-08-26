@@ -285,12 +285,15 @@ class StrategicCareerOrchestrator:
         
         print(f"   📋 Staged: {job['company_name']} - {job['job_title']} [Score: {personalization_score:.2f}]")
     
-    def review_pending_applications(self):
-        """Interactive review and approval workflow"""
+    def _get_pending_applications(self):
+        """Fetch pending applications from database.
+        
+        Returns:
+            List of pending applications
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Get pending applications with job_id to fetch URL if needed
         cursor.execute("""
             SELECT sa.id, sa.company, sa.role, sa.email_to, sa.email_subject, 
                    sa.email_body, sa.resume_path, sa.personalization_score,
@@ -302,6 +305,126 @@ class StrategicCareerOrchestrator:
         
         pending = cursor.fetchall()
         conn.close()
+        return pending
+    
+    def _display_application_details(self, app, index: int, total: int):
+        """Display application details for review.
+        
+        Args:
+            app: Application tuple
+            index: Current application index
+            total: Total applications
+            
+        Returns:
+            Tuple of (is_portal_only, portal_url)
+        """
+        app_id, company, role, email_to, subject, body, resume, score, job_id = app
+        is_portal_only = (email_to is None or email_to == 'None' or email_to == '')
+        portal_url = None
+        
+        print("\n" + "="*60)
+        if is_portal_only:
+            print(f"🌐 WEB APPLICATION {index}/{total}")
+        else:
+            print(f"📧 EMAIL APPLICATION {index}/{total}")
+        print("="*60)
+        print(f"Company:    {company}")
+        print(f"Role:       {role}")
+        
+        if is_portal_only:
+            print(f"Apply Via:  Company Portal (No email available)")
+            portal_url = self._get_portal_url(company, job_id)
+            if portal_url:
+                print(f"Portal:     {portal_url}")
+        else:
+            print(f"Email To:   {email_to}")
+        
+        print(f"Resume:     {Path(resume).name}")
+        print(f"Quality:    {'⭐' * int(score * 5)} ({score:.2f})")
+        
+        if not is_portal_only:
+            print(f"\nSubject:    {subject}")
+        
+        print("\n--- Application Preview ---")
+        print(body[:400] + "..." if len(body) > 400 else body)
+        print("-" * 40)
+        
+        return is_portal_only, portal_url
+    
+    def _get_user_decision(self, is_portal_only: bool) -> str:
+        """Get user's decision for an application.
+        
+        Args:
+            is_portal_only: Whether this is a portal-only application
+            
+        Returns:
+            User's decision character
+        """
+        if is_portal_only:
+            return input("\n(P)roceed with Web Application, (S)kip, (D)elete, (Q)uit: ").lower()
+        else:
+            return input("\n(A)pprove & Send Email, (S)kip, (E)dit, (D)elete, (Q)uit: ").lower()
+    
+    def _process_user_decision(self, decision: str, is_portal_only: bool, app_id: int, 
+                              app: Tuple, company: str, role: str, portal_url: str) -> str:
+        """Process user's decision for an application.
+        
+        Args:
+            decision: User's decision character
+            is_portal_only: Whether this is a portal-only application
+            app_id: Application ID
+            app: Application data tuple
+            company: Company name
+            role: Job role
+            portal_url: Portal URL for web applications
+            
+        Returns:
+            Action taken ('sent', 'skipped', 'deleted', 'quit', 'invalid')
+        """
+        if decision == 'a' and not is_portal_only:
+            success = self._send_staged_application(app_id, app)
+            if success:
+                print("✅ Email sent successfully!")
+                self.session_stats['sent'] += 1
+                return 'sent'
+            else:
+                print("❌ Failed to send email")
+                return 'failed'
+        
+        elif decision == 'p' and is_portal_only:
+            success = self._proceed_with_web_application(app_id, company, role, portal_url)
+            if success:
+                print("✅ Marked for web application!")
+                self.session_stats['sent'] += 1
+                return 'sent'
+            else:
+                print("⚠️  Web automation not yet implemented - apply manually")
+                return 'manual'
+        
+        elif decision == 's':
+            print("⏭️  Skipped")
+            return 'skipped'
+        
+        elif decision == 'e':
+            print("📝 [FUTURE] Edit functionality coming soon")
+            return 'edited'
+        
+        elif decision == 'd':
+            self._delete_staged_application(app_id)
+            print("🗑️  Deleted")
+            return 'deleted'
+        
+        elif decision == 'q':
+            print("👋 Returning to main menu")
+            return 'quit'
+        
+        else:
+            print("❌ Invalid choice. Please select a valid option")
+            return 'invalid'
+    
+    def review_pending_applications(self):
+        """Interactive review and approval workflow"""
+        pending = self._get_pending_applications()
         
         if not pending:
             print("\n✅ No pending applications to review")
@@ -314,85 +437,21 @@ class StrategicCareerOrchestrator:
         for i, app in enumerate(pending, 1):
             app_id, company, role, email_to, subject, body, resume, score, job_id = app
             
-            # Check if this is a portal-only application (email_to is NULL or 'None')
-            is_portal_only = (email_to is None or email_to == 'None' or email_to == '')
+            # Display application details
+            is_portal_only, portal_url = self._display_application_details(app, i, len(pending))
             
-            # Clear screen for better readability
-            print("\n" + "="*60)
-            if is_portal_only:
-                print(f"🌐 WEB APPLICATION {i}/{len(pending)}")
-            else:
-                print(f"📧 EMAIL APPLICATION {i}/{len(pending)}")
-            print("="*60)
-            print(f"Company:    {company}")
-            print(f"Role:       {role}")
-            
-            if is_portal_only:
-                print(f"Apply Via:  Company Portal (No email available)")
-                # Get the portal URL if we have it
-                portal_url = self._get_portal_url(company, job_id)
-                if portal_url:
-                    print(f"Portal:     {portal_url}")
-            else:
-                print(f"Email To:   {email_to}")
-            
-            print(f"Resume:     {Path(resume).name}")
-            print(f"Quality:    {'⭐' * int(score * 5)} ({score:.2f})")
-            
-            if not is_portal_only:
-                print(f"\nSubject:    {subject}")
-            
-            print("\n--- Application Preview ---")
-            print(body[:400] + "..." if len(body) > 400 else body)
-            print("-" * 40)
-            
-            # Get user decision - different options for portal vs email
+            # Process user decision
             while True:
-                if is_portal_only:
-                    decision = input("\n(P)roceed with Web Application, (S)kip, (D)elete, (Q)uit: ").lower()
-                else:
-                    decision = input("\n(A)pprove & Send Email, (S)kip, (E)dit, (D)elete, (Q)uit: ").lower()
+                decision = self._get_user_decision(is_portal_only)
+                action = self._process_user_decision(
+                    decision, is_portal_only, app_id, app, 
+                    company, role, portal_url
+                )
                 
-                if decision == 'a' and not is_portal_only:
-                    # Send email application
-                    success = self._send_staged_application(app_id, app)
-                    if success:
-                        print("✅ Email sent successfully!")
-                        self.session_stats['sent'] += 1
-                    else:
-                        print("❌ Failed to send email")
-                    break
-                
-                elif decision == 'p' and is_portal_only:
-                    # Proceed with web application
-                    success = self._proceed_with_web_application(app_id, company, role, portal_url)
-                    if success:
-                        print("✅ Marked for web application!")
-                        self.session_stats['sent'] += 1
-                    else:
-                        print("⚠️  Web automation not yet implemented - apply manually")
-                    break
-                    
-                elif decision == 's':
-                    print("⏭️  Skipped")
-                    break
-                    
-                elif decision == 'e':
-                    # Future: Allow editing
-                    print("📝 [FUTURE] Edit functionality coming soon")
-                    break
-                    
-                elif decision == 'd':
-                    self._delete_staged_application(app_id)
-                    print("🗑️  Deleted")
-                    break
-                    
-                elif decision == 'q':
-                    print("👋 Returning to main menu")
+                if action == 'quit':
                     return
-                    
-                else:
-                    print("❌ Invalid choice. Please select A, S, E, D, or Q")
+                elif action != 'invalid':
+                    break
             
             self.session_stats['reviewed'] += 1
             

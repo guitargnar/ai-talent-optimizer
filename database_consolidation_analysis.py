@@ -85,17 +85,23 @@ class DatabaseAnalyzer:
     
     def _analyze_table(self, cursor, table_name):
         """Analyze a single table."""
-        # Get record count
+        # Validate table name to prevent SQL injection
+        # SQLite table names can only contain alphanumeric and underscore
+        if not all(c.isalnum() or c == '_' for c in table_name):
+            raise ValueError(f"Invalid table name: {table_name}")
+        
+        # Get record count - safe because table_name is validated
         cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
         record_count = cursor.fetchone()[0]
         
-        # Get schema
+        # Get schema - safe because table_name is validated
         cursor.execute(f"PRAGMA table_info({table_name})")
         schema = cursor.fetchall()
         
         # Sample data (if any records exist)
         sample_data = None
         if record_count > 0:
+            # Safe because table_name is validated
             cursor.execute(f"SELECT * FROM {table_name} LIMIT 1")
             sample_data = cursor.fetchone()
         

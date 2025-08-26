@@ -115,8 +115,8 @@ Run: python automated_apply.py
 def test_with_different_passwords():
     """Test with password variations"""
     
-    email = "matthewdscott7@gmail.com"
-    base_password = "qvjrafdkgvragbf"
+    email = os.getenv('GMAIL_ADDRESS', 'test@example.com')
+    base_password = os.getenv('GMAIL_APP_PASSWORD', '')
     
     variations = [
         base_password,  # As stored

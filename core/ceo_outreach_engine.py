@@ -141,9 +141,19 @@ class CEOOutreachEngine:
         
         for column in required_columns:
             if column not in existing_columns:
+                # Use safe column addition - validate column names first
+                if column not in ['name', 'title', 'company', 'email', 'phone', 
+                                  'linkedin', 'research_notes', 'contacted', 
+                                  'contacted_date', 'response_received', 'response_date',
+                                  'meeting_scheduled', 'meeting_date', 'notes',
+                                  'priority_score', 'confidence_level']:
+                    continue  # Skip unknown columns for safety
+                
                 if column in ['priority_score', 'confidence_level']:
+                    # Safe DDL operation with validated column name
                     cursor.execute(f"ALTER TABLE contacts ADD COLUMN {column} REAL DEFAULT 0")
                 else:
+                    # Safe DDL operation with validated column name
                     cursor.execute(f"ALTER TABLE contacts ADD COLUMN {column} TEXT")
         
         conn.commit()
