@@ -25,19 +25,22 @@ class TestJobDatabase:
         # Create schema
         cursor.execute(
             """
-            CREATE TABLE job_discoveries (
+            CREATE TABLE jobs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                job_id TEXT UNIQUE NOT NULL,
+                source TEXT NOT NULL,
                 company TEXT NOT NULL,
-                position TEXT NOT NULL,
+                title TEXT NOT NULL,
                 description TEXT,
                 url TEXT,
-                salary_range TEXT,
+                salary_min INTEGER,
+                salary_max INTEGER,
                 location TEXT,
+                priority_score REAL DEFAULT 0.5,
                 relevance_score REAL DEFAULT 0.5,
                 applied INTEGER DEFAULT 0,
-                application_date TEXT,
+                applied_date TEXT,
                 discovered_date TEXT DEFAULT CURRENT_TIMESTAMP,
-                source TEXT,
                 UNIQUE(company, title)
             )
         """
@@ -46,32 +49,44 @@ class TestJobDatabase:
         # Add test data
         test_jobs = [
             (
+                "job_001",
+                "linkedin",
                 "OpenAI",
                 "ML Engineer",
                 "Build AI systems",
                 "http://openai.com/jobs/1",
-                "200000-300000",
+                200000,
+                300000,
                 "San Francisco",
+                0.95,
                 0.95,
                 0,
             ),
             (
+                "job_002",
+                "indeed",
                 "Google",
                 "Data Scientist",
                 "Analyze data",
                 "http://google.com/jobs/2",
-                "150000-250000",
+                150000,
+                250000,
                 "Mountain View",
+                0.85,
                 0.85,
                 0,
             ),
             (
+                "job_003",
+                "company_site",
                 "Meta",
                 "AI Researcher",
                 "Research AI",
                 "http://meta.com/jobs/3",
-                "180000-280000",
+                180000,
+                280000,
                 "Remote",
+                0.90,
                 0.90,
                 1,
             ),
@@ -80,8 +95,8 @@ class TestJobDatabase:
         cursor.executemany(
             """
             INSERT INTO jobs 
-            (company, title, description, url, salary_range, location, relevance_score, applied)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (job_id, source, company, title, description, url, salary_min, salary_max, location, priority_score, relevance_score, applied)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             test_jobs,
         )
@@ -101,26 +116,29 @@ class TestJobDatabase:
         # Check table exists
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = cursor.fetchall()
-        assert ("job_discoveries",) in tables
+        assert ("jobs",) in tables
 
         # Check columns
-        cursor.execute("PRAGMA table_info(job_discoveries)")
+        cursor.execute("PRAGMA table_info(jobs)")
         columns = cursor.fetchall()
         column_names = [col[1] for col in columns]
 
         expected_columns = [
             "id",
+            "job_id",
+            "source",
             "company",
-            "position",
+            "title",
             "description",
             "url",
-            "salary_range",
+            "salary_min",
+            "salary_max",
             "location",
+            "priority_score",
             "relevance_score",
             "applied",
-            "application_date",
+            "applied_date",
             "discovered_date",
-            "source",
         ]
 
         for col in expected_columns:
@@ -137,20 +155,25 @@ class TestJobDatabase:
 
         # Insert new job
         new_job = (
+            "job_new",
+            "linkedin",
             "Anthropic",
             "Safety Researcher",
             "AI Safety",
             "http://anthropic.com/jobs",
-            "250000-350000",
+            250000,
+            350000,
             "Remote",
             0.98,
+            0.98,
+            0,
         )
 
         cursor.execute(
             """
             INSERT INTO jobs
-            (company, title, description, url, salary_range, location, relevance_score)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (job_id, source, company, title, description, url, salary_min, salary_max, location, priority_score, relevance_score, applied)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             new_job,
         )
@@ -161,9 +184,10 @@ class TestJobDatabase:
         result = cursor.fetchone()
 
         assert result is not None
-        assert result[1] == "Anthropic"  # company
-        assert result[2] == "Safety Researcher"  # position
-        assert result[7] == 0.98  # relevance_score
+        # Check columns by position in new schema
+        assert result[3] == "Anthropic"  # company
+        assert result[4] == "Safety Researcher"  # title
+        assert result[11] == 0.98  # relevance_score
 
         conn.close()
 
@@ -174,23 +198,28 @@ class TestJobDatabase:
         conn = sqlite3.connect(test_db)
         cursor = conn.cursor()
 
-        # Try to insert duplicate
+        # Try to insert duplicate (same company+title violates unique constraint)
         duplicate_job = (
+            "job_dup",
+            "indeed",
             "OpenAI",
             "ML Engineer",
             "Different description",
             "http://openai.com/jobs/new",
-            "300000-400000",
+            300000,
+            400000,
             "NYC",
             0.80,
+            0.80,
+            0,
         )
 
         with pytest.raises(sqlite3.IntegrityError):
             cursor.execute(
                 """
                 INSERT INTO jobs
-                (company, title, description, url, salary_range, location, relevance_score)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (job_id, source, company, title, description, url, salary_min, salary_max, location, priority_score, relevance_score, applied)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 duplicate_job,
             )
@@ -244,7 +273,7 @@ class TestJobDatabase:
         # Verify update
         cursor.execute(
             """
-            SELECT applied, application_date
+            SELECT applied, applied_date
             FROM jobs
             WHERE company = 'OpenAI' AND title = 'ML Engineer'
         """
@@ -271,8 +300,8 @@ class TestJobDatabase:
                 COUNT(CASE WHEN applied = 1 THEN 1 END) as applied,
                 COUNT(DISTINCT company) as companies,
                 AVG(relevance_score) as avg_score,
-                MIN(CAST(SUBSTR(salary_range, 1, INSTR(salary_range, '-')-1) AS INTEGER)) as salary_min,
-                MAX(CAST(SUBSTR(salary_range, INSTR(salary_range, '-')+1) AS INTEGER)) as max_salary
+                MIN(salary_min) as min_salary,
+                MAX(salary_max) as max_salary
             FROM jobs
         """
         )
