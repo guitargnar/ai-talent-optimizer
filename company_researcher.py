@@ -99,7 +99,7 @@ class CompanyResearcher:
                 contact_verified BOOLEAN DEFAULT 0,
                 added_date TEXT DEFAULT CURRENT_TIMESTAMP,
                 notes TEXT,
-                FOREIGN KEY (company) REFERENCES company_research(company)
+                FOREIGN KEY (company_name) REFERENCES companies(company_name)
             )
         """)
         
@@ -111,15 +111,15 @@ class CompanyResearcher:
         
         template = f"""
 ========================================
-COMPANY RESEARCH: {company_name}
+COMPANY RESEARCH: {company}
 ========================================
 
 📊 BASIC INFORMATION
 --------------------
-Company: {company_name}
+Company: {company}
 Website: [RESEARCH NEEDED]
 Careers Page: [RESEARCH NEEDED]
-LinkedIn: https://www.linkedin.com/company/{company_name.lower().replace(' ', '-')}/
+LinkedIn: https://www.linkedin.com/company/{company.lower().replace(' ', '-')}/
 Glassdoor: [RESEARCH NEEDED]
 
 📰 RECENT NEWS (Last 3 Months)
@@ -180,8 +180,8 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         cursor = conn.cursor()
         
         cursor.execute("""
-            INSERT OR REPLACE INTO company_research (
-                company, category, website, careers_page, 
+            INSERT OR REPLACE INTO companies (
+                company_name, category, website, careers_page, 
                 application_portal, linkedin_company_url, glassdoor_url,
                 recent_news, key_people, tech_stack, company_size,
                 founded_year, funding_stage, total_funding,
@@ -219,7 +219,7 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         
         cursor.execute("""
             INSERT INTO contacts (
-                company, contact_name, contact_title,
+                company_name, contact_name, contact_title,
                 contact_email, contact_linkedin, contact_verified, notes
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
@@ -266,11 +266,11 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         pitch_template = f"""
 Dear [Hiring Manager Name],
 
-I noticed {company_name} is [recent development from news - e.g., "expanding your AI capabilities" or "recently raised Series B funding"].
+I noticed {company} is [recent development from news - e.g., "expanding your AI capabilities" or "recently raised Series B funding"].
 
-With my background at Humana, where I've delivered $1.2M in annual savings through AI automation, I'm particularly interested in how {company_name} is [specific challenge they're facing].
+With my background at Humana, where I've delivered $1.2M in annual savings through AI automation, I'm particularly interested in how {company} is [specific challenge they're facing].
 
-My experience is uniquely relevant to {company_name} because:
+My experience is uniquely relevant to {company} because:
 • [Specific skill match from their tech stack]
 • [Domain expertise that applies]
 • [Similar challenge you've solved]
@@ -287,15 +287,15 @@ Matthew Scott
         conn = sqlite3.connect(self.research_db)
         cursor = conn.cursor()
         
-        if company_name:
+        if company:
             cursor.execute("""
                 SELECT contact_name, contact_title, contact_email, contact_linkedin
                 FROM contacts
-                WHERE company = ?
+                WHERE company_name = ?
             """, (company,))
         else:
             cursor.execute("""
-                SELECT company, contact_name, contact_title, contact_email
+                SELECT company_name, contact_name, contact_title, contact_email
                 FROM contacts
                 ORDER BY company_name
             """)
@@ -306,16 +306,16 @@ Matthew Scott
         if contacts:
             print("\n📧 KEY CONTACTS:")
             for contact in contacts:
-                if company_name:
-                    full_name, title, email, linkedin = contact
-                    print(f"  • {name} - {title}")
+                if company:
+                    contact_name, title, email, linkedin = contact
+                    print(f"  • {contact_name} - {title}")
                     if email:
                         print(f"    Email: {email}")
                     if linkedin:
                         print(f"    LinkedIn: {linkedin}")
                 else:
-                    company, full_name, title, email = contact
-                    print(f"  • {company}: {name} ({title})")
+                    company_name, contact_name, title, email = contact
+                    print(f"  • {company_name}: {contact_name} ({title})")
                     if email:
                         print(f"    Email: {email}")
         else:
@@ -449,9 +449,9 @@ Matthew Scott
                     cursor = conn.cursor()
                     cursor.execute("""
                         INSERT OR REPLACE INTO companies 
-                        (company, careers_email, last_researched)
+                        (company_name, website, researched_date)
                         VALUES (?, ?, ?)
-                    """, (company, email, datetime.now().isoformat()))
+                    """, (company_name, email, datetime.now().isoformat()))
                     conn.commit()
                     conn.close()
                 except Exception as e:
