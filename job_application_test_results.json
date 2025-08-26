@@ -1,0 +1,25 @@
+[
+  {
+    "site": "Greenhouse Demo",
+    "url": "https://boards.greenhouse.io/embed/job_board?for=democompany",
+    "field_count": 0,
+    "note": "No forms on landing page",
+    "timestamp": "2025-08-26T17:35:11.089517"
+  },
+  {
+    "site": "Lever Demo",
+    "url": "https://jobs.lever.co/leverdemo",
+    "field_count": 0,
+    "note": "No forms on landing page",
+    "timestamp": "2025-08-26T17:35:15.604357"
+  },
+  {
+    "site": "SmartRecruiters",
+    "url": "https://careers.smartrecruiters.com/BoschGroup",
+    "field_count": 13,
+    "field_types": {
+      "input": 10
+    },
+    "timestamp": "2025-08-26T17:35:22.917457"
+  }
+]
