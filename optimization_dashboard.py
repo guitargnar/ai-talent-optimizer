@@ -21,7 +21,7 @@ def display_optimization_dashboard():
     print("="*70)
     
     # Database stats
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Get current metrics
@@ -32,7 +32,7 @@ def display_optimization_dashboard():
             SUM(CASE WHEN response_received = 1 THEN 1 ELSE 0 END) as responses,
             SUM(CASE WHEN interview_scheduled = 1 THEN 1 ELSE 0 END) as interviews,
             SUM(CASE WHEN relevance_score >= 0.65 AND applied = 0 THEN 1 ELSE 0 END) as high_value_pending
-        FROM job_discoveries
+        FROM jobs
     """)
     
     stats = cursor.fetchone()
@@ -54,8 +54,8 @@ def display_optimization_dashboard():
     # Get today's activity
     today = datetime.now().date().isoformat()
     cursor.execute("""
-        SELECT COUNT(*) FROM job_discoveries 
-        WHERE DATE(COALESCE(application_date, applied_date)) = ?
+        SELECT COUNT(*) FROM jobs 
+        WHERE DATE(COALESCE(applied_date, applied_date)) = ?
     """, (today,))
     
     today_apps = cursor.fetchone()[0]
@@ -64,11 +64,11 @@ def display_optimization_dashboard():
     # Get jobs needing follow-up
     three_days_ago = (datetime.now() - timedelta(days=3)).isoformat()
     cursor.execute("""
-        SELECT COUNT(*) FROM job_discoveries
+        SELECT COUNT(*) FROM jobs
         WHERE applied = 1
         AND response_received = 0
         AND follow_up_sent = 0
-        AND COALESCE(application_date, applied_date) <= ?
+        AND COALESCE(applied_date, applied_date) <= ?
     """, (three_days_ago,))
     
     followup_needed = cursor.fetchone()[0]

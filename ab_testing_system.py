@@ -16,7 +16,7 @@ class ABTestingSystem:
     """Manage A/B testing for job applications"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.config_path = "ab_testing_config.json"
         self.results_path = "data/ab_testing_results.json"
         
@@ -183,12 +183,12 @@ class ABTestingSystem:
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET resume_version = ? 
-            WHERE company = ? AND position = ?
+            WHERE company = ? AND title = ?
             ORDER BY date_applied DESC
             LIMIT 1
-        """, (resume_version, company, position))
+        """, (resume_version, company, title))
         
         conn.commit()
         conn.close()
@@ -204,7 +204,7 @@ class ABTestingSystem:
                    COUNT(*) as applications,
                    SUM(CASE WHEN response_received = 1 THEN 1 ELSE 0 END) as responses,
                    SUM(CASE WHEN interview_scheduled = 1 THEN 1 ELSE 0 END) as interviews
-            FROM job_discoveries 
+            FROM jobs 
             WHERE applied = 1 AND resume_version IS NOT NULL
             GROUP BY resume_version
         """)
@@ -374,7 +374,7 @@ def main():
     
     # Example: Select variants for next application
     print("\n🎲 NEXT APPLICATION VARIANTS:")
-    resume_path, resume_version = ab_system.select_resume_version()
+    resume_version, resume_version = ab_system.select_resume_version()
     cover_opening, cover_style = ab_system.select_cover_letter_style()
     optimal_hour = ab_system.get_optimal_timing()
     

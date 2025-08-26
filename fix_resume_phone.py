@@ -24,20 +24,20 @@ def fix_phone_number():
     
     # Fix in your_profile.db
     import sqlite3
-    if Path("your_profile.db").exists():
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+    if Path("unified_platform.db").exists():
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
-        cursor.execute("UPDATE professional_identity SET phone = ? WHERE email = ?",
+        cursor.execute("UPDATE profile SET phone = ? WHERE email = ?",
                       (correct_phone, "matthewdscott7@gmail.com"))
         conn.commit()
         conn.close()
         print(f"✅ Fixed phone in your_profile.db")
     
     # Fix in ai_talent_optimizer.db
-    if Path("ai_talent_optimizer.db").exists():
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+    if Path("unified_platform.db").exists():
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
-        cursor.execute("UPDATE profiles SET phone = ? WHERE email = ?",
+        cursor.execute("UPDATE profile SET phone = ? WHERE email = ?",
                       (correct_phone, "matthewdscott7@gmail.com"))
         conn.commit()
         conn.close()

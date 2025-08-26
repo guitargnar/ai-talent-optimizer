@@ -12,7 +12,7 @@ import os
 from contextlib import contextmanager
 
 # Unified database configuration
-DATABASE_PATH = 'unified_talent_optimizer.db'
+DATABASE_PATH = "unified_platform.db"
 
 def get_connection():
     """Get a connection to the unified database."""
@@ -52,11 +52,11 @@ def quick_count(table):
         cursor.execute(f"SELECT COUNT(*) FROM {table}")
         return cursor.fetchone()[0]
 
-def get_job_by_company_position(company, position):
+def get_job_by_company_position(company, title):
     """Find job by company and position."""
     return quick_query(
-        "SELECT * FROM jobs WHERE company = ? AND position = ?", 
-        (company, position)
+        "SELECT * FROM jobs WHERE company = ? AND title = ?", 
+        (company, title)
     )
 
 def get_applications_by_status(status='sent'):
@@ -69,7 +69,7 @@ def get_applications_by_status(status='sent'):
 def get_recent_responses(limit=10):
     """Get recent responses."""
     return quick_query(
-        "SELECT * FROM responses ORDER BY received_date DESC LIMIT ?", 
+        "SELECT * FROM emails ORDER BY received_date DESC LIMIT ?", 
         (limit,)
     )
 

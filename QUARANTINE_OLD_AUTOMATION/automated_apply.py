@@ -25,13 +25,13 @@ class AutomatedApplicationSystem:
     """Automate job applications from discovered opportunities"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.email_tracker = EmailApplicationTracker()
         self.bcc_tracker = BCCEmailTracker()
         self.email_verifier = EmailVerificationSystem()  # Initialize email verifier
         self.enhanced_verifier = EnhancedEmailVerifier()  # Enhanced verification
         self.email_collector = RealEmailCollector()  # Real email database
-        self.resume_path = Path("resumes/matthew_scott_ai_ml_resume.pdf")
+        self.resume_version = Path("resumes/matthew_scott_ai_ml_resume.pdf")
         
         # Load configuration
         with open('unified_config.json', 'r') as f:
@@ -90,7 +90,7 @@ linkedin.com/in/mscott77"""
         min_score = self.config.get('min_relevance_score', 0.3)
         
         query = """
-        SELECT * FROM job_discoveries 
+        SELECT * FROM jobs 
         WHERE applied = 0 
         AND relevance_score >= ?
         ORDER BY relevance_score DESC, salary_range DESC
@@ -106,7 +106,7 @@ linkedin.com/in/mscott77"""
     
     def _select_resume_for_job(self, job):
         """Select the best resume version for the job"""
-        position = job['position'].lower()
+        title = job['position'].lower()
         company = job['company'].lower()
         
         # Keywords for matching
@@ -123,12 +123,12 @@ linkedin.com/in/mscott77"""
         else:
             resume_type = 'master'
         
-        resume_path = self.resume_versions.get(resume_type, self.resume_versions['default'])
+        resume_version = self.resume_versions.get(resume_type, self.resume_versions['default'])
         
         # Ensure the resume exists
         if resume_path.exists():
             print(f"  📄 Using {resume_type} resume: {resume_path.name}")
-            return str(resume_path)
+            return str(resume_version)
         else:
             print(f"  ⚠️  {resume_type} resume not found, using default")
             return str(self.resume_versions['default'])
@@ -138,7 +138,7 @@ linkedin.com/in/mscott77"""
         print(f"\n📧 Applying to {job['company']} - {job['position']}...")
         
         # Select appropriate resume version for this job
-        resume_path = self._select_resume_for_job(job)
+        resume_version = self._select_resume_for_job(job)
         
         # Generate personalized cover letter
         # Use improved templates for top AI companies
@@ -234,7 +234,7 @@ linkedin.com/in/mscott77"""
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET applied = 1, 
                 applied_date = ?
             WHERE id = ?

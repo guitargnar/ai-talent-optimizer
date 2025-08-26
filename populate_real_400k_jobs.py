@@ -12,7 +12,7 @@ def populate_principal_jobs():
     """Add real high-value principal/staff positions to the database"""
     
     # Connect to the database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Table already exists with different schema, no need to create
@@ -234,8 +234,8 @@ def populate_principal_jobs():
     for job in high_value_jobs:
         # Check if already exists
         cursor.execute("""
-            SELECT id, notes FROM principal_jobs 
-            WHERE company = ? AND position = ?
+            SELECT id, notes FROM jobs 
+            WHERE company = ? AND title = ?
         """, (job["company"], job["position"]))
         
         existing = cursor.fetchone()
@@ -246,9 +246,9 @@ def populate_principal_jobs():
             max_sal = job["estimated_total"] + 50000
             
             cursor.execute("""
-                INSERT INTO principal_jobs 
-                (company, position, url, min_salary, max_salary, location, 
-                 remote, healthcare_focused, ai_focused, notes)
+                INSERT INTO jobs 
+                (company, title, url, salary_min, salary_max, location, 
+                 remote_type, healthcare_focused, ai_focused, notes)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 job["company"],
@@ -266,7 +266,7 @@ def populate_principal_jobs():
         else:
             # Update existing with latest info
             cursor.execute("""
-                UPDATE principal_jobs 
+                UPDATE jobs 
                 SET url = ?, notes = ?
                 WHERE id = ?
             """, (
@@ -279,12 +279,12 @@ def populate_principal_jobs():
     conn.commit()
     
     # Show what we have
-    cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 0")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 0")
     available = cursor.fetchone()[0]
     
     cursor.execute("""
-        SELECT company, position, min_salary, max_salary, url, notes
-        FROM principal_jobs
+        SELECT company, title, salary_min, salary_max, url, notes
+        FROM jobs
         WHERE applied = 0
         ORDER BY max_salary DESC
         LIMIT 10
@@ -302,7 +302,7 @@ def populate_principal_jobs():
     
     if top_jobs:
         print("\n🎯 TOP PRIORITY TARGETS (REAL JOBS):")
-        for company, position, min_sal, max_sal, url, notes in top_jobs:
+        for company, title, min_sal, max_sal, url, notes in top_jobs:
             print(f"\n  {company}")
             print(f"  {position}")
             print(f"  💰 ${min_sal:,} - ${max_sal:,}")
@@ -322,12 +322,12 @@ def populate_principal_jobs():
 def populate_healthcare_ceo_contacts():
     """Add real healthcare AI CEOs from search results"""
     
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Create table if it doesn't exist
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS ceo_contacts (
+        CREATE TABLE IF NOT EXISTS contacts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
             ceo_name TEXT NOT NULL,
@@ -395,14 +395,14 @@ def populate_healthcare_ceo_contacts():
     inserted = 0
     for ceo in ceos:
         cursor.execute("""
-            SELECT id FROM ceo_contacts 
-            WHERE company = ? AND ceo_name = ?
+            SELECT id FROM contacts 
+            WHERE company = ? AND full_name = ?
         """, (ceo["company"], ceo["ceo_name"]))
         
         if not cursor.fetchone():
             cursor.execute("""
-                INSERT INTO ceo_contacts 
-                (company, ceo_name, email, linkedin_url, company_focus, funding, priority, notes)
+                INSERT INTO contacts 
+                (company, full_name, email, linkedin_url, company_focus, funding, priority, notes)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 ceo["company"],

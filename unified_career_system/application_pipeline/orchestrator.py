@@ -43,7 +43,7 @@ class ApplicationOrchestrator:
     - Parallel processing for speed
     """
     
-    def __init__(self, db_path: str = "unified_career_system/data_layer/unified_career.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         """Initialize the orchestrator with all systems"""
         self.db_path = db_path
         self.master_db = MasterDatabase(db_path)
@@ -336,8 +336,8 @@ class ApplicationOrchestrator:
                 # Generate resume
                 resume = self.survive['resume_generator'].generate_tailored_resume(
                     job_description=job.get('description', ''),
-                    job_title=job['position'],
-                    company_name=job['company'],
+                    title=job['position'],
+                    company=job['company'],
                     required_skills=job.get('requirements', ''),
                     company_info=company_info
                 )
@@ -346,8 +346,8 @@ class ApplicationOrchestrator:
                 
                 # Generate cover letter
                 cover_letter = self.survive['cover_letter_generator'].generate_cover_letter(
-                    job_title=job['position'],
-                    company_name=job['company'],
+                    title=job['position'],
+                    company=job['company'],
                     job_description=job.get('description', ''),
                     company_info=company_info
                 )
@@ -573,8 +573,8 @@ Matthew Scott
         job_folder.mkdir(parents=True, exist_ok=True)
         
         # Save resume
-        resume_path = job_folder / "resume.txt"
-        with open(resume_path, 'w') as f:
+        resume_version = job_folder / "resume.txt"
+        with open(resume_version, 'w') as f:
             f.write(materials['resume'])
             
         # Save cover letter
@@ -608,9 +608,9 @@ Matthew Scott
             
             # Insert application record
             cursor.execute("""
-            INSERT INTO master_applications (
+            INSERT INTO applications (
                 application_uid, job_uid, applied_date,
-                application_method, resume_version, cover_letter_version,
+                method, resume_version, cover_letter_version,
                 source_system
             ) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?, 'orchestrator')
             """, (
@@ -621,17 +621,17 @@ Matthew Scott
             
             # Update job as applied
             cursor.execute("""
-            UPDATE master_jobs
+            UPDATE jobs
             SET applied = 1, applied_date = CURRENT_TIMESTAMP
             WHERE job_uid = ?
             """, (job['job_uid'],))
             
             # Update company intelligence
             cursor.execute("""
-            UPDATE company_intelligence
+            UPDATE companies
             SET total_applications = total_applications + 1,
                 last_updated = CURRENT_TIMESTAMP
-            WHERE company_name = ?
+            WHERE company = ?
             """, (job['company'],))
             
             self.master_db.conn.commit()
@@ -645,7 +645,7 @@ Matthew Scott
         
         # Check company daily limit
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications a
+        SELECT COUNT(*) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE j.company = ? 
         AND DATE(a.applied_date) = DATE('now')
@@ -657,7 +657,7 @@ Matthew Scott
             
         # Check hourly limit
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications
+        SELECT COUNT(*) FROM applications
         WHERE applied_date > datetime('now', '-1 hour')
         """)
         
@@ -700,14 +700,14 @@ Matthew Scott
         
         # Get today's stats
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications
+        SELECT COUNT(*) FROM applications
         WHERE DATE(applied_date) = DATE('now')
         """)
         today_count = cursor.fetchone()[0]
         
         # Get pending jobs
         cursor.execute("""
-        SELECT COUNT(*) FROM master_jobs
+        SELECT COUNT(*) FROM jobs
         WHERE applied = 0 AND is_active = 1
         """)
         pending_count = cursor.fetchone()[0]

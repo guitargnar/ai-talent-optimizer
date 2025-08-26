@@ -56,7 +56,7 @@ class LinkedInEasyApplyBot:
         self.config = self._load_config()
         
         # Database setup
-        self.db_path = Path('data/linkedin_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.db_path.parent.mkdir(exist_ok=True)
         
         # Application tracking
@@ -222,7 +222,7 @@ class LinkedInEasyApplyBot:
             try:
                 company_elem = self.driver.find_element(
                     By.CSS_SELECTOR, 
-                    "a[data-tracking-control-name='public_jobs_topcard-org-name']"
+                    "a[data-tracking-control-full_name='public_jobs_topcard-org-name']"
                 )
                 job_details['company'] = company_elem.text.strip()
             except:
@@ -370,7 +370,7 @@ class LinkedInEasyApplyBot:
             # Years of experience
             experience_inputs = self.driver.find_elements(
                 By.XPATH,
-                "//input[contains(@id, 'experience') or contains(@name, 'experience')]"
+                "//input[contains(@id, 'experience') or contains(@full_name, 'experience')]"
             )
             for input_elem in experience_inputs:
                 if not input_elem.get_attribute('value'):
@@ -442,9 +442,9 @@ class LinkedInEasyApplyBot:
             
             for file_input in file_inputs:
                 if file_input.is_displayed():
-                    resume_path = self.config.get('resume_path', '')
-                    if resume_path and Path(resume_path).exists():
-                        file_input.send_keys(resume_path)
+                    resume_version = self.config.get('resume_path', '')
+                    if resume_path and Path(resume_version).exists():
+                        file_input.send_keys(resume_version)
                         logger.info("Resume uploaded")
                         self._random_delay(1, 2)
                         
@@ -506,7 +506,7 @@ class LinkedInEasyApplyBot:
             cursor = conn.cursor()
             
             cursor.execute("""
-                SELECT COUNT(*) FROM linkedin_jobs 
+                SELECT COUNT(*) FROM jobs 
                 WHERE job_id = ? AND applied = 1
             """, (job_id,))
             
@@ -528,7 +528,7 @@ class LinkedInEasyApplyBot:
             # Insert or update job record
             cursor.execute("""
                 INSERT OR REPLACE INTO linkedin_jobs (
-                    job_id, company, position, location, url, 
+                    job_id, company, title, location, url, 
                     description, applied, applied_date, source
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
@@ -545,8 +545,8 @@ class LinkedInEasyApplyBot:
             
             # Add to application tracking
             cursor.execute("""
-                INSERT INTO application_tracking (
-                    company, position, job_id, application_method,
+                INSERT INTO applications (
+                    company, title, job_id, method,
                     application_status, notes
                 ) VALUES (?, ?, ?, ?, ?, ?)
             """, (

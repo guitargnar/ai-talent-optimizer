@@ -13,7 +13,7 @@ from pathlib import Path
 
 class ProfileContextGenerator:
     def __init__(self):
-        self.db_path = "your_profile.db"
+        self.db_path = "unified_platform.db"
         self.context_path = "CURRENT_PROFILE_CONTEXT.md"
         self.metrics = {}
         
@@ -34,7 +34,7 @@ class ProfileContextGenerator:
                 try:
                     mtime = datetime.fromtimestamp(f.stat().st_mtime).date()
                     if mtime == today:
-                        modified_today.append(f.name)
+                        modified_today.append(f.full_name)
                 except:
                     pass
             metrics['modified_today'] = len(modified_today)
@@ -82,12 +82,12 @@ class ProfileContextGenerator:
         cursor = conn.cursor()
         
         # Get identity
-        identity = cursor.execute("SELECT * FROM professional_identity").fetchone()
+        identity = cursor.execute("SELECT * FROM profile").fetchone()
         
         # Get metrics
         platform_metrics = cursor.execute("""
             SELECT metric_name, metric_value, context 
-            FROM platform_metrics
+            FROM metrics
         """).fetchall()
         
         # Get skills

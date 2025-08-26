@@ -15,7 +15,7 @@ class MCPJobAutomator:
     """Automate job applications using MCP servers"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.memory_graph = {}
         self.automation_stats = {
             'files_processed': 0,
@@ -40,11 +40,11 @@ class MCPJobAutomator:
         cursor = conn.cursor()
         
         # Get all companies
-        cursor.execute("SELECT DISTINCT company FROM job_discoveries")
+        cursor.execute("SELECT DISTINCT company FROM jobs")
         companies = cursor.fetchall()
         
         # Get all positions
-        cursor.execute("SELECT company, position, applied, relevance_score FROM job_discoveries")
+        cursor.execute("SELECT company, title, applied, relevance_score FROM jobs")
         jobs = cursor.fetchall()
         
         # Create entities for MCP memory server
@@ -105,7 +105,7 @@ class MCPJobAutomator:
         # Create relationships
         relations = []
         
-        for company, position, applied, score in jobs:
+        for company, title, applied, score in jobs:
             if company and position:
                 # Matthew -> Applied To -> Company
                 if applied:
@@ -161,7 +161,7 @@ class MCPJobAutomator:
             # Get from database
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("SELECT company FROM job_discoveries WHERE applied = 1")
+            cursor.execute("SELECT company FROM jobs WHERE applied = 1")
             for row in cursor.fetchall():
                 results.append({"name": row[0], "type": "Application", "status": "sent"})
             conn.close()
@@ -245,8 +245,8 @@ class MCPJobAutomator:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT company, position, relevance_score
-            FROM job_discoveries
+            SELECT company, title, relevance_score
+            FROM jobs
             WHERE applied = 0 AND relevance_score >= 0.7
             ORDER BY relevance_score DESC
             LIMIT 10
@@ -257,10 +257,10 @@ class MCPJobAutomator:
         
         packages = []
         
-        for company, position, score in top_jobs:
+        for company, title, score in top_jobs:
             package = {
                 "company": company,
-                "position": position,
+                "position": title,
                 "score": score,
                 "files": [],
                 "personalization": {}
@@ -431,7 +431,7 @@ class MCPJobAutomator:
         ]
         
         print("\n📋 Automation Schedule:")
-        for name, frequency, purpose in monitors:
+        for full_name, frequency, purpose in monitors:
             print(f"  • {name}: {frequency} - {purpose}")
         
         print("\n✅ All automations configured!")

@@ -72,7 +72,7 @@ class LoggingConfig:
     level: str = os.getenv('LOG_LEVEL', 'INFO')
     file_path: str = os.getenv('LOG_FILE', './logs/application.log')
     format: str = os.getenv('LOG_FORMAT', 
-                            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                            '%(asctime)s - %(full_name)s - %(levelname)s - %(message)s')
     max_bytes: int = int(os.getenv('LOG_MAX_BYTES', '10485760'))  # 10MB
     backup_count: int = int(os.getenv('LOG_BACKUP_COUNT', '5'))
 
@@ -108,7 +108,7 @@ class Settings:
         if not self.api.adzuna_app_id or not self.api.adzuna_app_key:
             errors.append("Adzuna API credentials missing")
         
-        if not Path(self.application.resume_path).exists():
+        if not Path(self.application.resume_version).exists():
             errors.append(f"Resume file not found: {self.application.resume_path}")
         
         return errors

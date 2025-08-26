@@ -26,16 +26,16 @@ def migrate_all_databases():
     print("🔄 Starting comprehensive database migration...")
     
     # 1. Migrate principal_jobs_400k.db (high-value jobs)
-    if Path("principal_jobs_400k.db").exists():
+    if Path("unified_platform.db").exists():
         print("\n📊 Migrating principal_jobs_400k.db...")
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Get all unapplied high-value jobs
         cursor.execute("""
-            SELECT company, position, location, min_salary, max_salary, applied
-            FROM principal_jobs 
-            WHERE applied = 0 AND max_salary >= 400000
+            SELECT company, title, location, salary_min, salary_max, applied
+            FROM jobs 
+            WHERE applied = 0 AND salary_max >= 400000
             ORDER BY max_salary DESC
             LIMIT 100
         """)
@@ -45,16 +45,16 @@ def migrate_all_databases():
                 # Check if job already exists
                 existing = session.query(Job).filter_by(
                     company=row[0],
-                    position=row[1]
+                    title=row[1]
                 ).first()
                 
                 if not existing:
                     job = Job(
                         company=row[0],
-                        position=row[1],
+                        title=row[1],
                         location=row[2] if row[2] else "Remote",
-                        min_salary=row[3],
-                        max_salary=row[4],
+                        salary_min=row[3],
+                        salary_max=row[4],
                         source="principal_jobs",
                         priority_score=float(row[4]) / 100000 if row[4] else 0,
                         status='new'
@@ -74,9 +74,9 @@ def migrate_all_databases():
         session.commit()
     
     # 2. Migrate UNIFIED_AI_JOBS.db
-    if Path("UNIFIED_AI_JOBS.db").exists():
+    if Path("unified_platform.db").exists():
         print("\n📊 Migrating UNIFIED_AI_JOBS.db...")
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Check table structure
@@ -85,8 +85,8 @@ def migrate_all_databases():
         
         if ('unified_jobs',) in tables:
             cursor.execute("""
-                SELECT company, title, location, min_salary, max_salary,
-                       job_type, remote, url, is_applied
+                SELECT company, title, location, salary_min, salary_max,
+                       job_type, remote_type, url, is_applied
                 FROM unified_jobs
                 WHERE is_applied = 0 OR is_applied IS NULL
                 LIMIT 50
@@ -96,17 +96,17 @@ def migrate_all_databases():
                 try:
                     existing = session.query(Job).filter_by(
                         company=row[0],
-                        position=row[1]
+                        title=row[1]
                     ).first()
                     
                     if not existing:
                         job = Job(
                             company=row[0],
-                            position=row[1],
+                            title=row[1],
                             location=row[2],
-                            min_salary=row[3],
-                            max_salary=row[4],
-                            remote=row[6] if len(row) > 6 else False,
+                            salary_min=row[3],
+                            salary_max=row[4],
+                            remote_type=row[6] if len(row) > 6 else False,
                             source_url=row[7] if len(row) > 7 else None,
                             source="unified_ai",
                             status='new'
@@ -122,21 +122,21 @@ def migrate_all_databases():
         session.commit()
     
     # 3. Migrate CEO contacts from ceo_outreach.db
-    if Path("ceo_outreach.db").exists():
+    if Path("unified_platform.db").exists():
         print("\n📊 Migrating ceo_outreach.db...")
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         tables = cursor.fetchall()
         
         if ('ceo_contacts',) in tables:
-            cursor.execute("SELECT * FROM ceo_contacts")
+            cursor.execute("SELECT * FROM contacts")
             for row in cursor.fetchall():
                 try:
                     contact = Contact(
                         company=row[1] if len(row) > 1 else "Unknown",
-                        name=row[2] if len(row) > 2 else None,
+                        full_name=row[2] if len(row) > 2 else None,
                         title="CEO",
                         email=row[3] if len(row) > 3 else None
                     )
@@ -160,7 +160,7 @@ def migrate_all_databases():
     # Show top opportunities
     print("\n🎯 Top 5 Opportunities in Database:")
     top_jobs = session.query(Job).filter(
-        Job.max_salary >= 400000
+        Job.salary_max >= 400000
     ).order_by(Job.max_salary.desc()).limit(5).all()
     
     for i, job in enumerate(top_jobs, 1):

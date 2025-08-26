@@ -16,7 +16,7 @@ class ImprovedGmailIntegration(GmailAppPasswordIntegration):
     
     def __init__(self):
         super().__init__()
-        self.unified_db_path = "UNIFIED_AI_JOBS.db"
+        self.unified_db_path = "unified_platform.db"
         
     def classify_response(self, subject, msg):
         """Improved response classification"""
@@ -105,7 +105,7 @@ class ImprovedGmailIntegration(GmailAppPasswordIntegration):
         
         # Create response tracking table if not exists
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS gmail_responses (
+        CREATE TABLE IF NOT EXISTS emails (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email_id TEXT UNIQUE,
             company TEXT,
@@ -141,7 +141,7 @@ class ImprovedGmailIntegration(GmailAppPasswordIntegration):
                     # Try to link to application
                     if response['type'] in ['interview_request', 'next_steps', 'rejection']:
                         cursor.execute('''
-                        UPDATE unified_applications 
+                        UPDATE applications 
                         SET status = ?, response_date = ?, response_type = ?
                         WHERE company = ? AND response_date IS NULL
                         ORDER BY applied_date DESC
@@ -237,7 +237,7 @@ def main():
     print(f"Auto-acknowledgments: {report['auto_acknowledgments']}")
     
     # Integration status
-    if os.path.exists("UNIFIED_AI_JOBS.db"):
+    if os.path.exists("unified_platform.db"):
         print("\n✅ Unified database integration: ACTIVE")
     else:
         print("\n⚠️  Unified database not found - run consolidate_systems.py first")

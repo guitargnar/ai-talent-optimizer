@@ -14,7 +14,7 @@ class OllamaJobChains:
     """Chain multiple Ollama models for sophisticated job application workflows"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         
     def run_model(self, model: str, prompt: str) -> str:
         """Run a single Ollama model"""
@@ -264,8 +264,8 @@ Provide:
         
         # Get high-value pending jobs
         cursor.execute("""
-            SELECT company, position, job_url, description
-            FROM job_discoveries
+            SELECT company, title, job_url, description
+            FROM jobs
             WHERE applied = 0 AND relevance_score >= 0.65
             ORDER BY relevance_score DESC
             LIMIT 10
@@ -276,24 +276,24 @@ Provide:
         
         enhanced_applications = []
         
-        for company, position, url, description in jobs:
+        for company, title, url, description in jobs:
             print(f"\n  Processing: {company} - {position}")
             
             # Run multiple chains
-            cover_letter = self.ultimate_cover_letter_chain(company, position, description or "")
+            cover_letter = self.ultimate_cover_letter_chain(company, title, description or "")
             research = self.company_research_chain(company)
-            technical = self.technical_assessment_chain(description or position)
+            technical = self.technical_assessment_chain(description or title)
             
             enhanced_applications.append({
                 'company': company,
-                'position': position,
+                'position': title,
                 'cover_letter': cover_letter,
                 'research': research,
                 'technical_analysis': technical,
                 'quality_score': self.application_quality_scorer(
                     cover_letter, 
                     "10+ years Python, AI/ML expertise", 
-                    description or position
+                    description or title
                 )
             })
             
@@ -309,7 +309,7 @@ Provide:
         print("\n♾️ CONTINUOUS IMPROVEMENT LOOP")
         
         # Load your resume
-        resume_path = Path.home() / "AI-ML-Portfolio" / "ai-talent-optimizer" / "resumes"
+        resume_version = Path.home() / "AI-ML-Portfolio" / "ai-talent-optimizer" / "resumes"
         
         improvement_prompts = [
             "How can this resume better showcase AI/ML expertise?",

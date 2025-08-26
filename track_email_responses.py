@@ -23,7 +23,7 @@ class EmailResponseTracker:
     
     def __init__(self):
         self.scraper = LinkedInJobScraper()
-        self.db_path = Path('data/linkedin_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.gmail_path = Path('/Users/matthewscott/Google Gmail')
         
         # Company name patterns to detect in emails
@@ -128,12 +128,12 @@ class EmailResponseTracker:
         
         # Find most recent application to this company
         cursor.execute("""
-        UPDATE application_tracking
+        UPDATE applications
         SET response_received = 1,
             response_date = CURRENT_TIMESTAMP,
             response_type = ?
         WHERE rowid = (
-            SELECT rowid FROM application_tracking
+            SELECT rowid FROM applications
             WHERE company = ?
             AND response_received = 0
             ORDER BY application_date DESC
@@ -194,9 +194,9 @@ class EmailResponseTracker:
         # Find applications older than 14 days with no response
         cursor.execute("""
         SELECT company, COUNT(*) as count
-        FROM application_tracking
+        FROM applications
         WHERE response_received = 0
-        AND julianday('now') - julianday(application_date) > 14
+        AND julianday('now') - julianday(applied_date) > 14
         GROUP BY company
         """)
         
@@ -228,7 +228,7 @@ class EmailResponseTracker:
             COUNT(*) as total,
             SUM(CASE WHEN direction = 'incoming' THEN 1 ELSE 0 END) as incoming,
             SUM(CASE WHEN direction = 'outgoing' THEN 1 ELSE 0 END) as outgoing
-        FROM email_tracking
+        FROM emails
         """)
         email_stats = cursor.fetchone()
         
@@ -237,7 +237,7 @@ class EmailResponseTracker:
         SELECT 
             response_type,
             COUNT(*) as count
-        FROM application_tracking
+        FROM applications
         WHERE response_received = 1
         GROUP BY response_type
         """)

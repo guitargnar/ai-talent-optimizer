@@ -21,8 +21,8 @@ class SimpleApplicationSender:
         load_dotenv()
         self.email = os.getenv('EMAIL_ADDRESS')
         self.password = os.getenv('EMAIL_APP_PASSWORD')
-        self.db_path = "REAL_JOBS.db"
-        self.tracking_db = "APPLICATION_TRACKING.db"
+        self.db_path = "unified_platform.db"
+        self.tracking_db = "unified_platform.db"
         
         # Your real information
         self.my_info = {
@@ -37,10 +37,10 @@ class SimpleApplicationSender:
         }
         
         # Resume path
-        self.resume_path = Path("resumes/matthew_scott_ai_ml_resume.pdf")
+        self.resume_version = Path("resumes/matthew_scott_ai_ml_resume.pdf")
         if not self.resume_path.exists():
             print(f"⚠️ Resume not found at {self.resume_path}")
-            self.resume_path = None
+            self.resume_version = None
         
         # Initialize tracking database
         self._init_tracking_db()
@@ -75,7 +75,7 @@ class SimpleApplicationSender:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT id, company, position, location, remote, 
+            SELECT id, company, title, location, remote_type, 
                    salary_min, salary_max, url, email
             FROM jobs
             WHERE applied = 0
@@ -98,7 +98,7 @@ class SimpleApplicationSender:
         
         return jobs
     
-    def generate_cover_letter(self, company, position):
+    def generate_cover_letter(self, company, title):
         """Generate simple, effective cover letter"""
         cover_letter = f"""Dear {company} Hiring Team,
 
@@ -126,22 +126,22 @@ Matthew Scott
 """
         return cover_letter
     
-    def send_application(self, job_id, company, position, to_email):
+    def send_application(self, job_id, company, title, to_email):
         """Send a single application with tracking"""
         print(f"\n📧 Sending application to {company} for {position}")
         print(f"   To: {to_email}")
         
         # Generate cover letter
-        cover_letter = self.generate_cover_letter(company, position)
+        cover_letter = self.generate_cover_letter(company, title)
         
         # Track in database first
         track_conn = sqlite3.connect(self.tracking_db)
         track_cursor = track_conn.cursor()
         
         track_cursor.execute("""
-            INSERT INTO applications (company, position, email_to, cover_letter)
+            INSERT INTO applications (company, title, email_to, cover_letter)
             VALUES (?, ?, ?, ?)
-        """, (company, position, to_email, cover_letter))
+        """, (company, title, to_email, cover_letter))
         
         tracking_id = track_cursor.lastrowid
         track_conn.commit()
@@ -161,7 +161,7 @@ Matthew Scott
             
             # Attach resume if available
             if self.resume_path and self.resume_path.exists():
-                with open(self.resume_path, 'rb') as f:
+                with open(self.resume_version, 'rb') as f:
                     attach = MIMEApplication(f.read(), _subtype="pdf")
                     attach.add_header('Content-Disposition', 'attachment', 
                                     filename='Matthew_Scott_Resume.pdf')
@@ -181,7 +181,7 @@ Matthew Scott
             # Update tracking
             track_cursor.execute("""
                 UPDATE applications 
-                SET email_sent = 1, sent_date = ?
+                SET status = 1, sent_date = ?
                 WHERE id = ?
             """, (datetime.now().isoformat(), tracking_id))
             
@@ -224,7 +224,7 @@ Matthew Scott
         
         cursor.execute("""
             SELECT COUNT(*) as total,
-                   SUM(email_sent) as sent,
+                   SUM(status) as sent,
                    SUM(response_received) as responses
             FROM applications
         """)
@@ -240,9 +240,9 @@ Matthew Scott
         
         # Show recent applications
         cursor.execute("""
-            SELECT company, position, sent_date, response_received
+            SELECT company, title, sent_date, response_received
             FROM applications
-            WHERE email_sent = 1
+            WHERE status = 1
             ORDER BY sent_date DESC
             LIMIT 5
         """)
@@ -279,7 +279,7 @@ def main():
     
     print(f"\n📋 Found {len(jobs)} jobs to apply to:")
     for i, job in enumerate(jobs, 1):
-        job_id, company, position, location, remote, sal_min, sal_max, url, email = job
+        job_id, company, title, location, remote_type, sal_min, sal_max, url, email = job
         remote_str = "Remote" if remote else location
         salary = f"${sal_min/1000:.0f}K-${sal_max/1000:.0f}K" if sal_min else "Not listed"
         
@@ -295,8 +295,8 @@ def main():
     if response == 'y':
         success_count = 0
         for job in jobs:
-            job_id, company, position, _, _, _, _, _, email = job
-            if sender.send_application(job_id, company, position, email):
+            job_id, company, title, _, _, _, _, _, email = job
+            if sender.send_application(job_id, company, title, email):
                 success_count += 1
         
         print("\n" + "=" * 60)

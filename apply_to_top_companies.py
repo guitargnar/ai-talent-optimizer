@@ -13,7 +13,7 @@ from datetime import datetime
 def get_top_ml_positions():
     """Get ML positions from top companies"""
     
-    db_path = Path('data/unified_jobs.db')
+    db_path = Path("unified_platform.db")
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
@@ -22,7 +22,7 @@ def get_top_ml_positions():
     SELECT DISTINCT
         job_id,
         company,
-        position,
+        title,
         location,
         remote_option,
         salary_range,
@@ -31,11 +31,11 @@ def get_top_ml_positions():
     FROM jobs
     WHERE company IN ('Scale AI', 'Plaid', 'Figma', 'Zocdoc', 'Doximity')
     AND (
-        LOWER(position) LIKE '%ml%' OR
-        LOWER(position) LIKE '%machine learning%' OR
-        LOWER(position) LIKE '%ai%' OR
-        LOWER(position) LIKE '%engineer%' OR
-        LOWER(position) LIKE '%data%'
+        LOWER(title) LIKE '%ml%' OR
+        LOWER(title) LIKE '%machine learning%' OR
+        LOWER(title) LIKE '%ai%' OR
+        LOWER(title) LIKE '%engineer%' OR
+        LOWER(title) LIKE '%data%'
     )
     AND applied != 1
     ORDER BY 

@@ -21,9 +21,9 @@ class SystemReadinessChecker:
         print("🔍 Checking Credentials...")
         
         # Check database
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
-        identity = cursor.execute("SELECT * FROM professional_identity").fetchone()
+        identity = cursor.execute("SELECT * FROM profile").fetchone()
         conn.close()
         
         if 'guitargnar' in identity[5]:
@@ -98,9 +98,9 @@ class SystemReadinessChecker:
         
         # Check for unapplied jobs
         try:
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 0")
+            cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 0")
             unapplied = cursor.fetchone()[0]
             
             if unapplied > 0:
@@ -111,7 +111,7 @@ class SystemReadinessChecker:
             # Check for high-priority jobs
             cursor.execute("""
                 SELECT company, position 
-                FROM principal_jobs 
+                FROM jobs 
                 WHERE applied = 0 
                 ORDER BY max_salary DESC 
                 LIMIT 3

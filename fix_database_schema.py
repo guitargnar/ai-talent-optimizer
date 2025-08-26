@@ -9,7 +9,7 @@ import os
 def fix_database_schema():
     """Add missing columns to job_discoveries table"""
     
-    db_path = "UNIFIED_AI_JOBS.db"
+    db_path = "unified_platform.db"
     
     if not os.path.exists(db_path):
         print(f"❌ Database not found: {db_path}")

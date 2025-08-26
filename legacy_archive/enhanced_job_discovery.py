@@ -24,7 +24,7 @@ class EnhancedJobDiscovery:
     """Discovers AI/ML jobs from multiple sources"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.scraper = FreeJobScraper()
         self.adapter = JobScraperAdapter()
         
@@ -71,10 +71,10 @@ class EnhancedJobDiscovery:
         # Salary boost
         try:
             salary_range = job.get('salary_range', '0-0')
-            min_salary = int(salary_range.split('-')[0])
-            if min_salary > 150000:
+            salary_min = int(salary_range.split('-')[0])
+            if salary_min > 150000:
                 score += 0.2
-            elif min_salary > 120000:
+            elif salary_min > 120000:
                 score += 0.1
         except:
             pass
@@ -135,8 +135,8 @@ class EnhancedJobDiscovery:
             try:
                 # Check if job already exists
                 cursor.execute("""
-                    SELECT 1 FROM job_discoveries 
-                    WHERE company = ? AND position = ?
+                    SELECT 1 FROM jobs 
+                    WHERE company = ? AND title = ?
                 """, (job['company'], job['position']))
                 
                 if cursor.fetchone():
@@ -144,8 +144,8 @@ class EnhancedJobDiscovery:
                     
                 # Insert new job (using existing schema)
                 cursor.execute("""
-                    INSERT INTO job_discoveries (
-                        job_id, source, company, position, description,
+                    INSERT INTO jobs (
+                        job_id, source, company, title, description,
                         location, remote_option, salary_range, url,
                         discovered_date, relevance_score, applied
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)

@@ -21,13 +21,13 @@ logger = logging.getLogger(__name__)
 class DatabaseAnalyzer:
     def __init__(self):
         self.databases = [
-            'UNIFIED_AI_JOBS.db',
-            'job_applications.db', 
-            'your_profile.db',
-            'principal_jobs_400k.db',
-            'ai_talent_optimizer.db',
-            'verified_metrics.db',
-            'ceo_outreach.db'
+            "unified_platform.db",
+            "unified_platform.db", 
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db"
         ]
         
         self.analysis_results = {}
@@ -116,13 +116,13 @@ class DatabaseAnalyzer:
     def _determine_purpose(self, db_file):
         """Determine the primary purpose of each database."""
         purposes = {
-            'UNIFIED_AI_JOBS.db': 'Job discovery and application tracking',
-            'job_applications.db': 'Job discovery and tracking',
-            'your_profile.db': 'Personal profile and credentials',
-            'principal_jobs_400k.db': 'High-value principal/staff roles',
-            'ai_talent_optimizer.db': 'Core application system',
-            'verified_metrics.db': 'Verified personal metrics',
-            'ceo_outreach.db': 'CEO/executive contact tracking'
+            "unified_platform.db": 'Job discovery and application tracking',
+            "unified_platform.db": 'Job discovery and tracking',
+            "unified_platform.db": 'Personal profile and credentials',
+            "unified_platform.db": 'High-value principal/staff roles',
+            "unified_platform.db": 'Core application system',
+            "unified_platform.db": 'Verified personal metrics',
+            "unified_platform.db": 'CEO/executive contact tracking'
         }
         return purposes.get(db_file, 'Unknown')
     
@@ -288,7 +288,7 @@ class DatabaseAnalyzer:
                 "Set up data validation functions"
             ],
             "phase_2_data_migration": [
-                "Migrate job data from all sources (dedup by company+position)",
+                "Migrate job data from all sources (dedup by company+title)",
                 "Migrate application data (dedup by company+applied_date)",
                 "Migrate response data (dedup by email_id)",
                 "Migrate profile data (single record)",
@@ -335,7 +335,7 @@ class DatabaseAnalyzer:
             "All company names should be consistent (e.g., 'Google' not 'Google Inc.')",
             "All dates should be in ISO format",
             "All salary ranges should be integers or NULL",
-            "No duplicate jobs (same company + position)",
+            "No duplicate jobs (same company + title)",
             "All applications must reference valid jobs",
             "All responses must reference valid applications"
         ]

@@ -24,7 +24,7 @@ from data.models import init_database
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ def discover(source, keywords, location):
 @cli.command()
 @click.option('--company', required=True, help='Company name')
 @click.option('--position', required=True, help='Position title')
-def resume(company, position):
+def resume(company, title):
     """Generate tailored resume"""
     click.echo(f"📄 Generating resume for {position} at {company}")
     

@@ -7,10 +7,10 @@ import sqlite3
 sender = SimpleApplicationSender()
 
 # Get ONE job
-conn = sqlite3.connect("REAL_JOBS.db")
+conn = sqlite3.connect("unified_platform.db")
 cursor = conn.cursor()
 cursor.execute("""
-    SELECT id, company, position, location, remote, 
+    SELECT id, company, title, location, remote_type, 
            salary_min, salary_max, url, email
     FROM jobs
     WHERE applied = 0
@@ -22,9 +22,9 @@ job = cursor.fetchone()
 conn.close()
 
 if job:
-    job_id, company, position, location, remote, sal_min, sal_max, url, email = job
+    job_id, company, title, location, remote_type, sal_min, sal_max, url, email = job
     print(f"Sending to: {company} - {position}")
     print(f"Email: {email}")
-    sender.send_application(job_id, company, position, email)
+    sender.send_application(job_id, company, title, email)
 else:
     print("No job found")

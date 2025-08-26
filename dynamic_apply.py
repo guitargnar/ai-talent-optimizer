@@ -25,7 +25,7 @@ class DynamicJobApplicationSystem:
     
     def __init__(self):
         """Initialize the dynamic application system"""
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.quality_system = QualityFirstApplicationSystem()
         self.session_jobs = []  # Track jobs discovered in this session
         
@@ -141,7 +141,7 @@ class DynamicJobApplicationSystem:
         for job in discovered_jobs:
             job['discovered_date'] = datetime.now().isoformat()
             job['source'] = 'dynamic_discovery'
-            job['relevance_score'] = self._calculate_relevance(job, job_title)
+            job['relevance_score'] = self._calculate_relevance(job, title)
         
         print(f"   ✅ Found {len(discovered_jobs)} potential opportunities")
         return discovered_jobs
@@ -180,8 +180,8 @@ class DynamicJobApplicationSystem:
         for job in jobs:
             # Check if job already exists
             cursor.execute("""
-                SELECT id FROM job_discoveries 
-                WHERE company = ? AND position = ?
+                SELECT id FROM jobs 
+                WHERE company = ? AND title = ?
             """, (job['company_name'], job['job_title']))
             
             existing = cursor.fetchone()
@@ -191,8 +191,8 @@ class DynamicJobApplicationSystem:
                 print(f"   ✨ NEW: {job['company_name']} - {job['job_title']}")
                 
                 cursor.execute("""
-                    INSERT INTO job_discoveries (
-                        source, company, position, url, description,
+                    INSERT INTO jobs (
+                        source, company, title, url, description,
                         location, discovered_date, relevance_score,
                         applied, verified_email, email_source
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
@@ -255,7 +255,7 @@ class DynamicJobApplicationSystem:
             
             success = self.quality_system.send_application(
                 company=job['company_name'],
-                role=job['job_title'],
+                position=job['job_title'],
                 email_address=email
             )
             
@@ -284,10 +284,10 @@ class DynamicJobApplicationSystem:
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET applied = 1,
                 applied_date = ?,
-                application_method = 'dynamic_quality'
+                method = 'dynamic_quality'
             WHERE id = ?
         """, (datetime.now().isoformat(), job_id))
         
@@ -308,7 +308,7 @@ class DynamicJobApplicationSystem:
         
         # Step A: Discover new jobs online
         print("\n📡 STEP 1: DISCOVERING OPPORTUNITIES")
-        discovered_jobs = self.discover_new_jobs_online(job_title)
+        discovered_jobs = self.discover_new_jobs_online(title)
         
         if not discovered_jobs:
             print("❌ No jobs found for this search term")
@@ -367,7 +367,7 @@ Examples:
     
     # Initialize and run the system
     system = DynamicJobApplicationSystem()
-    system.run_complete_workflow(args.job_title)
+    system.run_complete_workflow(args.title)
 
 if __name__ == "__main__":
     # Check if running with arguments

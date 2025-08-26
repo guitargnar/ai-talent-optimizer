@@ -67,7 +67,7 @@ def test_email_verification():
     # Check database storage
     print("\n💾 Database Storage Check:")
     try:
-        db_path = "COMPANY_RESEARCH.db"
+        db_path = "unified_platform.db"
         if Path(db_path).exists():
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()

@@ -46,8 +46,8 @@ def cleanup_fake_emails():
     ]
     
     # Clean up REAL_JOBS.db
-    if Path("REAL_JOBS.db").exists():
-        conn = sqlite3.connect("REAL_JOBS.db")
+    if Path("unified_platform.db").exists():
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Get all emails
@@ -80,8 +80,8 @@ def cleanup_fake_emails():
         print(f"  • Kept: {kept_count} verified emails")
     
     # Clean up UNIFIED_AI_JOBS.db
-    if Path("UNIFIED_AI_JOBS.db").exists():
-        conn = sqlite3.connect("UNIFIED_AI_JOBS.db")
+    if Path("unified_platform.db").exists():
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Check if email column exists
@@ -89,7 +89,7 @@ def cleanup_fake_emails():
         columns = [col[1] for col in cursor.fetchall()]
         
         if 'email' in columns:
-            cursor.execute("SELECT DISTINCT email FROM job_discoveries WHERE email IS NOT NULL")
+            cursor.execute("SELECT DISTINCT email FROM jobs WHERE email IS NOT NULL")
             all_emails = cursor.fetchall()
             
             removed_count = 0
@@ -97,7 +97,7 @@ def cleanup_fake_emails():
                 email = email_tuple[0]
                 is_fake = any(email.startswith(pattern) for pattern in fake_patterns)
                 if is_fake:
-                    cursor.execute("UPDATE job_discoveries SET email = NULL WHERE email = ?", (email,))
+                    cursor.execute("UPDATE jobs SET email = NULL WHERE email = ?", (email,))
                     removed_count += 1
             
             conn.commit()
@@ -147,12 +147,12 @@ def cleanup_fake_emails():
 def show_remaining_jobs():
     """Show jobs that still have email addresses after cleanup"""
     
-    if Path("REAL_JOBS.db").exists():
-        conn = sqlite3.connect("REAL_JOBS.db")
+    if Path("unified_platform.db").exists():
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT company, position, email 
+            SELECT company, title, email 
             FROM jobs 
             WHERE email IS NOT NULL AND email != ''
             ORDER BY company
@@ -163,7 +163,7 @@ def show_remaining_jobs():
         
         if jobs_with_email:
             print("\n📧 Jobs with verified email addresses:")
-            for company, position, email in jobs_with_email:
+            for company, title, email in jobs_with_email:
                 print(f"  • {company}: {position}")
                 print(f"    Email: {email}")
         else:

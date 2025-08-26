@@ -13,12 +13,12 @@ class Dashboard:
     """Visual dashboard for job hunting status"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.bcc_log_path = "data/bcc_tracking_log.json"
         
     def clear_screen(self):
         """Clear terminal screen"""
-        os.system('clear' if os.name == 'posix' else 'cls')
+        os.system('clear' if os.full_name == 'posix' else 'cls')
     
     def print_header(self):
         """Print dashboard header"""
@@ -37,30 +37,30 @@ class Dashboard:
             cursor = conn.cursor()
             
             # Total jobs
-            cursor.execute("SELECT COUNT(*) FROM job_discoveries")
+            cursor.execute("SELECT COUNT(*) FROM jobs")
             stats['total_jobs'] = cursor.fetchone()[0]
             
             # Applied jobs
-            cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied=1")
+            cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied=1")
             stats['total_applied'] = cursor.fetchone()[0]
             
             # Today's applications
             cursor.execute("""
-                SELECT COUNT(*) FROM job_discoveries 
+                SELECT COUNT(*) FROM jobs 
                 WHERE applied=1 AND DATE(applied_date) = DATE('now')
             """)
             stats['today_applied'] = cursor.fetchone()[0]
             
             # This week's applications
             cursor.execute("""
-                SELECT COUNT(*) FROM job_discoveries 
+                SELECT COUNT(*) FROM jobs 
                 WHERE applied=1 AND applied_date > datetime('now', '-7 days')
             """)
             stats['week_applied'] = cursor.fetchone()[0]
             
             # Pending high-value
             cursor.execute("""
-                SELECT COUNT(*) FROM job_discoveries 
+                SELECT COUNT(*) FROM jobs 
                 WHERE applied=0 AND relevance_score >= 0.65
             """)
             stats['pending_high'] = cursor.fetchone()[0]
@@ -68,7 +68,7 @@ class Dashboard:
             # Top companies applied
             cursor.execute("""
                 SELECT company, COUNT(*) as count 
-                FROM job_discoveries 
+                FROM jobs 
                 WHERE applied=1 
                 GROUP BY company 
                 ORDER BY count DESC 
@@ -78,8 +78,8 @@ class Dashboard:
             
             # Recent applications
             cursor.execute("""
-                SELECT company, position, applied_date 
-                FROM job_discoveries 
+                SELECT company, title, applied_date 
+                FROM jobs 
                 WHERE applied=1 
                 ORDER BY applied_date DESC 
                 LIMIT 5
@@ -89,7 +89,7 @@ class Dashboard:
             # Application rate by day
             cursor.execute("""
                 SELECT DATE(applied_date) as date, COUNT(*) as count 
-                FROM job_discoveries 
+                FROM jobs 
                 WHERE applied=1 AND applied_date > datetime('now', '-7 days')
                 GROUP BY date 
                 ORDER BY date DESC
@@ -142,7 +142,7 @@ class Dashboard:
         print("─" * 60)
         
         if stats['recent_apps']:
-            for company, position, date_str in stats['recent_apps']:
+            for company, title, date_str in stats['recent_apps']:
                 date_obj = datetime.fromisoformat(date_str)
                 time_ago = datetime.now() - date_obj
                 
@@ -156,7 +156,7 @@ class Dashboard:
                 
                 # Truncate long text
                 company = company[:20] + "..." if len(company) > 20 else company
-                position = position[:30] + "..." if len(position) > 30 else position
+                title = position[:30] + "..." if len(title) > 30 else position
                 
                 print(f"• {company:<23} │ {position:<33} │ {ago}")
         else:

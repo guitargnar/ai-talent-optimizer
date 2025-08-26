@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class EmailValidator:
     """Advanced email validation with multiple verification methods"""
     
-    def __init__(self, db_path: str = "data/unified_jobs.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = db_path
         
         # Regex for basic email validation
@@ -97,7 +97,7 @@ class EmailValidator:
         result['checks']['blacklist'] = True
         
         # Check 4: Known pattern matching
-        pattern_match = self._check_known_pattern(email, domain, company_name)
+        pattern_match = self._check_known_pattern(email, domain, company)
         result['checks']['pattern_match'] = pattern_match
         
         # Check 5: DNS MX record validation

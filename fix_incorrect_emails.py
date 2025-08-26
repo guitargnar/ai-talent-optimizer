@@ -13,7 +13,7 @@ class EmailFixer:
     """Fix incorrect email addresses based on bounce feedback"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.corrections_path = "data/email_corrections.json"
         
         # Based on actual results from Gmail
@@ -104,7 +104,7 @@ class EmailFixer:
         
         for email in self.bounced_emails:
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET bounce_detected = 1,
                     application_invalid = 1,
                     verified_email = NULL,
@@ -123,7 +123,7 @@ class EmailFixer:
         
         for email in self.unmonitored_emails:
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET verified_email = NULL,
                     notes = 'Email not monitored - use website'
                 WHERE verified_email = ?
@@ -155,9 +155,9 @@ class EmailFixer:
         
         for company, info in self.correct_methods.items():
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET application_url = ?,
-                    application_method = ?,
+                    method = ?,
                     notes = ?
                 WHERE company LIKE ?
             """, (info['url'], info['method'], info['notes'], f'%{company}%'))
@@ -191,8 +191,8 @@ class EmailFixer:
         # Get companies that need website applications
         cursor.execute("""
             SELECT DISTINCT company, application_url, relevance_score
-            FROM job_discoveries
-            WHERE application_method = 'website'
+            FROM jobs
+            WHERE method = 'website'
             AND relevance_score >= 0.5
             ORDER BY relevance_score DESC
             LIMIT 10
@@ -203,7 +203,7 @@ class EmailFixer:
         # Get companies with working emails
         cursor.execute("""
             SELECT DISTINCT company, verified_email, relevance_score
-            FROM job_discoveries
+            FROM jobs
             WHERE verified_email IS NOT NULL
             AND verified_email != ''
             AND relevance_score >= 0.5

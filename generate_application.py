@@ -16,7 +16,7 @@ class ApplicationGenerator:
     def __init__(self):
         self.load_context()
         self.company = None
-        self.position = None
+        self.title = None
         self.job_id = None
         
     def load_context(self):
@@ -33,12 +33,12 @@ class ApplicationGenerator:
             self.context = generator.generate_context_document()
         
         # Load from database
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Get all data
-        self.identity = cursor.execute("SELECT * FROM professional_identity").fetchone()
-        self.metrics = dict(cursor.execute("SELECT metric_name, metric_value FROM platform_metrics").fetchall())
+        self.identity = cursor.execute("SELECT * FROM profile").fetchone()
+        self.metrics = dict(cursor.execute("SELECT metric_name, metric_value FROM metrics").fetchall())
         self.skills = cursor.execute("SELECT * FROM technical_skills").fetchall()
         self.projects = cursor.execute("SELECT * FROM major_projects").fetchall()
         self.narratives = dict(cursor.execute("SELECT narrative_type, narrative_text FROM positioning_narratives").fetchall())
@@ -130,7 +130,7 @@ class ApplicationGenerator:
         
         # Store for later use
         self.company = analysis['company'] or 'Company'
-        self.position = analysis['position'] or 'Position'
+        self.title = analysis['position'] or 'Position'
         self.job_id = analysis['job_id']
         
         return analysis
@@ -138,7 +138,7 @@ class ApplicationGenerator:
     def generate_cover_letter(self, role_analysis):
         """Generate tailored cover letter using context"""
         company = role_analysis['company'] or 'Hiring Team'
-        position = role_analysis['position'] or 'the position'
+        title = role_analysis['position'] or 'the position'
         
         # Select appropriate narrative based on role
         if 'Principal' in position or 'Staff' in position:
@@ -181,7 +181,7 @@ Your requirements for {', '.join(role_analysis['key_skills'][:3])} align perfect
 The GenAI/LLM focus of this role perfectly matches the systems I've been building. I can bring immediate value through both my institutional knowledge and my cutting-edge capabilities.
 """
         else:
-            cover_letter += """I've reached the ceiling in my current role, evidenced by the fact that I've built an enterprise platform on nights and weekends just to stay challenged. I need a role that matches my actual output - not my current title.
+            cover_letter += """I've reached the ceiling in my current position, evidenced by the fact that I've built an enterprise platform on nights and weekends just to stay challenged. I need a role that matches my actual output - not my current title.
 
 Your focus on {', '.join(role_analysis['key_skills'][:2])} aligns with the exact technologies I've been deploying in production. I don't just understand these concepts - I have working systems using them right now.
 """
@@ -475,8 +475,8 @@ Remember: You're not interviewing for a job. You're demonstrating that you're al
             f.write(cover_letter)
         
         # Save resume
-        resume_path = base_path / "resume_tailored.txt"
-        with open(resume_path, 'w') as f:
+        resume_version = base_path / "resume_tailored.txt"
+        with open(resume_version, 'w') as f:
             f.write(resume)
         
         # Save interview prep
@@ -488,14 +488,14 @@ Remember: You're not interviewing for a job. You're demonstrating that you're al
         metadata = {
             'generated': datetime.now().isoformat(),
             'company': self.company,
-            'position': self.position,
+            'position': self.title,
             'job_id': self.job_id,
             'role_analysis': role_analysis,
             'match_score': role_analysis['match_score'],
             'files': {
                 'job_description': str(job_desc_path),
                 'cover_letter': str(cover_letter_path),
-                'resume': str(resume_path),
+                'resume': str(resume_version),
                 'interview_prep': str(prep_path)
             }
         }

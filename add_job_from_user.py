@@ -32,7 +32,7 @@ def add_single_job():
     
     # Collect information
     company = input("Company name: ").strip()
-    position = input("Position title: ").strip()
+    title = input("Position title: ").strip()
     url = input("Application URL (or 'skip'): ").strip()
     if url.lower() == 'skip':
         url = f"https://careers.{company.lower().replace(' ', '')}.com"
@@ -54,35 +54,35 @@ def add_single_job():
     priority = priority_map.get(priority_choice, 'MEDIUM')
     
     # Add to database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Check if exists
     cursor.execute("""
-        SELECT id FROM principal_jobs 
-        WHERE company = ? AND position = ?
-    """, (company, position))
+        SELECT id FROM jobs 
+        WHERE company = ? AND title = ?
+    """, (company, title))
     
     if cursor.fetchone():
         print(f"\n⚠️  Job already exists: {company} - {position}")
         update = input("Update it with new information? (yes/no): ").strip()
         if update.lower() == 'yes':
             cursor.execute("""
-                UPDATE principal_jobs 
-                SET url = ?, min_salary = ?, max_salary = ?, location = ?, notes = ?
-                WHERE company = ? AND position = ?
+                UPDATE jobs 
+                SET url = ?, salary_min = ?, salary_max = ?, location = ?, notes = ?
+                WHERE company = ? AND title = ?
             """, (url, min_sal, max_sal, location, f"Priority: {priority}. {notes}", 
-                  company, position))
+                  company, title))
             print("✅ Job updated!")
     else:
         cursor.execute("""
-            INSERT INTO principal_jobs 
-            (company, position, url, min_salary, max_salary, location, 
-             remote, healthcare_focused, ai_focused, notes)
+            INSERT INTO jobs 
+            (company, title, url, salary_min, salary_max, location, 
+             remote_type, healthcare_focused, ai_focused, notes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             company,
-            position,
+            title,
             url,
             min_sal,
             max_sal,
@@ -119,7 +119,7 @@ def add_bulk_jobs():
         print("No jobs to add")
         return
     
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     added = 0
@@ -127,7 +127,7 @@ def add_bulk_jobs():
         parts = [p.strip() for p in job_line.split('|')]
         if len(parts) >= 2:
             company = parts[0]
-            position = parts[1]
+            title = parts[1]
             url = parts[2] if len(parts) > 2 and parts[2] else f"https://careers.{company.lower().replace(' ', '')}.com"
             location = parts[3] if len(parts) > 3 else "Remote"
             salary = parts[4] if len(parts) > 4 else "400K+"
@@ -136,19 +136,19 @@ def add_bulk_jobs():
             
             # Check if exists
             cursor.execute("""
-                SELECT id FROM principal_jobs 
-                WHERE company = ? AND position = ?
-            """, (company, position))
+                SELECT id FROM jobs 
+                WHERE company = ? AND title = ?
+            """, (company, title))
             
             if not cursor.fetchone():
                 cursor.execute("""
-                    INSERT INTO principal_jobs 
-                    (company, position, url, min_salary, max_salary, location, 
-                     remote, healthcare_focused, ai_focused, notes)
+                    INSERT INTO jobs 
+                    (company, title, url, salary_min, salary_max, location, 
+                     remote_type, healthcare_focused, ai_focused, notes)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     company,
-                    position,
+                    title,
                     url,
                     min_sal,
                     max_sal,
@@ -196,24 +196,24 @@ def quick_add_from_url():
     else:
         company = input("Company name: ").strip()
     
-    position = input("Position title: ").strip()
+    title = input("Position title: ").strip()
     location = input("Location (default: Remote): ").strip() or "Remote"
     salary = input("Salary (default: 400K-500K): ").strip() or "400K-500K"
     
     min_sal, max_sal = parse_salary(salary)
     
     # Add to database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     cursor.execute("""
-        INSERT INTO principal_jobs 
-        (company, position, url, min_salary, max_salary, location, 
-         remote, healthcare_focused, ai_focused, notes)
+        INSERT INTO jobs 
+        (company, title, url, salary_min, salary_max, location, 
+         remote_type, healthcare_focused, ai_focused, notes)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         company,
-        position,
+        title,
         url,
         min_sal,
         max_sal,
@@ -233,13 +233,13 @@ def quick_add_from_url():
 
 def view_recent_jobs():
     """View recently added jobs"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT company, position, min_salary, max_salary, url, 
+        SELECT company, title, salary_min, salary_max, url, 
                datetime(discovered_at) as added_date
-        FROM principal_jobs 
+        FROM jobs 
         ORDER BY discovered_at DESC 
         LIMIT 10
     """)
@@ -250,7 +250,7 @@ def view_recent_jobs():
     if jobs:
         print("\n📋 RECENTLY ADDED JOBS:")
         print("="*60)
-        for company, position, min_sal, max_sal, url, added in jobs:
+        for company, title, min_sal, max_sal, url, added in jobs:
             print(f"\n{company} - {position}")
             print(f"  💰 ${min_sal:,}-${max_sal:,}")
             print(f"  🔗 {url[:50]}...")

@@ -31,7 +31,7 @@ class RecruiterShield:
     
     def __init__(self, db_path: str = None):
         if db_path is None:
-            db_path = Path(__file__).parent.parent / 'data_layer' / 'unified_career.db'
+            db_path = Path(__file__).parent.parent / 'data_layer' / "unified_platform.db"
         self.db_path = Path(db_path)
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
@@ -43,24 +43,24 @@ class RecruiterShield:
         """Register a new recruiter interaction"""
         
         # Check if recruiter exists
-        existing = self._find_recruiter(email or name)
+        existing = self._find_recruiter(email or full_name)
         if existing:
             print(f"⚠️ Recruiter already registered: {name}")
             return existing['recruiter_uid']
         
         # Generate UID
-        recruiter_uid = self._generate_uid(name, email or agency or datetime.now())
+        recruiter_uid = self._generate_uid(full_name, email or agency or datetime.now())
         
         cursor = self.conn.cursor()
         cursor.execute("""
             INSERT INTO recruiter_interactions (
-                recruiter_uid, name, email, agency, agency_type,
+                recruiter_uid, full_name, email, agency, agency_type,
                 linkedin_profile, companies_represented,
                 first_contact_date, interaction_count,
                 interaction_history
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            recruiter_uid, name, email, agency, agency_type.value,
+            recruiter_uid, full_name, email, agency, agency_type.value,
             linkedin, json.dumps(companies or []),
             datetime.now(), 1,
             json.dumps([{
@@ -325,7 +325,7 @@ class RecruiterShield:
         
         cursor.execute("""
             SELECT * FROM recruiter_interactions
-            WHERE email = ? OR name = ?
+            WHERE email = ? OR full_name = ?
         """, (identifier, identifier))
         
         return cursor.fetchone()

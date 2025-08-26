@@ -36,12 +36,12 @@ class SafeAutomatedApply:
         
     def get_unapplied_jobs(self, limit=10):
         """Get jobs that haven't been applied to yet"""
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT company, position, url, salary_range, relevance_score
-            FROM job_discoveries
+            SELECT company, title, url, salary_range, relevance_score
+            FROM jobs
             WHERE applied = 0
             ORDER BY relevance_score DESC
             LIMIT ?
@@ -63,7 +63,7 @@ class SafeAutomatedApply:
     def validate_and_apply(self, job):
         """Validate email before applying"""
         company = job['company']
-        position = job['position']
+        title = job['position']
         
         print(f"\n📋 Processing: {company} - {position}")
         
@@ -86,7 +86,7 @@ class SafeAutomatedApply:
                 if success:
                     self.applications_sent.append({
                         'company': company,
-                        'position': position,
+                        'position': title,
                         'email': target_email,
                         'timestamp': datetime.now().isoformat()
                     })
@@ -94,7 +94,7 @@ class SafeAutomatedApply:
                 else:
                     self.applications_failed.append({
                         'company': company,
-                        'position': position,
+                        'position': title,
                         'reason': 'Send failed'
                     })
                     return 'failed'
@@ -102,7 +102,7 @@ class SafeAutomatedApply:
                 print(f"   ❌ Email validation failed: {validation['reason']}")
                 self.applications_failed.append({
                     'company': company,
-                    'position': position,
+                    'position': title,
                     'reason': validation['reason']
                 })
                 return 'failed'
@@ -112,7 +112,7 @@ class SafeAutomatedApply:
             print(f"   ℹ️ Use web form: {email_info['instruction']}")
             self.applications_alternative.append({
                 'company': company,
-                'position': position,
+                'position': title,
                 'method': 'web_form',
                 'instruction': email_info['instruction']
             })
@@ -123,7 +123,7 @@ class SafeAutomatedApply:
             print(f"   ⚠️ No valid application method found")
             self.applications_alternative.append({
                 'company': company,
-                'position': position,
+                'position': title,
                 'method': 'unknown',
                 'instruction': f'Research {company} careers page'
             })
@@ -143,8 +143,8 @@ class SafeAutomatedApply:
             msg.attach(MIMEText(cover_letter, 'plain'))
             
             # Would add resume here
-            # resume_path = self.select_resume(job)
-            # with open(resume_path, 'rb') as f:
+            # resume_version = self.select_resume(job)
+            # with open(resume_version, 'rb') as f:
             #     attach = MIMEApplication(f.read(), _subtype="pdf")
             #     attach.add_header('Content-Disposition', 'attachment', filename='resume.pdf')
             #     msg.attach(attach)

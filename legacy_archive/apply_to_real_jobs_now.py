@@ -10,12 +10,12 @@ import os
 
 def get_top_jobs(limit=5):
     """Get top priority real jobs from database"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT company, position, url, min_salary, max_salary, notes
-        FROM principal_jobs
+        SELECT company, title, url, salary_min, salary_max, notes
+        FROM jobs
         WHERE applied = 0
         ORDER BY max_salary DESC
         LIMIT ?
@@ -25,7 +25,7 @@ def get_top_jobs(limit=5):
     conn.close()
     return jobs
 
-def generate_cover_letter(company, position, salary_range):
+def generate_cover_letter(company, title, salary_range):
     """Generate targeted cover letter for principal/staff position"""
     
     # Company-specific highlights
@@ -85,7 +85,7 @@ github.com/mds1"""
 
 def generate_application_package(job):
     """Generate complete application package for a job"""
-    company, position, url, min_sal, max_sal, notes = job
+    company, title, url, min_sal, max_sal, notes = job
     salary_range = f"${min_sal:,}-${max_sal:,}"
     
     print(f"\n{'='*70}")
@@ -96,7 +96,7 @@ def generate_application_package(job):
     print(f"Application URL: {url}")
     
     # Generate cover letter
-    cover_letter = generate_cover_letter(company, position, salary_range)
+    cover_letter = generate_cover_letter(company, title, salary_range)
     
     # Save to file
     safe_filename = f"{company}_{position}".replace(" ", "_").replace("/", "_")[:50]
@@ -124,13 +124,13 @@ def generate_application_package(job):
     print(f"\n✅ Application materials saved to: {filename}")
     
     # Mark as applied in database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE principal_jobs 
+        UPDATE jobs 
         SET applied = 1, applied_at = CURRENT_TIMESTAMP
-        WHERE company = ? AND position = ?
-    """, (company, position))
+        WHERE company = ? AND title = ?
+    """, (company, title))
     conn.commit()
     conn.close()
     
@@ -158,7 +158,7 @@ def main():
     print("🎯 READY TO APPLY - CLICK THESE LINKS:")
     print("="*70)
     
-    for i, (company, position, url, filename) in enumerate(application_urls, 1):
+    for i, (company, title, url, filename) in enumerate(application_urls, 1):
         print(f"\n{i}. {company} - {position}")
         print(f"   📄 Cover Letter: {filename}")
         print(f"   🔗 APPLY NOW: {url}")
@@ -178,7 +178,7 @@ def main():
     print("\n" + "="*70)
     open_browser = input("Open all application URLs in browser? (yes/no): ")
     if open_browser.lower() == 'yes':
-        for company, position, url, _ in application_urls:
+        for company, title, url, _ in application_urls:
             print(f"Opening {company} application...")
             webbrowser.open(url)
     

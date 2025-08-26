@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class EmailDiscoveryService:
     """Service to discover and validate email addresses for companies"""
     
-    def __init__(self, db_path: str = "data/unified_jobs.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = db_path
         
         # Load company data from JSON
@@ -155,7 +155,7 @@ class EmailDiscoveryService:
             if not result:
                 return None
                 
-            company_name, job_url, company_website = result
+            company, job_url, company_website = result
             
             # Try to extract domain
             domain = None
@@ -165,7 +165,7 @@ class EmailDiscoveryService:
                 domain = self.extract_domain_from_url(job_url)
                 
             # Generate candidates
-            candidates = self.generate_email_candidates(company_name, domain)
+            candidates = self.generate_email_candidates(company, domain)
             
             # Return the most likely candidate
             if candidates:
@@ -202,9 +202,9 @@ class EmailDiscoveryService:
             jobs = cursor.fetchall()
             logger.info(f"Found {len(jobs)} jobs needing email discovery")
             
-            for job_id, company_name, job_url, company_website in jobs:
+            for job_id, company, job_url, company_website in jobs:
                 # First check for verified email
-                verified_email = self.get_verified_email(company_name)
+                verified_email = self.get_verified_email(company)
                 if verified_email:
                     discovered[job_id] = verified_email
                     cursor.execute("""
@@ -217,7 +217,7 @@ class EmailDiscoveryService:
                     continue
                 
                 # Try to get domain from our mapping
-                domain = self.get_company_domain(company_name)
+                domain = self.get_company_domain(company)
                 
                 # If no domain from mapping, try to extract from URL (but skip job boards)
                 if not domain and company_website:
@@ -232,10 +232,10 @@ class EmailDiscoveryService:
                     
                 # Generate candidates if we have a domain
                 if domain:
-                    candidates = self.generate_email_candidates(company_name, domain)
+                    candidates = self.generate_email_candidates(company, domain)
                 else:
                     # Try generating from company name as last resort
-                    candidates = self.generate_email_candidates(company_name, None)
+                    candidates = self.generate_email_candidates(company, None)
                 
                 if candidates:
                     email = candidates[0]  # Use most likely candidate

@@ -15,7 +15,7 @@ class RealEmailCollector:
     """Collect and manage real email addresses for job applications"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.verified_emails_path = "data/verified_company_emails.json"
         self.manual_entries_path = "data/manual_email_entries.json"
         
@@ -234,7 +234,7 @@ class RealEmailCollector:
         # Get all companies with applications
         cursor.execute("""
             SELECT DISTINCT company 
-            FROM job_discoveries 
+            FROM jobs 
             WHERE applied = 1
         """)
         
@@ -247,7 +247,7 @@ class RealEmailCollector:
             
             if email_info:
                 cursor.execute("""
-                    UPDATE job_discoveries 
+                    UPDATE jobs 
                     SET verified_email = ?,
                         email_source = ?
                     WHERE company = ?
@@ -267,7 +267,7 @@ class RealEmailCollector:
         
         cursor.execute("""
             SELECT DISTINCT company 
-            FROM job_discoveries 
+            FROM jobs 
             WHERE applied = 0 
             AND relevance_score >= 0.5
             ORDER BY relevance_score DESC

@@ -12,7 +12,7 @@ from pathlib import Path
 class QualityApplicationTracker:
     def __init__(self):
         """Initialize quality-focused tracker"""
-        self.db_path = "QUALITY_APPLICATIONS.db"
+        self.db_path = "unified_platform.db"
         self._init_database()
     
     def _init_database(self):
@@ -21,7 +21,7 @@ class QualityApplicationTracker:
         cursor = conn.cursor()
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS quality_applications (
+            CREATE TABLE IF NOT EXISTS applications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 company TEXT NOT NULL,
                 position TEXT NOT NULL,
@@ -118,7 +118,7 @@ class QualityApplicationTracker:
         placeholders = ['?' for _ in columns]
         
         query = f"""
-            INSERT INTO quality_applications ({', '.join(columns)})
+            INSERT INTO applications ({', '.join(columns)})
             VALUES ({', '.join(placeholders)})
         """
         
@@ -146,7 +146,7 @@ class QualityApplicationTracker:
                 SUM(response_received) as responses,
                 SUM(interview_scheduled) as interviews,
                 AVG(research_hours) as avg_research_hours
-            FROM quality_applications
+            FROM applications
         """)
         
         stats = cursor.fetchone()
@@ -165,8 +165,8 @@ class QualityApplicationTracker:
         
         # Top quality applications
         cursor.execute("""
-            SELECT company, position, quality_score, response_received, interview_scheduled
-            FROM quality_applications
+            SELECT company, title, quality_score, response_received, interview_scheduled
+            FROM applications
             ORDER BY quality_score DESC
             LIMIT 5
         """)
@@ -175,7 +175,7 @@ class QualityApplicationTracker:
         
         if top_apps:
             print(f"\n🏆 Top Quality Applications:")
-            for company, position, score, response, interview in top_apps:
+            for company, title, score, response, interview in top_apps:
                 status = "📅 Interview!" if interview else "✅ Response" if response else "⏳ Waiting"
                 print(f"  • {company}: {position}")
                 print(f"    Quality: {score}/100 | Status: {status}")
@@ -183,8 +183,8 @@ class QualityApplicationTracker:
         # Applications needing follow-up
         three_days_ago = (datetime.now() - timedelta(days=3)).isoformat()
         cursor.execute("""
-            SELECT company, position, submitted_date
-            FROM quality_applications
+            SELECT company, title, submitted_date
+            FROM applications
             WHERE followed_up = 0
             AND submitted_date < ?
             AND response_received = 0
@@ -194,7 +194,7 @@ class QualityApplicationTracker:
         
         if need_followup:
             print(f"\n📮 Need Follow-up (3+ days old):")
-            for company, position, submitted in need_followup:
+            for company, title, submitted in need_followup:
                 days_ago = (datetime.now() - datetime.fromisoformat(submitted)).days
                 print(f"  • {company}: {position} ({days_ago} days ago)")
         
@@ -223,7 +223,7 @@ class QualityApplicationTracker:
             print("• Your response rate is positive")
             print("• Continue deep research before applying")
     
-    def create_application_checklist(self, company, position):
+    def create_application_checklist(self, company, title):
         """Create a checklist for a quality application"""
         
         checklist = f"""

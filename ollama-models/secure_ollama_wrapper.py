@@ -67,7 +67,7 @@ Session = sessionmaker(bind=engine)
 # Logging configuration
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('secure_ollama.log'),
         logging.StreamHandler()

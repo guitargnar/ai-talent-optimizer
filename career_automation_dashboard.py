@@ -31,7 +31,7 @@ def generate_dashboard():
     print("\n📂 Job Database Analysis")
     print("-" * 40)
     
-    db_path = Path('data/unified_jobs.db')
+    db_path = Path("unified_platform.db")
     if db_path.exists():
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -129,11 +129,11 @@ def generate_dashboard():
             with open(app_file) as f:
                 app_data = json.load(f)
                 company = app_data['job']['company']
-                position = app_data['job']['position']
+                title = app_data['job']['position']
                 print(f"✅ {company}: {position[:40]}...")
                 dashboard['pipeline']['recent_applications'].append({
                     'company': company,
-                    'position': position,
+                    'position': title,
                     'file': str(app_file)
                 })
         except:

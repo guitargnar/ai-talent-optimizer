@@ -27,7 +27,7 @@ class EnhancedResponseChecker:
         # Load environment variables from .env file
         load_dotenv()
         
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.response_log_path = "data/response_tracking.json"
         self.metrics_path = "data/response_metrics.json"
         
@@ -239,11 +239,11 @@ class EnhancedResponseChecker:
             
             # First find the most recent application for this company
             cursor.execute("""
-                SELECT id FROM job_discoveries 
+                SELECT id FROM jobs 
                 WHERE company LIKE ? 
                 AND applied = 1
                 AND response_received = 0
-                ORDER BY COALESCE(application_date, applied_date) DESC
+                ORDER BY COALESCE(applied_date, applied_date) DESC
                 LIMIT 1
             """, (f'%{company}%',))
             
@@ -253,7 +253,7 @@ class EnhancedResponseChecker:
                 
                 # Update that specific job
                 cursor.execute("""
-                    UPDATE job_discoveries 
+                    UPDATE jobs 
                     SET response_received = 1,
                         response_date = ?,
                         response_type = ?
@@ -263,7 +263,7 @@ class EnhancedResponseChecker:
                 # If positive response, mark interview_scheduled
                 if response_type == 'positive':
                     cursor.execute("""
-                        UPDATE job_discoveries 
+                        UPDATE jobs 
                         SET interview_scheduled = 1
                         WHERE id = ?
                     """, (job_id,))
@@ -277,22 +277,22 @@ class EnhancedResponseChecker:
         cursor = conn.cursor()
         
         # Get metrics
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
         total_applied = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE response_received = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE response_received = 1")
         total_responses = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE response_type = 'positive'")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE response_type = 'positive'")
         positive_responses = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE interview_scheduled = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE interview_scheduled = 1")
         interviews = cursor.fetchone()[0]
         
         # Calculate response time
         cursor.execute("""
             SELECT AVG(JULIANDAY(response_date) - JULIANDAY(date_applied))
-            FROM job_discoveries 
+            FROM jobs 
             WHERE response_received = 1 AND response_date IS NOT NULL
         """)
         avg_response_time = cursor.fetchone()[0] or 0
@@ -301,7 +301,7 @@ class EnhancedResponseChecker:
         cursor.execute("""
             SELECT resume_version, COUNT(*) as responses, 
                    SUM(CASE WHEN response_type = 'positive' THEN 1 ELSE 0 END) as positive
-            FROM job_discoveries 
+            FROM jobs 
             WHERE response_received = 1 AND resume_version IS NOT NULL
             GROUP BY resume_version
         """)

@@ -7,7 +7,7 @@ import sqlite3
 
 def test_verified_applications():
     """Test which companies can be applied to with verified emails"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     print("🔍 TESTING VERIFIED EMAIL APPLICATIONS")
@@ -15,8 +15,8 @@ def test_verified_applications():
     
     # Get unapplied jobs with verified emails
     cursor.execute("""
-        SELECT company, position, relevance_score, verified_email 
-        FROM job_discoveries 
+        SELECT company, title, relevance_score, verified_email 
+        FROM jobs 
         WHERE applied = 0 
         AND verified_email IS NOT NULL 
         AND verified_email != ''
@@ -29,7 +29,7 @@ def test_verified_applications():
     
     if jobs:
         print(f"\n✅ Found {len(jobs)} jobs ready to apply with verified emails:")
-        for company, position, score, email in jobs:
+        for company, title, score, email in jobs:
             print(f"\n  Company: {company}")
             print(f"  Position: {position}")
             print(f"  Score: {score:.2f}")
@@ -40,12 +40,12 @@ def test_verified_applications():
         
         # Check why
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries WHERE applied = 0
+            SELECT COUNT(*) FROM jobs WHERE applied = 0
         """)
         unapplied = cursor.fetchone()[0]
         
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
+            SELECT COUNT(*) FROM jobs 
             WHERE verified_email IS NOT NULL AND verified_email != ''
         """)
         with_email = cursor.fetchone()[0]
@@ -57,7 +57,7 @@ def test_verified_applications():
         # Show what we have
         cursor.execute("""
             SELECT company, applied, verified_email 
-            FROM job_discoveries 
+            FROM jobs 
             WHERE relevance_score >= 0.5
             ORDER BY relevance_score DESC
             LIMIT 5

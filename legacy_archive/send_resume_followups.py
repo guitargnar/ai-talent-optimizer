@@ -33,31 +33,31 @@ def send_resume_followups():
     app_system = AutomatedApplicationSystem()
     
     # Connect to database to get job details
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     conn.row_factory = sqlite3.Row
     
     sent_count = 0
     
     for email_data in no_attachment_emails:
         company = email_data['company']
-        position = email_data['position'].replace(' - Matthew Scott', '')
+        title = email_data['position'].replace(' - Matthew Scott', '')
         
         print(f"\n📮 Following up with {company} - {position}")
         
         # Get job details from database
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT * FROM job_discoveries 
-            WHERE company = ? AND position = ?
+            SELECT * FROM jobs 
+            WHERE company = ? AND title = ?
             LIMIT 1
-        """, (company.replace('ai', ' AI').replace('deepmind', 'DeepMind').title(), position))
+        """, (company.replace('ai', ' AI').replace('deepmind', 'DeepMind').title(), title))
         
         job = cursor.fetchone()
         
         if not job:
             # Try alternate matching
             cursor.execute("""
-                SELECT * FROM job_discoveries 
+                SELECT * FROM jobs 
                 WHERE LOWER(company) = LOWER(?) 
                 LIMIT 1
             """, (company,))
@@ -67,7 +67,7 @@ def send_resume_followups():
             job_dict = dict(job)
             
             # Select appropriate resume
-            resume_path = app_system._select_resume_for_job(job_dict)
+            resume_version = app_system._select_resume_for_job(job_dict)
             
             # Create follow-up email
             subject = f"Resume Attachment - {position} Application - Matthew Scott"
@@ -98,7 +98,7 @@ linkedin.com/in/mscott77"""
                 subject=subject,
                 body=body,
                 email_type='followup',
-                attachments=[resume_path] if Path(resume_path).exists() else None
+                attachments=[resume_path] if Path(resume_version).exists() else None
             )
             
             if success:

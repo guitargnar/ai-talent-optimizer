@@ -19,7 +19,7 @@ def test_job_database():
     print("\n📊 Testing Job Database...")
     print("=" * 60)
     
-    db_path = Path('data/unified_jobs.db')
+    db_path = Path("unified_platform.db")
     if not db_path.exists():
         print("❌ Database not found")
         return False

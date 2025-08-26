@@ -13,7 +13,7 @@ from collections import defaultdict
 class ResponseTracker:
     """Track and analyze responses to outreach campaigns"""
     
-    def __init__(self, db_path: str = "campaign_tracking.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = db_path
         self._ensure_database()
     
@@ -105,7 +105,7 @@ class ResponseTracker:
         if cursor.rowcount > 0:
             today = datetime.now().date().isoformat()
             cursor.execute("""
-                UPDATE campaign_metrics 
+                UPDATE metrics 
                 SET responses_received = responses_received + 1,
                     interviews_scheduled = interviews_scheduled + ?
                 WHERE date = ?
@@ -403,7 +403,7 @@ Keep pushing! Every response brings you closer to $400K+ 🚀
         
         while True:
             print("\nNew Response:")
-            name = input("Contact Name (or 'done'): ").strip()
+            full_name = input("Contact Name (or 'done'): ").strip()
             
             if name.lower() == 'done':
                 break
@@ -414,7 +414,7 @@ Keep pushing! Every response brings you closer to $400K+ 🚀
             notes = input("Notes (optional): ").strip()
             
             success = self.record_response(
-                name,
+                full_name,
                 company,
                 response_type,
                 sentiment=response_type,

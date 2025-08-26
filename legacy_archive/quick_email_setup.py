@@ -29,13 +29,13 @@ def main():
     print("-"*40)
     
     # Get statistics
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Count companies with verified emails
     cursor.execute("""
         SELECT COUNT(DISTINCT company) 
-        FROM job_discoveries 
+        FROM jobs 
         WHERE verified_email IS NOT NULL AND verified_email != ''
     """)
     companies_with_email = cursor.fetchone()[0]
@@ -43,7 +43,7 @@ def main():
     # Get high-value companies with emails
     cursor.execute("""
         SELECT company, verified_email, relevance_score
-        FROM job_discoveries
+        FROM jobs
         WHERE verified_email IS NOT NULL 
         AND verified_email != ''
         AND relevance_score >= 0.65
@@ -55,7 +55,7 @@ def main():
     # Get companies still needing emails
     cursor.execute("""
         SELECT DISTINCT company, MAX(relevance_score) as score
-        FROM job_discoveries
+        FROM jobs
         WHERE (verified_email IS NULL OR verified_email = '')
         AND relevance_score >= 0.65
         GROUP BY company

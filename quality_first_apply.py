@@ -33,7 +33,7 @@ class QualityFirstApplicationSystem:
         """Initialize with best-in-class components"""
         self.generator = ApplicationGenerator()
         self.researcher = CompanyResearcher()
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         
         # Load environment
         self._load_env()
@@ -124,7 +124,7 @@ class QualityFirstApplicationSystem:
         """Deep research on company and role"""
         research = {
             'company': company,
-            'role': role,
+            'role': position,
             'company_info': self.priority_companies.get(company, {}),
             'key_points': [],
             'personalization': {}
@@ -274,7 +274,7 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
         resume_type = company_info.get('resume', 'default')
         
         # Map to actual file path
-        resume_path = self.resume_map.get(resume_type, self.resume_map['default'])
+        resume_version = self.resume_map.get(resume_type, self.resume_map['default'])
         full_path = Path.home() / "AI-ML-Portfolio" / "ai-talent-optimizer" / resume_path
         
         if not full_path.exists():
@@ -293,16 +293,16 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
         
         # Step 1: Research
         print("   📊 Researching company...")
-        research = self.research_company(company, role)
+        research = self.research_company(company, position)
         
         # Step 2: Generate personalized content
         print("   ✍️  Generating personalized content...")
-        subject, body = self.generate_personalized_email(company, role, research)
+        subject, body = self.generate_personalized_email(company, position, research)
         
         # Step 3: Select appropriate resume
         print("   📄 Selecting optimal resume variant...")
-        resume_path = self.select_resume(company, role)
-        resume_filename = Path(resume_path).name
+        resume_version = self.select_resume(company, position)
+        resume_filename = Path(resume_version).name
         
         # Step 4: Convert Markdown to plain text
         print("   🔄 Converting to plain text format...")
@@ -332,8 +332,8 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
             msg.attach(MIMEText(plain_text_body, 'plain'))
             
             # Attach resume
-            if Path(resume_path).exists():
-                with open(resume_path, 'rb') as f:
+            if Path(resume_version).exists():
+                with open(resume_version, 'rb') as f:
                     part = MIMEBase('application', 'octet-stream')
                     part.set_payload(f.read())
                     encoders.encode_base64(part)
@@ -350,7 +350,7 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
             print(f"   ✅ Successfully sent to {company}!")
             
             # Log to database
-            self._log_application(company, role, email_address, subject)
+            self._log_application(company, position, email_address, subject)
             
             return True
             
@@ -366,20 +366,20 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
             
             # Check if job exists in job_discoveries
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 1,
                     applied_date = ?,
-                    application_method = 'quality_first',
+                    method = 'quality_first',
                     verified_email = ?
                 WHERE company = ? AND position LIKE ?
             """, (datetime.now().isoformat(), email, company, f"%{role}%"))
             
             # Also log to unified_applications
             cursor.execute("""
-                INSERT INTO unified_applications 
-                (company, position, applied_date, status, email_subject)
+                INSERT INTO applications 
+                (company, title, applied_date, status, email_subject)
                 VALUES (?, ?, ?, 'sent', ?)
-            """, (company, role, datetime.now().isoformat(), subject))
+            """, (company, position, datetime.now().isoformat(), subject))
             
             conn.commit()
             conn.close()
@@ -414,11 +414,11 @@ P.S. I'm actively interviewing and looking to make a decision quickly. I'd appre
             if sent_count >= limit:
                 break
                 
-            role = default_roles.get(company, 'Senior Software Engineer')
+            position = default_roles.get(company, 'Senior Software Engineer')
             email = info['email']
             
             # Send application
-            success = self.send_application(company, role, email)
+            success = self.send_application(company, position, email)
             
             if success:
                 sent_count += 1

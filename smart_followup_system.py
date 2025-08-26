@@ -18,7 +18,7 @@ class SmartFollowUpSystem:
     """Automated follow-up system with intelligent timing and messaging"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.email_tracker = BCCEmailTracker()
         self.config_path = "followup_config.json"
         self.log_path = "data/followup_log.json"
@@ -140,14 +140,14 @@ matthewdscott7@gmail.com
         
         # Get jobs needing first follow-up
         cursor.execute("""
-            SELECT id, company, position, 
-                   COALESCE(application_date, applied_date) as date_applied, 
+            SELECT id, company, title, 
+                   COALESCE(applied_date, applied_date) as date_applied, 
                    relevance_score
-            FROM job_discoveries
+            FROM jobs
             WHERE applied = 1
             AND response_received = 0
             AND follow_up_sent = 0
-            AND COALESCE(application_date, applied_date) <= ?
+            AND COALESCE(applied_date, applied_date) <= ?
             AND relevance_score >= ?
             ORDER BY relevance_score DESC
             LIMIT ?
@@ -159,10 +159,10 @@ matthewdscott7@gmail.com
         
         # Get jobs needing second follow-up
         cursor.execute("""
-            SELECT id, company, position, 
-                   COALESCE(application_date, applied_date) as date_applied, 
+            SELECT id, company, title, 
+                   COALESCE(applied_date, applied_date) as date_applied, 
                    relevance_score
-            FROM job_discoveries
+            FROM jobs
             WHERE applied = 1
             AND response_received = 0
             AND follow_up_sent = 1
@@ -296,7 +296,7 @@ matthewdscott7@gmail.com
                 subject=email_data['subject'],
                 body=email_data['body'],
                 company=email_data['company'],
-                position=email_data['position'],
+                title=email_data['position'],
                 attachments=[]  # No resume on follow-ups
             )
             
@@ -319,7 +319,7 @@ matthewdscott7@gmail.com
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries
+            UPDATE jobs
             SET follow_up_sent = ?,
                 follow_up_date = ?
             WHERE id = ?
@@ -435,7 +435,7 @@ matthewdscott7@gmail.com
                 AVG(CASE WHEN response_received = 1 THEN 
                     JULIANDAY(response_date) - JULIANDAY(follow_up_date) 
                     ELSE NULL END) as avg_response_time
-            FROM job_discoveries
+            FROM jobs
             WHERE follow_up_sent > 0
         """)
         

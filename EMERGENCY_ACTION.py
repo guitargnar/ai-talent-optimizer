@@ -26,15 +26,15 @@ def emergency_action():
     print(f"📊 Current Date: {datetime.now().strftime('%A, %B %d, %Y')}")
     
     # Check database status
-    db_path = Path('unified_career_system/data_layer/unified_career.db')
+    db_path = Path("unified_platform.db")
     if db_path.exists():
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
-        cursor.execute("SELECT COUNT(*) FROM master_jobs")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         total_jobs = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM master_applications")
+        cursor.execute("SELECT COUNT(*) FROM applications")
         total_apps = cursor.fetchone()[0]
         
         print(f"\n📊 CURRENT STATUS:")

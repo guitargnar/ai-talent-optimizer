@@ -71,7 +71,7 @@ class IntegratedCareerAutomation:
         # Configuration
         self.config = self._load_config()
         self.db_path = Path('/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer/career_automation.db')
-        self.resume_path = Path('/Users/matthewscott/Desktop/MATTHEW_SCOTT_AI_ML_ENGINEER_2025.pdf')
+        self.resume_version = Path('/Users/matthewscott/Desktop/MATTHEW_SCOTT_AI_ML_ENGINEER_2025.pdf')
         
         # Initialize database
         self._init_database()
@@ -136,7 +136,7 @@ class IntegratedCareerAutomation:
         
         # Job opportunities table
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS job_opportunities (
+            CREATE TABLE IF NOT EXISTS jobs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 job_id TEXT UNIQUE,
                 company TEXT,
@@ -343,7 +343,7 @@ class IntegratedCareerAutomation:
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT * FROM job_opportunities 
+            SELECT * FROM jobs 
             WHERE status = 'new' 
             AND match_score >= ?
             ORDER BY match_score DESC
@@ -590,7 +590,7 @@ class IntegratedCareerAutomation:
                 COUNT(CASE WHEN status = 'new' THEN 1 END) as new_jobs,
                 COUNT(CASE WHEN match_score >= 0.85 THEN 1 END) as high_match,
                 COUNT(CASE WHEN match_score >= 0.7 THEN 1 END) as qualified
-            FROM job_opportunities
+            FROM jobs
         ''')
         
         pipeline = cursor.fetchone()
@@ -732,7 +732,7 @@ GitHub: github.com/guitargnar
             
             # Attach resume
             if self.resume_path.exists():
-                with open(self.resume_path, 'rb') as f:
+                with open(self.resume_version, 'rb') as f:
                     attach = MIMEApplication(f.read(), _subtype="pdf")
                     attach.add_header('Content-Disposition', 'attachment', 
                                     filename='Matthew_Scott_AI_ML_Engineer_Resume.pdf')
@@ -762,22 +762,22 @@ GitHub: github.com/guitargnar
         
         # Update job opportunity status
         cursor.execute('''
-            UPDATE job_opportunities 
+            UPDATE jobs 
             SET status = ? 
             WHERE job_id = ?
         ''', (status, job_id))
         
         # Get job details
-        cursor.execute('SELECT * FROM job_opportunities WHERE job_id = ?', (job_id,))
+        cursor.execute('SELECT * FROM jobs WHERE job_id = ?', (job_id,))
         job = cursor.fetchone()
         
         if job:
             # Insert into applications table
             cursor.execute('''
                 INSERT INTO applications (
-                    job_id, company, role, salary_min, salary_max, 
+                    job_id, company, position, salary_min, salary_max, 
                     location, source, match_score, applied_date, 
-                    email_sent, email_id, status
+                    status, email_id, status
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 job_id, job[2], job[3], job[6], job[7], job[9],
@@ -817,7 +817,7 @@ GitHub: github.com/guitargnar
             try:
                 cursor.execute('''
                     INSERT OR REPLACE INTO job_opportunities (
-                        job_id, company, role, description, requirements,
+                        job_id, company, position, description, requirements,
                         salary_min, salary_max, predicted_salary, location,
                         remote_ok, source, url, match_score, vector_similarity,
                         skills_extracted, discovered_date, status

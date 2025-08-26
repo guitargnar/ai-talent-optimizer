@@ -60,7 +60,7 @@ class SmartRouter:
     - Intelligent retry scheduling
     """
     
-    def __init__(self, db_path: str = "unified_career_system/data_layer/unified_career.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         """Initialize the smart router"""
         self.db_path = db_path
         self.master_db = MasterDatabase(db_path)
@@ -101,7 +101,7 @@ class SmartRouter:
         
         # Companies with critical penalties or explicit blacklist
         cursor.execute("""
-        SELECT company_name FROM company_intelligence
+        SELECT company_name FROM companies
         WHERE penalty_score >= ? OR notes LIKE '%blacklist%'
         """, (self.penalty_thresholds['critical'],))
         
@@ -116,15 +116,15 @@ class SmartRouter:
         
         # Get all applications from last 90 days
         cursor.execute("""
-        SELECT j.company, j.position, j.job_uid, a.applied_date
-        FROM master_applications a
+        SELECT j.company, j.title, j.job_uid, a.applied_date
+        FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE a.applied_date > date('now', '-90 days')
         """)
         
         for row in cursor.fetchall():
             company = row[0].lower()
-            position = self._normalize_position(row[1])
+            title = self._normalize_position(row[1])
             
             key = f"{company}:{position}"
             if key not in self.duplicate_cache:
@@ -172,13 +172,13 @@ class SmartRouter:
         Make routing decision for a job application
         
         Args:
-            job: Job dictionary with company, position, etc.
+            job: Job dictionary with company, title, etc.
             
         Returns:
             RoutingResult with decision and reasoning
         """
         company = job.get('company', '').lower()
-        position = job.get('position', '')
+        title = job.get('position', '')
         job_uid = job.get('job_uid', '')
         
         # Check 1: Blacklist
@@ -186,18 +186,18 @@ class SmartRouter:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.SKIP_BLACKLIST,
                 reason=f"{job['company']} is blacklisted"
             )
             
         # Check 2: Duplicate detection
-        duplicate_check = self._check_duplicate(company, position)
+        duplicate_check = self._check_duplicate(company, title)
         if duplicate_check['is_duplicate']:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.SKIP_DUPLICATE,
                 reason=f"Already applied to similar position on {duplicate_check['applied_date']}",
                 duplicate_of=duplicate_check['job_uid']
@@ -209,7 +209,7 @@ class SmartRouter:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.SKIP_LIMIT,
                 reason=company_limits['reason'],
                 retry_after=company_limits.get('retry_after')
@@ -221,7 +221,7 @@ class SmartRouter:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.SKIP_COOLDOWN,
                 reason=cooldown['reason'],
                 retry_after=cooldown['cooldown_until']
@@ -233,7 +233,7 @@ class SmartRouter:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.SKIP_PENALTY,
                 reason=penalty['reason']
             )
@@ -243,7 +243,7 @@ class SmartRouter:
             return RoutingResult(
                 job_uid=job_uid,
                 company=job['company'],
-                position=position,
+                title=title,
                 decision=RouteDecision.DEFER,
                 reason="Daily application limit reached",
                 retry_after=datetime.now() + timedelta(days=1)
@@ -255,7 +255,7 @@ class SmartRouter:
         return RoutingResult(
             job_uid=job_uid,
             company=job['company'],
-            position=position,
+            title=title,
             decision=RouteDecision.APPLY,
             reason="All checks passed",
             recommended_method=method
@@ -263,7 +263,7 @@ class SmartRouter:
         
     def _check_duplicate(self, company: str, position: str) -> Dict:
         """Check if we've already applied to this position"""
-        normalized_position = self._normalize_position(position)
+        normalized_position = self._normalize_position(title)
         key = f"{company}:{normalized_position}"
         
         if key in self.duplicate_cache:
@@ -319,7 +319,7 @@ class SmartRouter:
         
         # Daily limit
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications a
+        SELECT COUNT(*) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE LOWER(j.company) = LOWER(?)
         AND DATE(a.applied_date) = DATE('now')
@@ -336,7 +336,7 @@ class SmartRouter:
             
         # Weekly limit
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications a
+        SELECT COUNT(*) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE LOWER(j.company) = LOWER(?)
         AND a.applied_date > date('now', '-7 days')
@@ -353,7 +353,7 @@ class SmartRouter:
             
         # Total limit
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications a
+        SELECT COUNT(*) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE LOWER(j.company) = LOWER(?)
         """, (company,))
@@ -374,7 +374,7 @@ class SmartRouter:
         
         # Check for recent rejection
         cursor.execute("""
-        SELECT MAX(a.response_date) FROM master_applications a
+        SELECT MAX(a.response_date) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE LOWER(j.company) = LOWER(?)
         AND a.response_type = 'rejection'
@@ -395,7 +395,7 @@ class SmartRouter:
                 
         # Check for recent application
         cursor.execute("""
-        SELECT MAX(a.applied_date) FROM master_applications a
+        SELECT MAX(a.applied_date) FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE LOWER(j.company) = LOWER(?)
         """, (company,))
@@ -420,8 +420,8 @@ class SmartRouter:
         cursor = self.master_db.conn.cursor()
         
         cursor.execute("""
-        SELECT penalty_score FROM company_intelligence
-        WHERE LOWER(company_name) = LOWER(?)
+        SELECT penalty_score FROM companies
+        WHERE LOWER(company) = LOWER(?)
         """, (company,))
         
         result = cursor.fetchone()
@@ -444,7 +444,7 @@ class SmartRouter:
         cursor = self.master_db.conn.cursor()
         
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications
+        SELECT COUNT(*) FROM applications
         WHERE DATE(applied_date) = DATE('now')
         """)
         
@@ -491,7 +491,7 @@ class SmartRouter:
     def _update_cache_for_application(self, job: Dict):
         """Update duplicate cache when applying to a job"""
         company = job.get('company', '').lower()
-        position = self._normalize_position(job.get('position', ''))
+        title = self._normalize_position(job.get('position', ''))
         key = f"{company}:{position}"
         
         if key not in self.duplicate_cache:
@@ -508,21 +508,21 @@ class SmartRouter:
         
         # Today's applications
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications
+        SELECT COUNT(*) FROM applications
         WHERE DATE(applied_date) = DATE('now')
         """)
         today_count = cursor.fetchone()[0]
         
         # This week's applications
         cursor.execute("""
-        SELECT COUNT(*) FROM master_applications
+        SELECT COUNT(*) FROM applications
         WHERE applied_date > date('now', '-7 days')
         """)
         week_count = cursor.fetchone()[0]
         
         # Companies in cooldown
         cursor.execute("""
-        SELECT COUNT(DISTINCT company_name) FROM company_intelligence
+        SELECT COUNT(DISTINCT company) FROM companies
         WHERE cooldown_until > datetime('now')
         """)
         cooldown_count = cursor.fetchone()[0]

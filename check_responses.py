@@ -18,7 +18,7 @@ class ResponseChecker:
     """Checks for responses to job applications"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.tracking_log_path = "data/bcc_tracking_log.json"
         self.response_log_path = "data/response_tracking.json"
         
@@ -176,7 +176,7 @@ class ResponseChecker:
             
             # Update the job record
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET response_received = 1,
                     response_date = ?,
                     response_type = ?
@@ -252,7 +252,7 @@ class ResponseChecker:
         # Calculate response rate
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied=1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied=1")
         total_applied = cursor.fetchone()[0]
         conn.close()
         

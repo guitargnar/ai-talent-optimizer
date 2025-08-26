@@ -20,7 +20,7 @@ class LinkedInApplicationManager:
     
     def __init__(self):
         self.scraper = LinkedInJobScraper()
-        self.db_path = Path('data/linkedin_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.sent_log = Path('sent_applications_log.json')
         
     def get_eligible_jobs(self) -> List[Dict]:
@@ -30,9 +30,9 @@ class LinkedInApplicationManager:
         
         # Get recent jobs that haven't been applied to
         cursor.execute("""
-        SELECT job_id, company, position, location, remote_option,
+        SELECT job_id, company, title, location, remote_option,
                hours_ago, url, description, salary_range
-        FROM linkedin_jobs
+        FROM jobs
         WHERE applied = 0
         AND hours_ago <= 168  -- Within 7 days
         ORDER BY hours_ago ASC
@@ -70,10 +70,10 @@ class LinkedInApplicationManager:
         # Get application history
         cursor.execute("""
         SELECT COUNT(*) as total,
-               MAX(application_date) as last_date,
+               MAX(applied_date) as last_date,
                SUM(CASE WHEN response_received = 1 THEN 1 ELSE 0 END) as responses,
                SUM(CASE WHEN response_type = 'rejection' THEN 1 ELSE 0 END) as rejections
-        FROM application_tracking
+        FROM applications
         WHERE company = ?
         """, (company,))
         
@@ -81,8 +81,8 @@ class LinkedInApplicationManager:
         
         # Get positions applied to
         cursor.execute("""
-        SELECT position, application_date, response_type
-        FROM application_tracking
+        SELECT title, applied_date, response_type
+        FROM applications
         WHERE company = ?
         ORDER BY application_date DESC
         """, (company,))
@@ -179,7 +179,7 @@ github.com/guitargnar
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""
-        UPDATE linkedin_jobs
+        UPDATE jobs
         SET applied = 1, applied_date = CURRENT_TIMESTAMP
         WHERE job_id = ?
         """, (job['job_id'],))

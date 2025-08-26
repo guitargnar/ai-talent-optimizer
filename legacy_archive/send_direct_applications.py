@@ -13,7 +13,7 @@ from bcc_email_tracker import BCCEmailTracker
 
 def get_ready_jobs(limit=5):
     """Get jobs ready to apply - focusing on high-value positions"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     conn.row_factory = sqlite3.Row
     
     cursor = conn.cursor()
@@ -24,7 +24,7 @@ def get_ready_jobs(limit=5):
         FROM jobs j
         LEFT JOIN applications a ON j.id = a.job_id
         WHERE a.applied_date IS NULL
-        AND j.max_salary >= 400000
+        AND j.salary_max >= 400000
         ORDER BY j.max_salary DESC
         LIMIT ?
     """, (limit,))
@@ -34,7 +34,7 @@ def get_ready_jobs(limit=5):
     
     return [dict(job) for job in jobs]
 
-def create_cover_letter(company, position):
+def create_cover_letter(company, title):
     """Create simple but effective cover letter"""
     return f"""Dear {company} Hiring Team,
 
@@ -83,10 +83,10 @@ def send_application(job):
     subject = f"Application for {job['position']} - Matthew Scott"
     
     # Check for resume
-    resume_path = "resumes/matthew_scott_ai_ml_resume.pdf"
-    if not Path(resume_path).exists():
+    resume_version = "resumes/matthew_scott_ai_ml_resume.pdf"
+    if not Path(resume_version).exists():
         print(f"  ⚠️  Resume not found at {resume_path}")
-        resume_path = None
+        resume_version = None
     
     # Send via BCC tracker
     try:
@@ -101,14 +101,14 @@ def send_application(job):
         
         if success:
             # Record the application
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
             
             # Insert into applications table
             cursor.execute("""
                 INSERT INTO applications (
-                    job_id, company, position, applied_date,
-                    application_method, email_sent, email_address,
+                    job_id, company, title, applied_date,
+                    method, status, email_address,
                     tracking_id, status
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (

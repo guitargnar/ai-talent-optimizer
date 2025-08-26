@@ -12,7 +12,7 @@ import os
 
 def check_principal_jobs():
     """Check status of principal job applications"""
-    db_path = "principal_jobs_400k.db"
+    db_path = "unified_platform.db"
     if not Path(db_path).exists():
         print("❌ No principal jobs database found yet")
         return
@@ -21,15 +21,15 @@ def check_principal_jobs():
     cursor = conn.cursor()
     
     # Get statistics
-    cursor.execute("SELECT COUNT(*) FROM principal_jobs")
+    cursor.execute("SELECT COUNT(*) FROM jobs")
     result = cursor.fetchone()
     total = result[0] if result else 0
     
-    cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 1")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
     result = cursor.fetchone()
     applied = result[0] if result else 0
     
-    cursor.execute("SELECT company, position, min_salary FROM principal_jobs WHERE applied = 0 LIMIT 5")
+    cursor.execute("SELECT company, title, min_salary FROM jobs WHERE applied = 0 LIMIT 5")
     pending = cursor.fetchall()
     
     conn.close()
@@ -48,7 +48,7 @@ def check_principal_jobs():
 
 def check_ceo_outreach():
     """Check status of CEO outreach"""
-    db_path = "ceo_outreach.db"
+    db_path = "unified_platform.db"
     if not Path(db_path).exists():
         print("❌ No CEO outreach database found yet")
         return
@@ -56,15 +56,15 @@ def check_ceo_outreach():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM ceo_contacts")
+    cursor.execute("SELECT COUNT(*) FROM contacts")
     result = cursor.fetchone()
     total = result[0] if result else 0
     
-    cursor.execute("SELECT COUNT(*) FROM ceo_contacts WHERE contacted = 1")
+    cursor.execute("SELECT COUNT(*) FROM contacts WHERE contacted = 1")
     result = cursor.fetchone()
     contacted = result[0] if result else 0
     
-    cursor.execute("SELECT company, name FROM ceo_contacts WHERE contacted = 0 LIMIT 5")
+    cursor.execute("SELECT company, name FROM contacts WHERE contacted = 0 LIMIT 5")
     pending = cursor.fetchall()
     
     conn.close()

@@ -91,7 +91,7 @@ class GmailCentral:
               'https://www.googleapis.com/auth/gmail.send',
               'https://www.googleapis.com/auth/gmail.modify']
     
-    def __init__(self, db_path: str = "unified_career_system/data_layer/unified_career.db",
+    def __init__(self, db_path: str = "unified_platform.db",
                  credentials_path: str = None):
         """
         Initialize Gmail Central Hub
@@ -270,7 +270,7 @@ class GmailCentral:
         """Load cache of already processed emails"""
         cursor = self.master_db.conn.cursor()
         cursor.execute("""
-        SELECT gmail_message_id FROM email_tracking
+        SELECT gmail_message_id FROM emails
         WHERE processed = 1
         """)
         
@@ -552,7 +552,7 @@ class GmailCentral:
             # Try to match to recent application
             cursor.execute("""
             SELECT j.job_uid, a.application_uid
-            FROM master_applications a
+            FROM applications a
             JOIN master_jobs j ON a.job_uid = j.job_uid
             WHERE LOWER(j.company) = LOWER(?)
             ORDER BY a.applied_date DESC
@@ -607,14 +607,14 @@ class GmailCentral:
         if outcome and outcome != 'pending':
             # Update most recent application for this company
             cursor.execute("""
-            UPDATE master_applications
+            UPDATE applications
             SET response_received = 1,
                 response_date = ?,
                 response_type = ?,
                 outcome = ?
             WHERE application_uid = (
                 SELECT a.application_uid
-                FROM master_applications a
+                FROM applications a
                 JOIN master_jobs j ON a.job_uid = j.job_uid
                 WHERE LOWER(j.company) = LOWER(?)
                 AND a.response_received = 0
@@ -703,8 +703,8 @@ class GmailCentral:
             # Get application details
             cursor = self.master_db.conn.cursor()
             cursor.execute("""
-            SELECT j.position, a.applied_date
-            FROM master_applications a
+            SELECT j.title, a.applied_date
+            FROM applications a
             JOIN master_jobs j ON a.job_uid = j.job_uid
             WHERE a.application_uid = ?
             """, (application_uid,))
@@ -714,7 +714,7 @@ class GmailCentral:
                 logger.error(f"Application {application_uid} not found")
                 return False
                 
-            position = result[0]
+            title = result[0]
             applied_date = datetime.fromisoformat(result[1])
             
             # Generate follow-up email
@@ -723,7 +723,7 @@ class GmailCentral:
             if template == 'standard':
                 body = f"""Dear {company} Hiring Team,
 
-I hope this email finds you well. I wanted to follow up on my application for the {position} position, 
+I hope this email finds you well. I wanted to follow up on my application for the {position} title, 
 which I submitted on {applied_date.strftime('%B %d, %Y')}.
 
 I remain very interested in this opportunity and would love to discuss how my experience in ML engineering 
@@ -740,7 +740,7 @@ matthewdscott7@gmail.com
 """
             else:
                 # Other templates can be added here
-                body = self._generate_custom_follow_up(company, position, applied_date)
+                body = self._generate_custom_follow_up(company, title, applied_date)
                 
             # Create message
             message = {
@@ -760,7 +760,7 @@ matthewdscott7@gmail.com
             
             # Record follow-up
             cursor.execute("""
-            UPDATE master_applications
+            UPDATE applications
             SET follow_ups_sent = follow_ups_sent + 1,
                 last_follow_up = CURRENT_TIMESTAMP
             WHERE application_uid = ?
@@ -812,17 +812,17 @@ LinkedIn: linkedin.com/in/mscott77
         stats = {}
         
         # Total emails
-        cursor.execute("SELECT COUNT(*) FROM email_tracking")
+        cursor.execute("SELECT COUNT(*) FROM emails")
         stats['total_emails'] = cursor.fetchone()[0]
         
         # Job-related emails
-        cursor.execute("SELECT COUNT(*) FROM email_tracking WHERE is_job_related = 1")
+        cursor.execute("SELECT COUNT(*) FROM emails WHERE is_job_related = 1")
         stats['job_related'] = cursor.fetchone()[0]
         
         # By direction
         cursor.execute("""
         SELECT direction, COUNT(*)
-        FROM email_tracking
+        FROM emails
         GROUP BY direction
         """)
         stats['by_direction'] = dict(cursor.fetchall())
@@ -830,21 +830,21 @@ LinkedIn: linkedin.com/in/mscott77
         # By type
         cursor.execute("""
         SELECT action_type, COUNT(*)
-        FROM email_tracking
+        FROM emails
         WHERE action_type IS NOT NULL
         GROUP BY action_type
         """)
         stats['by_type'] = dict(cursor.fetchall())
         
         # Actions required
-        cursor.execute("SELECT COUNT(*) FROM email_tracking WHERE action_required = 1")
+        cursor.execute("SELECT COUNT(*) FROM emails WHERE action_required = 1")
         stats['actions_required'] = cursor.fetchone()[0]
         
         # Response rate
         cursor.execute("""
         SELECT 
             COUNT(CASE WHEN response_received = 1 THEN 1 END) * 100.0 / COUNT(*)
-        FROM master_applications
+        FROM applications
         WHERE applied_date > date('now', '-30 days')
         """)
         stats['response_rate_30d'] = cursor.fetchone()[0] or 0

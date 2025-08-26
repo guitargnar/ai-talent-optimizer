@@ -17,7 +17,7 @@ class VerifiedEmailApplicator:
     """Apply only to companies with verified emails"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.bcc_tracker = BCCEmailTracker()
         self.templates = ImprovedApplicationTemplates()
         
@@ -35,7 +35,7 @@ class VerifiedEmailApplicator:
         
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT * FROM job_discoveries 
+            SELECT * FROM jobs 
             WHERE applied = 0 
             AND verified_email IS NOT NULL 
             AND verified_email != ''
@@ -49,7 +49,7 @@ class VerifiedEmailApplicator:
         
         return [dict(job) for job in jobs]
     
-    def select_resume(self, position):
+    def select_resume(self, title):
         """Select appropriate resume for position"""
         position_lower = position.lower()
         
@@ -60,11 +60,11 @@ class VerifiedEmailApplicator:
         else:
             resume_type = 'default'
         
-        resume_path = self.resume_paths.get(resume_type, self.resume_paths['default'])
+        resume_version = self.resume_paths.get(resume_type, self.resume_paths['default'])
         
         if resume_path.exists():
             print(f"  📄 Using {resume_type} resume")
-            return str(resume_path)
+            return str(resume_version)
         else:
             print(f"  📄 Using default resume")
             return str(self.resume_paths['default'])
@@ -78,7 +78,7 @@ class VerifiedEmailApplicator:
         print(f"  Score: {job['relevance_score']:.2f}")
         
         # Select resume
-        resume_path = self.select_resume(job['position'])
+        resume_version = self.select_resume(job['position'])
         
         # Generate cover letter
         print(f"  📝 Generating personalized cover letter...")
@@ -97,7 +97,7 @@ class VerifiedEmailApplicator:
             subject=subject,
             body=cover_letter,
             email_type='applications',
-            attachments=[resume_path] if Path(resume_path).exists() else None
+            attachments=[resume_path] if Path(resume_version).exists() else None
         )
         
         if success:
@@ -115,7 +115,7 @@ class VerifiedEmailApplicator:
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET applied = 1,
                 applied_date = ?,
                 actual_email_used = ?,

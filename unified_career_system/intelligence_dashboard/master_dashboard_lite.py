@@ -27,7 +27,7 @@ class MasterDashboardLite:
         db_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
             'data_layer',
-            'unified_career.db'
+            "unified_platform.db"
         )
         self.db = MasterDatabase(db_path)
         
@@ -59,13 +59,13 @@ class MasterDashboardLite:
         stats = {}
         
         # Total jobs
-        cursor.execute("SELECT COUNT(*) FROM master_jobs")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         stats['total_jobs'] = cursor.fetchone()[0]
         
         # Jobs by source
         cursor.execute("""
             SELECT source, COUNT(*) 
-            FROM master_jobs 
+            FROM jobs 
             GROUP BY source 
             ORDER BY COUNT(*) DESC
         """)
@@ -74,7 +74,7 @@ class MasterDashboardLite:
         # New jobs today
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_jobs 
+            FROM jobs 
             WHERE date(discovered_date) = date('now')
         """)
         stats['new_today'] = cursor.fetchone()[0]
@@ -82,7 +82,7 @@ class MasterDashboardLite:
         # Active jobs (not expired)
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_jobs 
+            FROM jobs 
             WHERE is_active = 1
         """)
         stats['active_jobs'] = cursor.fetchone()[0]
@@ -98,13 +98,13 @@ class MasterDashboardLite:
         stats = {}
         
         # Total applications
-        cursor.execute("SELECT COUNT(*) FROM master_applications")
+        cursor.execute("SELECT COUNT(*) FROM applications")
         stats['total_sent'] = cursor.fetchone()[0]
         
         # Applications today
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             WHERE date(applied_date) = date('now')
         """)
         stats['sent_today'] = cursor.fetchone()[0]
@@ -112,15 +112,15 @@ class MasterDashboardLite:
         # Applications by status
         cursor.execute("""
             SELECT status, COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             GROUP BY status
         """)
         stats['by_status'] = dict(cursor.fetchall())
         
         # Applications by channel
         cursor.execute("""
-            SELECT application_method, COUNT(*) 
-            FROM master_applications 
+            SELECT method, COUNT(*) 
+            FROM applications 
             GROUP BY application_method
         """)
         stats['by_channel'] = dict(cursor.fetchall())
@@ -130,7 +130,7 @@ class MasterDashboardLite:
             SELECT 
                 COUNT(CASE WHEN response_type IN ('interview', 'offer') THEN 1 END) * 100.0 / 
                 NULLIF(COUNT(*), 0) as success_rate
-            FROM master_applications
+            FROM applications
             WHERE response_type IS NOT NULL
         """)
         result = cursor.fetchone()
@@ -149,7 +149,7 @@ class MasterDashboardLite:
         # Response types
         cursor.execute("""
             SELECT response_type, COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             WHERE response_type IS NOT NULL
             GROUP BY response_type
         """)
@@ -160,7 +160,7 @@ class MasterDashboardLite:
             SELECT 
                 COUNT(CASE WHEN response_type IS NOT NULL THEN 1 END) * 100.0 / 
                 NULLIF(COUNT(*), 0) as response_rate
-            FROM master_applications
+            FROM applications
         """)
         result = cursor.fetchone()
         stats['response_rate'] = round(result[0] if result[0] else 0, 1)
@@ -168,7 +168,7 @@ class MasterDashboardLite:
         # Average response time
         cursor.execute("""
             SELECT AVG(julianday(response_date) - julianday(applied_date))
-            FROM master_applications
+            FROM applications
             WHERE response_date IS NOT NULL
         """)
         result = cursor.fetchone()
@@ -189,7 +189,7 @@ class MasterDashboardLite:
         # Today's applications
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             WHERE date(applied_date) = date('now')
         """)
         today_apps = cursor.fetchone()[0]
@@ -197,7 +197,7 @@ class MasterDashboardLite:
         # Today's responses
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM email_tracking 
+            FROM emails 
             WHERE date(received_date) = date('now') 
             AND classification IN ('interview', 'offer', 'rejection')
         """)
@@ -206,7 +206,7 @@ class MasterDashboardLite:
         # Today's interviews scheduled
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             WHERE date(response_date) = date('now') 
             AND response_type = 'interview'
         """)
@@ -255,7 +255,7 @@ class MasterDashboardLite:
         cursor = conn.cursor()
         cursor.execute("""
             SELECT COUNT(*) 
-            FROM master_applications 
+            FROM applications 
             WHERE datetime(applied_date) > datetime('now', '-1 hour')
         """)
         recent_apps = cursor.fetchone()[0]
@@ -288,7 +288,7 @@ class MasterDashboardLite:
                     WHEN j.discovered_date > datetime('now', '-3 days') THEN 'recent'
                     ELSE 'older'
                 END as freshness
-            FROM master_jobs j
+            FROM jobs j
             LEFT JOIN company_intelligence c ON j.company = c.company_name
             WHERE j.is_active = 1
             ORDER BY j.discovered_date DESC

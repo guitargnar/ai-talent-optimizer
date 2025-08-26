@@ -10,11 +10,11 @@ def quick_migrate():
     """Quick and dirty migration to get data into new system."""
     
     # Connect to old database
-    old_db = sqlite3.connect('UNIFIED_AI_JOBS.db')
+    old_db = sqlite3.connect("unified_platform.db")
     old_cursor = old_db.cursor()
     
     # Connect to new database  
-    new_db = sqlite3.connect('data/unified_jobs.db')
+    new_db = sqlite3.connect("unified_platform.db")
     new_cursor = new_db.cursor()
     
     # Create simplified table if needed
@@ -46,7 +46,7 @@ def quick_migrate():
     ''')
     
     # Get data from old database
-    old_cursor.execute('SELECT * FROM job_discoveries')
+    old_cursor.execute('SELECT * FROM jobs')
     columns = [description[0] for description in old_cursor.description]
     
     migrated = 0
@@ -61,7 +61,7 @@ def quick_migrate():
             # Insert into new database
             new_cursor.execute('''
                 INSERT OR IGNORE INTO jobs (
-                    job_id, company, position, location, remote_option,
+                    job_id, company, title, location, remote_option,
                     salary_range, url, description, source, discovered_date,
                     relevance_score, applied, applied_date, company_email,
                     email_verified, bounce_detected, bounce_reason, notes

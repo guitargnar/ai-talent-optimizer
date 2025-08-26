@@ -20,7 +20,7 @@ class Job(Base):
     id = Column(Integer, primary_key=True)
     job_id = Column(String(100), unique=True, nullable=False)
     company = Column(String(200), nullable=False)
-    position = Column(String(200), nullable=False)
+    title = Column(String(200), nullable=False)
     location = Column(String(200))
     remote_option = Column(String(50))
     salary_range = Column(String(100))
@@ -35,7 +35,7 @@ class Job(Base):
     # Application tracking
     applied = Column(Boolean, default=False)
     applied_date = Column(DateTime)
-    application_method = Column(String(50))  # email, web_form, api
+    method = Column(String(50))  # email, web_form, api
     
     # Email specific
     company_email = Column(String(200))
@@ -53,7 +53,7 @@ class Job(Base):
     responses = relationship("Response", back_populates="job", cascade="all, delete-orphan")
     
     def __repr__(self):
-        return f"<Job(company='{self.company}', position='{self.position}')>"
+        return f"<Job(company='{self.company}', title='{self.position}')>"
 
 
 class Application(Base):
@@ -69,7 +69,7 @@ class Application(Base):
     cover_letter = Column(Text)
     
     # Delivery tracking
-    email_sent = Column(Boolean, default=False)
+    status = Column(Boolean, default=False)
     email_delivered = Column(Boolean, default=False)
     delivery_status = Column(String(50))
     
@@ -121,7 +121,7 @@ class Contact(Base):
     company = Column(String(200), nullable=False)
     
     # Contact details
-    name = Column(String(200))
+    full_name = Column(String(200))
     title = Column(String(200))
     email = Column(String(200))
     linkedin_url = Column(String(500))
@@ -132,7 +132,7 @@ class Contact(Base):
     notes = Column(Text)
     
     def __repr__(self):
-        return f"<Contact(name='{self.name}', company='{self.company}')>"
+        return f"<Contact(full_name='{self.name}', company='{self.company}')>"
 
 
 class EmailTemplate(Base):
@@ -140,7 +140,7 @@ class EmailTemplate(Base):
     __tablename__ = 'email_templates'
     
     id = Column(Integer, primary_key=True)
-    name = Column(String(100), unique=True, nullable=False)
+    full_name = Column(String(100), unique=True, nullable=False)
     template_type = Column(String(50))  # application, follow_up, networking
     subject = Column(String(500))
     body = Column(Text)
@@ -154,7 +154,7 @@ class EmailTemplate(Base):
     last_modified = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
-        return f"<EmailTemplate(name='{self.name}', type='{self.template_type}')>"
+        return f"<EmailTemplate(full_name='{self.name}', type='{self.template_type}')>"
 
 
 class DatabaseManager:

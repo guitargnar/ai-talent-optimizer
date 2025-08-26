@@ -23,7 +23,7 @@ class BounceDetector:
         # Load environment variables
         load_dotenv()
         
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.bounce_log_path = "data/bounce_log.json"
         self.invalid_emails_path = "data/invalid_emails.json"
         
@@ -254,7 +254,7 @@ class BounceDetector:
             
             # Find applications sent to this email
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET bounce_detected = 1,
                     bounce_reason = ?
                 WHERE applied = 1
@@ -289,10 +289,10 @@ class BounceDetector:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
         total_sent = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE bounce_detected = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE bounce_detected = 1")
         total_bounced = cursor.fetchone()[0]
         
         conn.close()

@@ -20,8 +20,8 @@ class SessionSetup:
         print("🔍 Checking environment...")
         
         required_files = [
-            "your_profile.db",
-            "principal_jobs_400k.db",
+            "unified_platform.db",
+            "unified_platform.db",
             "profile_context_generator.py",
             "generate_application.py",
             "add_job_from_user.py"
@@ -89,15 +89,15 @@ class SessionSetup:
         print(f"  Files modified today: {modified_today}")
         
         # Check job database
-        if Path("principal_jobs_400k.db").exists():
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+        if Path("unified_platform.db").exists():
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
             
             # Count jobs
-            cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 0")
+            cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 0")
             unapplied = cursor.fetchone()[0]
             
-            cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 1")
+            cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
             applied = cursor.fetchone()[0]
             
             print(f"  Jobs to apply to: {unapplied}")
@@ -180,7 +180,7 @@ python3 profile_context_generator.py
    python3 profile_context_generator.py
 
 5. View recent jobs:
-   sqlite3 principal_jobs_400k.db "SELECT company, position, min_salary FROM principal_jobs ORDER BY discovered_at DESC LIMIT 5"
+   sqlite3 principal_jobs_400k.db "SELECT company, title, min_salary FROM jobs ORDER BY discovered_at DESC LIMIT 5"
 """)
     
     def load_pending_tasks(self):
@@ -193,13 +193,13 @@ python3 profile_context_generator.py
             print("     Run: python3 generate_application.py")
         
         # Check for unapplied jobs
-        if Path("principal_jobs_400k.db").exists():
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+        if Path("unified_platform.db").exists():
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
             
             cursor.execute("""
                 SELECT company, position 
-                FROM principal_jobs 
+                FROM jobs 
                 WHERE applied = 0 
                 ORDER BY max_salary DESC 
                 LIMIT 3

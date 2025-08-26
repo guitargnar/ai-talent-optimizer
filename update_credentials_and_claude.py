@@ -10,12 +10,12 @@ from pathlib import Path
 
 def update_profile_database():
     """Update database with correct credentials"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Update professional identity with CORRECT credentials
     cursor.execute("""
-        UPDATE professional_identity 
+        UPDATE profile 
         SET email = ?,
             github = ?
         WHERE id = 1
@@ -141,7 +141,7 @@ def update_claude_md():
 ## 📋 REQUIRED BEHAVIORS FOR THIS PROJECT
 
 ### When Generating Job Applications
-1. **ALWAYS include Humana work experience** (10+ years, current Senior role)
+1. **ALWAYS include Humana work experience** (10+ years, current Senior position)
 2. **Lead with professional credentials** before platform metrics
 3. **Use correct GitHub**: guitargnar (not mds1)
 4. **Include Instagram** when listing social profiles: @guitargnar
@@ -255,10 +255,10 @@ def verify_and_report():
     """Verify all updates and generate report"""
     
     # Check database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
-    identity = cursor.execute("SELECT * FROM professional_identity").fetchone()
+    identity = cursor.execute("SELECT * FROM profile").fetchone()
     work_exp = cursor.execute("SELECT * FROM work_experience").fetchall()
     contacts = cursor.execute("SELECT * FROM contact_info").fetchall()
     

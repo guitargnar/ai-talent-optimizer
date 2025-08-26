@@ -33,7 +33,7 @@ class CampaignSequenceRunner:
         """
         self.dry_run = dry_run
         self.message_generator = IntelligentMessageGenerator()
-        self.db_path = "campaign_tracking.db"
+        self.db_path = "unified_platform.db"
         self._init_database()
         
         # Campaign state
@@ -67,7 +67,7 @@ class CampaignSequenceRunner:
         """)
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS campaign_metrics (
+            CREATE TABLE IF NOT EXISTS metrics (
                 date TEXT PRIMARY KEY,
                 messages_sent INTEGER,
                 responses_received INTEGER,
@@ -292,10 +292,10 @@ class CampaignSequenceRunner:
             INSERT OR REPLACE INTO campaign_metrics 
             (date, messages_sent, responses_received, interviews_scheduled, applications_submitted)
             VALUES (?, 
-                COALESCE((SELECT messages_sent FROM campaign_metrics WHERE date = ?), 0) + ?,
-                COALESCE((SELECT responses_received FROM campaign_metrics WHERE date = ?), 0),
-                COALESCE((SELECT interviews_scheduled FROM campaign_metrics WHERE date = ?), 0),
-                COALESCE((SELECT applications_submitted FROM campaign_metrics WHERE date = ?), 0)
+                COALESCE((SELECT messages_sent FROM metrics WHERE date = ?), 0) + ?,
+                COALESCE((SELECT responses_received FROM metrics WHERE date = ?), 0),
+                COALESCE((SELECT interviews_scheduled FROM metrics WHERE date = ?), 0),
+                COALESCE((SELECT applications_submitted FROM metrics WHERE date = ?), 0)
             )
         """, (today, today, len(messages), today, today, today))
         
@@ -310,7 +310,7 @@ class CampaignSequenceRunner:
         # Get today's metrics
         today = datetime.now().date().isoformat()
         cursor.execute("""
-            SELECT * FROM campaign_metrics WHERE date = ?
+            SELECT * FROM metrics WHERE date = ?
         """, (today,))
         
         today_metrics = cursor.fetchone()

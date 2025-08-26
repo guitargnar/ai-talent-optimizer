@@ -109,7 +109,7 @@ class CEOOutreachEngine:
         '{first}+{last}@{domain}'
     ]
     
-    def __init__(self, database_path: str = 'unified_talent_optimizer.db'):
+    def __init__(self, database_path: str = "unified_platform.db"):
         """Initialize CEO Outreach Engine"""
         self.db_path = database_path
         self.session_stats = {
@@ -186,7 +186,7 @@ class CEOOutreachEngine:
         # Method 1: LinkedIn search
         linkedin_data = self._search_linkedin_leadership(company, details.get('linkedin'))
         if linkedin_data:
-            contact.name = linkedin_data.get('name')
+            contact.full_name = linkedin_data.get('name')
             contact.title = linkedin_data.get('title')
             contact.linkedin = linkedin_data.get('linkedin')
             contact.bio = linkedin_data.get('bio')
@@ -195,7 +195,7 @@ class CEOOutreachEngine:
         # Method 2: Company website research
         website_data = self._research_company_website(details.get('website'))
         if website_data and not contact.name:
-            contact.name = website_data.get('name')
+            contact.full_name = website_data.get('name')
             contact.title = website_data.get('title')
             contact.bio = website_data.get('bio')
             contact.confidence_level = 0.6
@@ -206,12 +206,12 @@ class CEOOutreachEngine:
             # Convert dict to string for storage
             contact.recent_news = news_data.get('content', str(news_data)) if isinstance(news_data, dict) else str(news_data)
             if not contact.name and isinstance(news_data, dict) and news_data.get('ceo_name'):
-                contact.name = news_data.get('ceo_name')
+                contact.full_name = news_data.get('ceo_name')
                 contact.confidence_level = 0.4
         
         # Method 4: Email pattern generation
         if contact.name:
-            contact.email = self._generate_ceo_email(contact.name, company, details.get('website'))
+            contact.email = self._generate_ceo_email(contact.full_name, company, details.get('website'))
         
         # Calculate priority score
         contact.priority_score = self._calculate_priority_score(company, details, contact)
@@ -252,11 +252,11 @@ class CEOOutreachEngine:
                         
                         # Extract name and title
                         if any(keyword in text.lower() for keyword in ['ceo', 'chief executive', 'founder', 'cto']):
-                            name, title = self._parse_linkedin_text(text, company)
+                            full_name, title = self._parse_linkedin_text(text, company)
                             if name:
                                 driver.quit()
                                 return {
-                                    'name': name,
+                                    'name': full_name,
                                     'title': title,
                                     'linkedin': href,
                                     'bio': f"Found via LinkedIn search for {company} leadership"
@@ -457,7 +457,7 @@ class CEOOutreachEngine:
         
         # Check if contact already exists
         cursor.execute("""
-            SELECT id FROM contacts WHERE company = ? AND LOWER(name) = LOWER(?)
+            SELECT id FROM contacts WHERE company = ? AND LOWER(full_name) = LOWER(?)
         """, (contact.company, contact.name or ''))
         
         existing = cursor.fetchone()
@@ -480,13 +480,13 @@ class CEOOutreachEngine:
             # Insert new contact
             cursor.execute("""
                 INSERT INTO contacts (
-                    company, name, title, email, linkedin, phone,
+                    company, full_name, title, email, linkedin, phone,
                     priority_score, confidence_level, funding_stage,
                     recent_news, bio, twitter, contacted, response_received, 
-                    meeting_scheduled, created_at
+                    meeting_scheduled, discovered_date
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, CURRENT_TIMESTAMP)
             """, (
-                contact.company, contact.name, contact.title, contact.email,
+                contact.company, contact.full_name, contact.title, contact.email,
                 contact.linkedin, contact.phone, contact.priority_score,
                 contact.confidence_level, contact.funding_stage, contact.recent_news,
                 contact.bio, contact.twitter
@@ -550,17 +550,17 @@ class CEOOutreachEngine:
     def _send_personalized_ceo_email(self, contact: Dict) -> bool:
         """Send personalized email to CEO/CTO"""
         company = contact['company']
-        name = contact['name'] or 'Hiring Team'
+        full_name = contact['name'] or 'Hiring Team'
         title = contact['title'] or 'CEO'
         
         # Get company details
         company_details = self.TARGET_COMPANIES.get(company, {})
-        position = company_details.get('position', 'ML Engineering Leadership')
+        title = company_details.get('position', 'ML Engineering Leadership')
         salary = company_details.get('salary', '$450K+')
         focus = company_details.get('focus', 'AI/ML systems')
         
         # Generate personalized subject and email
-        subject = self._generate_ceo_subject(company, name, salary)
+        subject = self._generate_ceo_subject(company, full_name, salary)
         body = self._generate_ceo_email_body(contact, company_details)
         
         # Store outreach record (in production would actually send via SMTP)
@@ -581,15 +581,15 @@ class CEOOutreachEngine:
         ]
         
         # Choose based on company name hash for consistency
-        index = hash(company + name) % len(subjects)
+        index = hash(company + full_name) % len(subjects)
         return subjects[index]
     
     def _generate_ceo_email_body(self, contact: Dict, company_details: Dict) -> str:
         """Generate personalized email body for CEO outreach"""
         company = contact['company']
-        name = contact['name'] or 'there'
+        full_name = contact['name'] or 'there'
         first_name = name.split()[0] if name != 'there' else 'there'
-        position = company_details.get('position', 'Principal ML Engineer')
+        title = company_details.get('position', 'Principal ML Engineer')
         salary = company_details.get('salary', '$450K+')
         focus = company_details.get('focus', 'AI/ML systems')
         
@@ -767,12 +767,12 @@ P.S. I've built a 58-model AI orchestration system that's unprecedented in the i
     def _send_follow_up_email(self, contact: Dict) -> bool:
         """Send follow-up email to CEO"""
         company = contact['company']
-        name = contact['name'] or 'there'
+        full_name = contact['name'] or 'there'
         first_name = name.split()[0] if name != 'there' else 'there'
         
         # Get company details for personalization
         company_details = self.TARGET_COMPANIES.get(company, {})
-        position = company_details.get('position', 'Principal Engineer role')
+        title = company_details.get('position', 'Principal Engineer role')
         salary = company_details.get('salary', '$450K+')
         
         subject = f"Re: {position} - Quick follow-up"
@@ -852,7 +852,7 @@ P.S. Happy to share specific case studies of how I saved $1.2M annually through 
         
         # Get company-by-company breakdown
         cursor.execute("""
-            SELECT company, name, title, priority_score, contacted, response_received, 
+            SELECT company, full_name, title, priority_score, contacted, response_received, 
                    meeting_scheduled, contacted_at
             FROM contacts 
             WHERE company IN ({})

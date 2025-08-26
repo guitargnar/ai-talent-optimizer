@@ -383,12 +383,12 @@ def main():
     elif choice == '2':
         # Load emails from database
         import sqlite3
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         cursor.execute("""
             SELECT DISTINCT company 
-            FROM job_discoveries 
+            FROM jobs 
             WHERE applied = 1
             LIMIT 10
         """)
@@ -398,7 +398,7 @@ def main():
         
         for company in companies:
             # Try to construct email
-            company_name = company[0].lower().replace(' ', '').replace("'", "")
+            company = company[0].lower().replace(' ', '').replace("'", "")
             test_email = f"careers@{company_name}.com"
             emails.append(test_email)
         

@@ -16,36 +16,36 @@ except Exception as e:
 
 # Check database
 try:
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Count total jobs
-    cursor.execute("SELECT COUNT(*) FROM job_discoveries")
+    cursor.execute("SELECT COUNT(*) FROM jobs")
     total_jobs = cursor.fetchone()[0]
     print(f"\n✅ Database connected: {total_jobs} total jobs")
     
     # Count unapplied jobs
-    cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 0")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 0")
     unapplied = cursor.fetchone()[0]
     print(f"  📋 Unapplied jobs: {unapplied}")
     
     # Count by score
     min_score = config.get('min_relevance_score', 0.3)
-    cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 0 AND relevance_score >= ?", (min_score,))
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 0 AND relevance_score >= ?", (min_score,))
     eligible = cursor.fetchone()[0]
     print(f"  🎯 Jobs with score >= {min_score}: {eligible}")
     
     # Show top 5 eligible jobs
     cursor.execute("""
-        SELECT company, position, relevance_score 
-        FROM job_discoveries 
+        SELECT company, title, relevance_score 
+        FROM jobs 
         WHERE applied = 0 AND relevance_score >= ?
         ORDER BY relevance_score DESC
         LIMIT 5
     """, (min_score,))
     
     print(f"\n📊 Top 5 eligible jobs:")
-    for i, (company, position, score) in enumerate(cursor.fetchall(), 1):
+    for i, (company, title, score) in enumerate(cursor.fetchall(), 1):
         print(f"  {i}. {company} - {position} (Score: {score})")
     
     conn.close()

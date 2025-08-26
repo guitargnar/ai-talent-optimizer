@@ -25,7 +25,7 @@ class LinkedInJobScraper:
     """
     
     def __init__(self):
-        self.db_path = Path('data/linkedin_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.db_path.parent.mkdir(exist_ok=True)
         self._init_database()
         
@@ -90,7 +90,7 @@ class LinkedInJobScraper:
         
         # LinkedIn jobs table with enhanced tracking
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS linkedin_jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id TEXT UNIQUE NOT NULL,
             company TEXT NOT NULL,
@@ -113,7 +113,7 @@ class LinkedInJobScraper:
         
         # Company intelligence table
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS company_intelligence (
+        CREATE TABLE IF NOT EXISTS companies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company_name TEXT UNIQUE NOT NULL,
             industry TEXT,
@@ -131,7 +131,7 @@ class LinkedInJobScraper:
         
         # Key people at companies
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS company_people (
+        CREATE TABLE IF NOT EXISTS contacts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
             person_name TEXT NOT NULL,
@@ -147,7 +147,7 @@ class LinkedInJobScraper:
         
         # Application tracking with penalty system
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS application_tracking (
+        CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
             position TEXT NOT NULL,
@@ -167,7 +167,7 @@ class LinkedInJobScraper:
         
         # Email tracking (incoming and outgoing)
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS email_tracking (
+        CREATE TABLE IF NOT EXISTS emails (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             direction TEXT NOT NULL,  -- 'incoming' or 'outgoing'
             email_from TEXT,
@@ -246,8 +246,8 @@ class LinkedInJobScraper:
         
         try:
             cursor.execute("""
-            INSERT INTO linkedin_jobs (
-                job_id, company, position, location, remote_option,
+            INSERT INTO jobs (
+                job_id, company, title, location, remote_option,
                 posted_date, hours_ago, url, description, requirements,
                 salary_range, source
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -288,7 +288,7 @@ class LinkedInJobScraper:
         
         cursor.execute("""
         INSERT OR REPLACE INTO company_intelligence (
-            company_name, industry, size, headquarters, careers_url,
+            company, industry, size, headquarters, careers_url,
             linkedin_url, key_people, recent_news, hiring_trends, tech_stack,
             last_updated
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
@@ -397,10 +397,10 @@ class LinkedInJobScraper:
         
         # Record in application tracking
         cursor.execute("""
-        INSERT INTO application_tracking (
-            company, position, job_id, application_method
+        INSERT INTO applications (
+            company, title, job_id, method
         ) VALUES (?, ?, ?, 'email')
-        """, (company, position, job_id))
+        """, (company, title, job_id))
         
         # Update or create penalty record
         cursor.execute("""
@@ -428,7 +428,7 @@ class LinkedInJobScraper:
         
         try:
             cursor.execute("""
-            INSERT INTO email_tracking (
+            INSERT INTO emails (
                 direction, email_from, email_to, subject, body_preview,
                 company, job_id, is_job_related, requires_action, gmail_message_id
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -461,7 +461,7 @@ class LinkedInJobScraper:
         
         # Jobs posted in last 7 days
         cursor.execute("""
-        SELECT COUNT(*) FROM linkedin_jobs
+        SELECT COUNT(*) FROM jobs
         WHERE hours_ago <= 168
         """)
         recent_count = cursor.fetchone()[0]
@@ -469,7 +469,7 @@ class LinkedInJobScraper:
         # Top companies hiring
         cursor.execute("""
         SELECT company, COUNT(*) as job_count
-        FROM linkedin_jobs
+        FROM jobs
         WHERE hours_ago <= 168
         GROUP BY company
         ORDER BY job_count DESC
@@ -483,7 +483,7 @@ class LinkedInJobScraper:
             COUNT(DISTINCT company) as companies_applied,
             COUNT(*) as total_applications,
             SUM(CASE WHEN response_received = 1 THEN 1 ELSE 0 END) as responses
-        FROM application_tracking
+        FROM applications
         """)
         app_stats = cursor.fetchone()
         
@@ -560,9 +560,9 @@ class LinkedInJobScraper:
             self.add_linkedin_job(job)
         
         # Add company intelligence
-        for company_name, company_info in self.discovered_companies.items():
+        for company, company_info in self.discovered_companies.items():
             self.add_company_intelligence({
-                'company_name': company_name,
+                'company_name': company,
                 'careers_url': company_info['careers_url'],
                 'hiring_trends': f"Actively hiring for: {', '.join(company_info['hiring_for'])}",
                 'industry': company_info.get('description', 'Technology')

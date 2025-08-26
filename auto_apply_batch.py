@@ -20,13 +20,13 @@ def apply_to_top_jobs(limit=5):
     print()
     
     # Connect to database
-    conn = sqlite3.connect('UNIFIED_AI_JOBS.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Get top unapplied jobs
     cursor.execute('''
-        SELECT id, company, position, relevance_score, verified_email
-        FROM job_discoveries 
+        SELECT id, company, title, relevance_score, verified_email
+        FROM jobs 
         WHERE applied = 0 
             AND relevance_score >= 0.60
             AND company NOT LIKE '%test%'
@@ -55,7 +55,7 @@ def apply_to_top_jobs(limit=5):
     # Apply to each job
     applied_count = 0
     for job in jobs:
-        job_id, company, position, score, email = job
+        job_id, company, title, score, email = job
         
         print(f"\n🎯 Applying to: {company} - {position}")
         print(f"   Match Score: {score:.2f}")
@@ -63,12 +63,12 @@ def apply_to_top_jobs(limit=5):
         # Mark as applied
         try:
             cursor.execute('''
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 1,
                     applied_date = ?,
-                    application_date = ?,
+                    applied_date = ?,
                     resume_version = 'ai_ml_specialist',
-                    application_method = 'automated_batch'
+                    method = 'automated_batch'
                 WHERE id = ?
             ''', (datetime.now().isoformat(), datetime.now().isoformat(), job_id))
             
@@ -78,10 +78,10 @@ def apply_to_top_jobs(limit=5):
             
             # Log the application
             cursor.execute('''
-                INSERT INTO unified_applications 
-                (job_id, company, position, applied_date, status)
+                INSERT INTO applications 
+                (job_id, company, title, applied_date, status)
                 VALUES (?, ?, ?, ?, ?)
-            ''', (job_id, company, position, datetime.now().isoformat(), 'sent'))
+            ''', (job_id, company, title, datetime.now().isoformat(), 'sent'))
             conn.commit()
             
         except Exception as e:
@@ -97,12 +97,12 @@ def apply_to_top_jobs(limit=5):
     
     # Update metrics
     cursor.execute('''
-        SELECT COUNT(*) FROM job_discoveries WHERE applied = 1
+        SELECT COUNT(*) FROM jobs WHERE applied = 1
     ''')
     total_applied = cursor.fetchone()[0]
     
     cursor.execute('''
-        SELECT COUNT(*) FROM job_discoveries WHERE applied = 0 AND relevance_score >= 0.65
+        SELECT COUNT(*) FROM jobs WHERE applied = 0 AND relevance_score >= 0.65
     ''')
     remaining_high = cursor.fetchone()[0]
     

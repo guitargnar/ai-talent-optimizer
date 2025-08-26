@@ -18,7 +18,7 @@ class EmailVerificationSystem:
     """Comprehensive email verification to prevent bounces and ensure delivery"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.verified_emails_path = "data/verified_emails.json"
         self.suspicious_emails_path = "data/suspicious_emails.json"
         
@@ -218,7 +218,7 @@ class EmailVerificationSystem:
         cursor.execute("""
             SELECT DISTINCT company, 
                    COALESCE(email, 'careers@' || LOWER(REPLACE(company, ' ', '')) || '.com') as email
-            FROM job_discoveries 
+            FROM jobs 
             WHERE applied = 1
         """)
         

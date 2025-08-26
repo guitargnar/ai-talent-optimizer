@@ -5,12 +5,12 @@ from automated_apply import AutomatedApplicationSystem
 import sqlite3
 
 # Get one job to test with
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 cursor.execute("""
-    SELECT * FROM job_discoveries 
+    SELECT * FROM jobs 
     WHERE applied = 0 AND company = 'OpenAI'
     LIMIT 1
 """)

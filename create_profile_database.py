@@ -11,7 +11,7 @@ import json
 def create_profile_database():
     """Create and populate the profile database"""
     
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Drop existing tables for fresh start
@@ -39,7 +39,7 @@ def create_profile_database():
     
     # Insert identity
     cursor.execute("""
-        INSERT INTO professional_identity 
+        INSERT INTO profile 
         (full_name, email, phone, linkedin, github, location, years_experience, current_focus)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, ('Matthew Scott', 'matthewdscott7@gmail.com', '(502) 345-0525',
@@ -72,7 +72,7 @@ def create_profile_database():
     
     for metric_name, value, context in metrics:
         cursor.execute("""
-            INSERT INTO platform_metrics (metric_name, metric_value, context)
+            INSERT INTO metrics (metric_name, metric_value, context)
             VALUES (?, ?, ?)
         """, (metric_name, value, context))
     
@@ -258,11 +258,11 @@ if __name__ == "__main__":
     
     # Verify by reading back
     print("\n🔍 Verification - Sample Metrics:")
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
-    metrics = cursor.execute("SELECT metric_name, metric_value FROM platform_metrics LIMIT 5").fetchall()
-    for name, value in metrics:
+    metrics = cursor.execute("SELECT metric_name, metric_value FROM metrics LIMIT 5").fetchall()
+    for full_name, value in metrics:
         print(f"  • {name}: {value}")
     
     conn.close()

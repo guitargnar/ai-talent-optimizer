@@ -18,15 +18,15 @@ logger = logging.getLogger(__name__)
 class SystemUpdater:
     def __init__(self):
         self.old_databases = [
-            'UNIFIED_AI_JOBS.db',
-            'job_applications.db', 
-            'your_profile.db',
-            'principal_jobs_400k.db',
-            'ai_talent_optimizer.db',
-            'verified_metrics.db',
-            'ceo_outreach.db'
+            "unified_platform.db",
+            "unified_platform.db", 
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db"
         ]
-        self.new_database = 'unified_talent_optimizer.db'
+        self.new_database = "unified_platform.db"
         self.updates_made = []
         
     def update_all_configs(self):
@@ -181,11 +181,11 @@ def quick_count(table):
         cursor.execute(f"SELECT COUNT(*) FROM {{table}}")
         return cursor.fetchone()[0]
 
-def get_job_by_company_position(company, position):
+def get_job_by_company_position(company, title):
     """Find job by company and position."""
     return quick_query(
-        "SELECT * FROM jobs WHERE company = ? AND position = ?", 
-        (company, position)
+        "SELECT * FROM jobs WHERE company = ? AND title = ?", 
+        (company, title)
     )
 
 def get_applications_by_status(status='sent'):
@@ -198,7 +198,7 @@ def get_applications_by_status(status='sent'):
 def get_recent_responses(limit=10):
     """Get recent responses."""
     return quick_query(
-        "SELECT * FROM responses ORDER BY received_date DESC LIMIT ?", 
+        "SELECT * FROM emails ORDER BY received_date DESC LIMIT ?", 
         (limit,)
     )
 
@@ -345,7 +345,7 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 python3 -c "import db_unified; print(db_unified.get_system_stats())"
 
 # Find high-value jobs
-python3 -c "import db_unified; jobs = db_unified.quick_query('SELECT company, position, min_salary FROM jobs WHERE min_salary > 400000 ORDER BY min_salary DESC LIMIT 5'); [print(f'{{j[0]}} - {{j[1]}}: ${{j[2]:,}}') for j in jobs]"
+python3 -c "import db_unified; jobs = db_unified.quick_query('SELECT company, title, min_salary FROM jobs WHERE salary_min > 400000 ORDER BY min_salary DESC LIMIT 5'); [print(f'{{j[0]}} - {{j[1]}}: ${{j[2]:,}}') for j in jobs]"
 
 # Check applications
 python3 -c "import db_unified; apps = db_unified.get_applications_by_status(); print(f'Applications sent: {{len(apps)}}')"

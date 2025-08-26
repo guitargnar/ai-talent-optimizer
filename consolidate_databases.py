@@ -22,16 +22,16 @@ logger = logging.getLogger(__name__)
 class DatabaseConsolidator:
     def __init__(self):
         self.source_databases = [
-            'UNIFIED_AI_JOBS.db',
-            'job_applications.db', 
-            'your_profile.db',
-            'principal_jobs_400k.db',
-            'ai_talent_optimizer.db',
-            'verified_metrics.db',
-            'ceo_outreach.db'
+            "unified_platform.db",
+            "unified_platform.db", 
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db"
         ]
         
-        self.target_db = 'unified_talent_optimizer.db'
+        self.target_db = "unified_platform.db"
         self.backup_dir = f'database_backups_{datetime.now().strftime("%Y%m%d_%H%M%S")}'
         self.migration_log = []
         
@@ -125,7 +125,7 @@ class DatabaseConsolidator:
                 status TEXT DEFAULT 'new',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE(company, position)
+                UNIQUE(company, title)
             )
         ''')
         
@@ -238,8 +238,8 @@ class DatabaseConsolidator:
         """Create performance indexes."""
         indexes = [
             "CREATE INDEX idx_jobs_company ON jobs(company)",
-            "CREATE INDEX idx_jobs_position ON jobs(position)",
-            "CREATE INDEX idx_jobs_salary ON jobs(min_salary, max_salary)",
+            "CREATE INDEX idx_jobs_position ON jobs(title)",
+            "CREATE INDEX idx_jobs_salary ON jobs(salary_min, salary_max)",
             "CREATE INDEX idx_applications_company ON applications(company)",
             "CREATE INDEX idx_applications_date ON applications(applied_date)",
             "CREATE INDEX idx_responses_date ON responses(received_date)",
@@ -259,13 +259,13 @@ class DatabaseConsolidator:
         jobs_migrated = 0
         
         # Migrate from UNIFIED_AI_JOBS.db - job_discoveries table
-        if os.path.exists('UNIFIED_AI_JOBS.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
             source_cursor.execute('''
-                SELECT DISTINCT company, position, location, 
-                       CASE WHEN remote_option='Yes' THEN 1 ELSE 0 END as remote,
+                SELECT DISTINCT company, title, location, 
+                       CASE WHEN remote_option='Yes' THEN 1 ELSE 0 END as remote_type,
                        CASE WHEN salary_range LIKE '%-%' THEN 
                            CAST(SUBSTR(salary_range, 1, INSTR(salary_range, '-')-1) AS INTEGER)
                        ELSE NULL END as min_sal,
@@ -274,7 +274,7 @@ class DatabaseConsolidator:
                        ELSE NULL END as max_sal,
                        salary_range, description, url, source, discovered_date,
                        relevance_score, job_id, created_at
-                FROM job_discoveries 
+                FROM jobs 
                 WHERE company IS NOT NULL AND position IS NOT NULL
             ''')
             
@@ -285,9 +285,9 @@ class DatabaseConsolidator:
                     
                     target_cursor.execute('''
                         INSERT OR IGNORE INTO jobs (
-                            job_id, company, position, location, remote, 
-                            min_salary, max_salary, salary_range, description, 
-                            url, source, discovered_date, relevance_score, created_at
+                            job_id, company, title, location, remote_type, 
+                            salary_min, salary_max, salary_range, description, 
+                            url, source, discovered_date, relevance_score, discovered_date
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (job_id, row[0], row[1], row[2], row[3], row[4], row[5], 
                           row[6], row[7], row[8], row[9], row[10], row[11], row[12]))
@@ -301,19 +301,19 @@ class DatabaseConsolidator:
             source_conn.close()
         
         # Migrate from principal_jobs_400k.db
-        if os.path.exists('principal_jobs_400k.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
-            source_cursor.execute('SELECT * FROM principal_jobs')
+            source_cursor.execute('SELECT * FROM jobs')
             for row in source_cursor.fetchall():
                 job_id = f"principal_{row[1]}_{row[2]}_{row[0]}"
                 
                 try:
                     target_cursor.execute('''
                         INSERT OR IGNORE INTO jobs (
-                            job_id, company, position, url, min_salary, max_salary,
-                            location, remote, healthcare_focused, ai_focused,
+                            job_id, company, title, url, salary_min, salary_max,
+                            location, remote_type, healthcare_focused, ai_focused,
                             discovered_date, status
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'high_priority')
                     ''', (job_id, row[1], row[2], row[3], row[4], row[5], 
@@ -328,7 +328,7 @@ class DatabaseConsolidator:
             source_conn.close()
         
         # Migrate from other databases with job data
-        for db_file in ['job_applications.db', 'ai_talent_optimizer.db']:
+        for db_file in ["unified_platform.db", "unified_platform.db"]:
             if os.path.exists(db_file):
                 jobs_migrated += self._migrate_jobs_from_db(db_file, target_cursor)
         
@@ -346,11 +346,11 @@ class DatabaseConsolidator:
             source_conn = sqlite3.connect(db_file)
             source_cursor = source_conn.cursor()
             
-            if db_file == 'job_applications.db':
+            if db_file == "unified_platform.db":
                 source_cursor.execute('''
-                    SELECT DISTINCT company, position, description, url, 
+                    SELECT DISTINCT company, title, description, url, 
                            salary_range, location, relevance_score, discovered_date, source
-                    FROM job_discoveries
+                    FROM jobs
                     WHERE company IS NOT NULL AND position IS NOT NULL
                 ''')
                 
@@ -360,7 +360,7 @@ class DatabaseConsolidator:
                     try:
                         target_cursor.execute('''
                             INSERT OR IGNORE INTO jobs (
-                                job_id, company, position, description, url,
+                                job_id, company, title, description, url,
                                 salary_range, location, relevance_score, 
                                 discovered_date, source
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -373,7 +373,7 @@ class DatabaseConsolidator:
                     except Exception as e:
                         logger.warning(f"Error migrating job from {db_file}: {e}")
             
-            elif db_file == 'ai_talent_optimizer.db':
+            elif db_file == "unified_platform.db":
                 source_cursor.execute('SELECT * FROM jobs')
                 for row in source_cursor.fetchall():
                     job_id = f"ai_opt_{row[1]}_{row[2]}_{row[0]}"
@@ -381,8 +381,8 @@ class DatabaseConsolidator:
                     try:
                         target_cursor.execute('''
                             INSERT OR IGNORE INTO jobs (
-                                job_id, company, position, location, remote,
-                                min_salary, max_salary, description, requirements,
+                                job_id, company, title, location, remote_type,
+                                salary_min, salary_max, description, requirements,
                                 source, source_url, discovered_date, priority_score, status
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ''', (job_id, row[1], row[2], row[3], row[4], 
@@ -412,13 +412,13 @@ class DatabaseConsolidator:
         apps_migrated = 0
         
         # Migrate from principal_jobs_400k.db (applications that were marked as applied)
-        if os.path.exists('principal_jobs_400k.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
             source_cursor.execute('''
-                SELECT company, position, applied_at, response_received, offer_received, notes
-                FROM principal_jobs 
+                SELECT company, title, applied_at, response_received, offer_received, notes
+                FROM jobs 
                 WHERE applied = 1
             ''')
             
@@ -426,7 +426,7 @@ class DatabaseConsolidator:
                 try:
                     # Find matching job
                     target_cursor.execute('''
-                        SELECT id FROM jobs WHERE company = ? AND position = ?
+                        SELECT id FROM jobs WHERE company = ? AND title = ?
                     ''', (row[0], row[1]))
                     
                     job_result = target_cursor.fetchone()
@@ -434,7 +434,7 @@ class DatabaseConsolidator:
                     
                     target_cursor.execute('''
                         INSERT OR IGNORE INTO applications (
-                            job_id, company, position, applied_date, 
+                            job_id, company, title, applied_date, 
                             response_received, status, notes
                         ) VALUES (?, ?, ?, ?, ?, 'sent', ?)
                     ''', (job_id, row[0], row[1], row[2], row[3], row[5]))
@@ -448,8 +448,8 @@ class DatabaseConsolidator:
             source_conn.close()
         
         # Migrate from ai_talent_optimizer.db
-        if os.path.exists('ai_talent_optimizer.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
             source_cursor.execute('SELECT * FROM applications')
@@ -458,7 +458,7 @@ class DatabaseConsolidator:
                     target_cursor.execute('''
                         INSERT OR IGNORE INTO applications (
                             job_id, applied_date, resume_version, cover_letter_version,
-                            email_sent, email_address, application_method, status,
+                            status, email_address, method, status,
                             response_date, notes, ats_score
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (row[1], row[2], row[3], row[4], row[5], row[6], 
@@ -488,11 +488,11 @@ class DatabaseConsolidator:
         responses_migrated = 0
         
         # Migrate from UNIFIED_AI_JOBS.db - gmail_responses
-        if os.path.exists('UNIFIED_AI_JOBS.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
-            source_cursor.execute('SELECT * FROM gmail_responses')
+            source_cursor.execute('SELECT * FROM emails')
             for row in source_cursor.fetchall():
                 try:
                     target_cursor.execute('''
@@ -524,12 +524,12 @@ class DatabaseConsolidator:
         target_cursor = target_conn.cursor()
         
         # Migrate from your_profile.db
-        if os.path.exists('your_profile.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
             # Get main profile data
-            source_cursor.execute('SELECT * FROM professional_identity LIMIT 1')
+            source_cursor.execute('SELECT * FROM profile LIMIT 1')
             profile_row = source_cursor.fetchone()
             
             if profile_row:
@@ -549,11 +549,11 @@ class DatabaseConsolidator:
             source_conn.close()
         
         # Also check ai_talent_optimizer.db for profile data
-        if os.path.exists('ai_talent_optimizer.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
-            source_cursor.execute('SELECT * FROM profiles LIMIT 1')
+            source_cursor.execute('SELECT * FROM profile LIMIT 1')
             profile_row = source_cursor.fetchone()
             
             if profile_row:
@@ -588,16 +588,16 @@ class DatabaseConsolidator:
         target_cursor = target_conn.cursor()
         
         # CEO outreach database is empty, but we'll handle it for completeness
-        if os.path.exists('ceo_outreach.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
             try:
-                source_cursor.execute('SELECT * FROM ceo_contacts')
+                source_cursor.execute('SELECT * FROM contacts')
                 for row in source_cursor.fetchall():
                     target_cursor.execute('''
                         INSERT INTO contacts (
-                            company, name, title, email, linkedin, phone,
+                            company, full_name, title, email, linkedin, phone,
                             contacted, contacted_at, response_received, notes
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (row[1], row[2], row[3], row[4], row[5], row[6],
@@ -622,11 +622,11 @@ class DatabaseConsolidator:
         
         metrics_migrated = 0
         
-        if os.path.exists('verified_metrics.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
-            source_cursor.execute('SELECT * FROM verified_metrics')
+            source_cursor.execute('SELECT * FROM metrics')
             for row in source_cursor.fetchall():
                 try:
                     target_cursor.execute('''
@@ -645,11 +645,11 @@ class DatabaseConsolidator:
             source_conn.close()
         
         # Also migrate platform metrics from your_profile.db
-        if os.path.exists('your_profile.db'):
-            source_conn = sqlite3.connect('unified_talent_optimizer.db')
+        if os.path.exists("unified_platform.db"):
+            source_conn = sqlite3.connect("unified_platform.db")
             source_cursor = source_conn.cursor()
             
-            source_cursor.execute('SELECT * FROM platform_metrics')
+            source_cursor.execute('SELECT * FROM metrics')
             for row in source_cursor.fetchall():
                 try:
                     target_cursor.execute('''
@@ -682,7 +682,7 @@ class DatabaseConsolidator:
         validation = {
             "jobs": cursor.execute("SELECT COUNT(*) FROM jobs").fetchone()[0],
             "applications": cursor.execute("SELECT COUNT(*) FROM applications").fetchone()[0],
-            "responses": cursor.execute("SELECT COUNT(*) FROM responses").fetchone()[0],
+            "responses": cursor.execute("SELECT COUNT(*) FROM emails").fetchone()[0],
             "profile": cursor.execute("SELECT COUNT(*) FROM profile").fetchone()[0],
             "contacts": cursor.execute("SELECT COUNT(*) FROM contacts").fetchone()[0],
             "metrics": cursor.execute("SELECT COUNT(*) FROM metrics").fetchone()[0],
@@ -693,7 +693,7 @@ class DatabaseConsolidator:
         
         # Check for duplicates
         cursor.execute('''
-            SELECT company, position, COUNT(*) as cnt 
+            SELECT company, title, COUNT(*) as cnt 
             FROM jobs 
             GROUP BY company, position 
             HAVING COUNT(*) > 1

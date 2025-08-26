@@ -39,7 +39,7 @@ class PipelineManager:
     
     def __init__(self, db_path: str = None):
         if db_path is None:
-            db_path = Path(__file__).parent.parent / 'data_layer' / 'unified_career.db'
+            db_path = Path(__file__).parent.parent / 'data_layer' / "unified_platform.db"
         self.db_path = Path(db_path)
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
@@ -51,23 +51,23 @@ class PipelineManager:
         """Record first contact with a company/position"""
         
         # Check if contact already exists
-        existing = self._check_existing_contact(company, position)
+        existing = self._check_existing_contact(company, title)
         if existing:
             print(f"⚠️ Contact already exists for {company} - {position or 'General'}")
             return existing['contact_uid']
         
         # Generate unique ID
-        contact_uid = self._generate_uid(company, position, datetime.now())
+        contact_uid = self._generate_uid(company, title, datetime.now())
         
         cursor = self.conn.cursor()
         cursor.execute("""
             INSERT INTO contact_timeline (
-                contact_uid, company, position, first_contact_date,
+                contact_uid, company, title, first_contact_date,
                 contact_type, contact_source, contact_proof, proof_type,
                 notes, interaction_history
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            contact_uid, company, position, datetime.now(),
+            contact_uid, company, title, datetime.now(),
             contact_type.value, contact_source.value,
             proof_url, 'url' if proof_url else None,
             notes,
@@ -93,8 +93,8 @@ class PipelineManager:
         if position:
             cursor.execute("""
                 SELECT * FROM contact_timeline 
-                WHERE company = ? AND position = ?
-            """, (company, position))
+                WHERE company = ? AND title = ?
+            """, (company, title))
         else:
             cursor.execute("""
                 SELECT * FROM contact_timeline 
@@ -110,7 +110,7 @@ class PipelineManager:
         
         # Get all contacts for this company
         cursor.execute("""
-            SELECT contact_uid, position, first_contact_date, 
+            SELECT contact_uid, title, first_contact_date, 
                    contact_type, contact_proof, verification_status
             FROM contact_timeline
             WHERE company = ?
@@ -149,13 +149,13 @@ class PipelineManager:
         activity_uid = self._generate_uid(company, activity_type, datetime.now())
         
         # Find related contact
-        contact = self._check_existing_contact(company, position)
+        contact = self._check_existing_contact(company, title)
         contact_uid = contact['contact_uid'] if contact else None
         
         # If no contact exists, create one
         if not contact_uid:
             contact_uid = self.record_first_contact(
-                company, position,
+                company, title,
                 ContactType.DISCOVERED,
                 ContactSource.SELF_INITIATED,
                 notes=f"Created from activity: {activity_type}"
@@ -164,12 +164,12 @@ class PipelineManager:
         cursor = self.conn.cursor()
         cursor.execute("""
             INSERT INTO pipeline_activities (
-                activity_uid, company, position, activity_type,
+                activity_uid, company, title, activity_type,
                 activity_date, description, outcome, next_steps,
                 contact_uid
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            activity_uid, company, position, activity_type,
+            activity_uid, company, title, activity_type,
             datetime.now(), description, outcome, next_steps,
             contact_uid
         ))
@@ -294,7 +294,7 @@ class PipelineManager:
             query = f"""
                 SELECT company, MIN(first_contact_date) as first_contact,
                        COUNT(*) as total_interactions,
-                       GROUP_CONCAT(DISTINCT position) as positions
+                       GROUP_CONCAT(DISTINCT title) as positions
                 FROM contact_timeline
                 WHERE company IN ({placeholders})
                 GROUP BY company
@@ -304,7 +304,7 @@ class PipelineManager:
             cursor.execute("""
                 SELECT company, MIN(first_contact_date) as first_contact,
                        COUNT(*) as total_interactions,
-                       GROUP_CONCAT(DISTINCT position) as positions
+                       GROUP_CONCAT(DISTINCT title) as positions
                 FROM contact_timeline
                 GROUP BY company
                 ORDER BY first_contact_date DESC
@@ -388,7 +388,7 @@ def main():
     manager.log_activity(
         "Anthropic", "research",
         "Researched company culture and recent papers",
-        position="ML Engineer",
+        title="ML Engineer",
         outcome="Good fit identified",
         next_steps="Prepare customized application"
     )

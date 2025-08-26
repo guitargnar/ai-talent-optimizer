@@ -20,7 +20,7 @@ def find_best_ml_jobs(limit=10):
     print("\n🔍 Finding Best ML/AI Engineering Positions...")
     print("=" * 60)
     
-    db_path = Path('data/unified_jobs.db')
+    db_path = Path("unified_platform.db")
     if not db_path.exists():
         print("❌ Database not found")
         return []
@@ -33,7 +33,7 @@ def find_best_ml_jobs(limit=10):
     SELECT DISTINCT
         job_id,
         company,
-        position,
+        title,
         location,
         remote_option,
         salary_range,
@@ -43,13 +43,13 @@ def find_best_ml_jobs(limit=10):
         relevance_score
     FROM jobs
     WHERE (
-        LOWER(position) LIKE '%ml%' OR
-        LOWER(position) LIKE '%machine learning%' OR
-        LOWER(position) LIKE '%ai%' OR
-        LOWER(position) LIKE '%artificial intelligence%' OR
-        LOWER(position) LIKE '%data scien%' OR
-        LOWER(position) LIKE '%deep learn%' OR
-        LOWER(position) LIKE '%neural%' OR
+        LOWER(title) LIKE '%ml%' OR
+        LOWER(title) LIKE '%machine learning%' OR
+        LOWER(title) LIKE '%ai%' OR
+        LOWER(title) LIKE '%artificial intelligence%' OR
+        LOWER(title) LIKE '%data scien%' OR
+        LOWER(title) LIKE '%deep learn%' OR
+        LOWER(title) LIKE '%neural%' OR
         company IN ('Anthropic', 'OpenAI', 'Scale AI', 'Figma', 'Plaid', 
                     'Airtable', 'Temporal Technologies', 'Zocdoc', 'Doximity')
     )

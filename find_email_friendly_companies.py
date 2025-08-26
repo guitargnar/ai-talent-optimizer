@@ -14,7 +14,7 @@ class EmailFriendlyCompanyFinder:
     """Find companies that actually accept email applications"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.email_friendly_path = "data/email_friendly_companies.json"
         
         # Companies known to accept email applications (verified or likely)
@@ -144,8 +144,8 @@ class EmailFriendlyCompanyFinder:
         # Check which email-friendly companies are in our database
         for company, email in self.email_friendly_companies.items():
             cursor.execute("""
-                SELECT id, company, position, relevance_score
-                FROM job_discoveries
+                SELECT id, company, title, relevance_score
+                FROM jobs
                 WHERE company LIKE ?
                 AND applied = 0
                 ORDER BY relevance_score DESC
@@ -165,8 +165,8 @@ class EmailFriendlyCompanyFinder:
         
         # Also check for companies that might be startups
         cursor.execute("""
-            SELECT id, company, position, relevance_score, description
-            FROM job_discoveries
+            SELECT id, company, title, relevance_score, description
+            FROM jobs
             WHERE applied = 0
             AND relevance_score >= 0.5
             ORDER BY relevance_score DESC
@@ -175,7 +175,7 @@ class EmailFriendlyCompanyFinder:
         
         jobs = cursor.fetchall()
         
-        for job_id, company, position, score, description in jobs:
+        for job_id, company, title, score, description in jobs:
             # Skip if already in results
             if any(r['company'] == company for r in results):
                 continue
@@ -190,7 +190,7 @@ class EmailFriendlyCompanyFinder:
                 results.append({
                     'id': job_id,
                     'company': company,
-                    'position': position,
+                    'position': title,
                     'score': score,
                     'suggested_email': suggested_email,
                     'confidence': 'medium',

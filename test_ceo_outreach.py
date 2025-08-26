@@ -34,7 +34,7 @@ def test_database_integration():
     # Test 2: Verify contacts table has required columns
     print("\n2️⃣ Testing Database Schema...")
     try:
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Check contacts table exists and has required columns
@@ -63,7 +63,7 @@ def test_database_integration():
         # Create test contact
         test_contact = CEOContact(
             company="Test Company",
-            name="Test CEO",
+            full_name="Test CEO",
             title="Chief Executive Officer",
             email="ceo@testcompany.com",
             linkedin="https://linkedin.com/in/testceo",
@@ -75,7 +75,7 @@ def test_database_integration():
         print("   ✅ Test contact stored successfully")
         
         # Verify it was stored
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM contacts WHERE company = 'Test Company'")
         result = cursor.fetchone()
@@ -172,7 +172,7 @@ def test_database_integration():
     
     # Cleanup: Remove test contact
     try:
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         cursor.execute("DELETE FROM contacts WHERE company = 'Test Company'")
         conn.commit()

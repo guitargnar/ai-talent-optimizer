@@ -26,7 +26,7 @@ from authentic_resume_content import create_principal_resume
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class PrincipalRoleHunter:
     
     def __init__(self):
         """Initialize the Principal Role Hunter"""
-        self.db_path = "principal_jobs_400k.db"
+        self.db_path = "unified_platform.db"
         self.tracker_csv = Path("MASTER_TRACKER_400K.csv")
         self.templates = ImprovedApplicationTemplates()
         self.applications_today = 0
@@ -87,7 +87,7 @@ class PrincipalRoleHunter:
         cursor = conn.cursor()
         
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS principal_jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
             position TEXT NOT NULL,
@@ -158,7 +158,7 @@ class PrincipalRoleHunter:
                 try:
                     # Try to find search box and search
                     search_box = driver.find_element(By.CSS_SELECTOR, 
-                        'input[type="search"], input[placeholder*="search"], input[name="q"]')
+                        'input[type="search"], input[placeholder*="search"], input[full_name="q"]')
                     search_box.clear()
                     search_box.send_keys(keyword)
                     search_box.submit()
@@ -169,14 +169,14 @@ class PrincipalRoleHunter:
                         'a[href*="job"], a[href*="position"], div.job-listing, div.career-opportunity')
                     
                     for element in job_elements[:5]:  # Limit to top 5 per keyword
-                        job_title = element.text.strip()
+                        title = element.text.strip()
                         job_url = element.get_attribute('href') if element.tag_name == 'a' else None
                         
                         # Check if it's a principal/staff role
                         if any(role_kw.lower() in job_title.lower() for role_kw in self.ROLE_KEYWORDS):
                             job_data = {
                                 'company': company_info['name'],
-                                'position': job_title,
+                                'position': title,
                                 'url': job_url or company_info['url'],
                                 'min_salary': company_info['min_comp'],
                                 'max_salary': int(company_info['min_comp'] * 1.3),  # Estimate max
@@ -206,7 +206,7 @@ class PrincipalRoleHunter:
         
         # Get unapplied jobs sorted by priority
         cursor.execute("""
-        SELECT * FROM principal_jobs 
+        SELECT * FROM jobs 
         WHERE applied = 0 
         ORDER BY 
             CASE 
@@ -242,15 +242,15 @@ class PrincipalRoleHunter:
     def _apply_to_job(self, job_record) -> bool:
         """Apply to a specific job"""
         company = job_record[1]
-        position = job_record[2]
+        title = job_record[2]
         url = job_record[3]
         
         logger.info(f"  Applying to {company} - {position}")
         
         try:
             # Generate tailored application materials
-            cover_letter = self._generate_principal_cover_letter(company, position)
-            resume_content = self._generate_principal_resume(company, position)
+            cover_letter = self._generate_principal_cover_letter(company, title)
+            resume_content = self._generate_principal_resume(company, title)
             
             # For now, log the application (in production, would submit via form)
             logger.info(f"  ✅ Application prepared for {company}")
@@ -258,7 +258,7 @@ class PrincipalRoleHunter:
             logger.info(f"  📄 Resume tailored with {company} keywords")
             
             # Store application record
-            self._store_application_record(company, position, cover_letter)
+            self._store_application_record(company, title, cover_letter)
             
             return True
             
@@ -301,7 +301,7 @@ linkedin.com/in/mscott77
     def _generate_principal_resume(self, company: str, position: str) -> str:
         """Generate a Principal-level resume with healthcare and AI focus"""
         # Use the authentic resume content generator
-        return create_principal_resume(company, position)
+        return create_principal_resume(company, title)
     
     def _mark_as_applied(self, job_id: int):
         """Mark a job as applied in the database"""
@@ -309,7 +309,7 @@ linkedin.com/in/mscott77
         cursor = conn.cursor()
         
         cursor.execute("""
-        UPDATE principal_jobs 
+        UPDATE jobs 
         SET applied = 1, applied_at = CURRENT_TIMESTAMP 
         WHERE id = ?
         """, (job_id,))
@@ -322,7 +322,7 @@ linkedin.com/in/mscott77
         if self.tracker_df is not None:
             # Find the row for this company/position
             company = job_record[1]
-            position = job_record[2]
+            title = job_record[2]
             
             mask = (self.tracker_df['Item'] == company) & \
                    (self.tracker_df['Target'].str.contains(position.split()[0], na=False))
@@ -344,15 +344,15 @@ linkedin.com/in/mscott77
         for job in jobs:
             # Check if job already exists
             cursor.execute("""
-            SELECT id FROM principal_jobs 
-            WHERE company = ? AND position = ?
+            SELECT id FROM jobs 
+            WHERE company = ? AND title = ?
             """, (job['company'], job['position']))
             
             if not cursor.fetchone():
                 cursor.execute("""
-                INSERT INTO principal_jobs (
-                    company, position, url, min_salary, max_salary,
-                    location, remote, healthcare_focused, ai_focused
+                INSERT INTO jobs (
+                    company, title, url, salary_min, salary_max,
+                    location, remote_type, healthcare_focused, ai_focused
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     job['company'], job['position'], job.get('url'),
@@ -384,13 +384,13 @@ linkedin.com/in/mscott77
         cursor = conn.cursor()
         
         # Get statistics
-        cursor.execute("SELECT COUNT(*) FROM principal_jobs")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         total_jobs = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM principal_jobs WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
         applied_jobs = cursor.fetchone()[0]
         
-        cursor.execute("SELECT company, position, min_salary FROM principal_jobs WHERE applied = 0 ORDER BY min_salary DESC LIMIT 5")
+        cursor.execute("SELECT company, title, min_salary FROM jobs WHERE applied = 0 ORDER BY min_salary DESC LIMIT 5")
         top_opportunities = cursor.fetchall()
         
         conn.close()

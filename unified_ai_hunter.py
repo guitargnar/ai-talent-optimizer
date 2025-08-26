@@ -40,7 +40,7 @@ except ImportError as e:
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('unified_ai_hunter.log'),
         logging.StreamHandler()
@@ -85,7 +85,7 @@ class UnifiedAIHunter:
         logger.info("Initializing Unified AI Hunter...")
         
         # Initialize databases
-        self.unified_db_path = "UNIFIED_AI_JOBS.db"
+        self.unified_db_path = "unified_platform.db"
         self._init_unified_database()
         
         # Initialize subsystems
@@ -103,7 +103,7 @@ class UnifiedAIHunter:
         
         # Create unified applications table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS unified_applications (
+        CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id TEXT UNIQUE,
             company TEXT NOT NULL,
@@ -146,7 +146,7 @@ class UnifiedAIHunter:
         
         # Create job discoveries table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS job_discoveries (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             source TEXT,
             job_id TEXT UNIQUE,
@@ -285,8 +285,8 @@ class UnifiedAIHunter:
         # Check salary range
         try:
             salary_range = job.get('salary_range', '0-0')
-            min_salary = int(salary_range.split('-')[0])
-            if min_salary >= self.config['min_salary']:
+            salary_min = int(salary_range.split('-')[0])
+            if salary_min >= self.config['min_salary']:
                 score += 0.1
         except:
             pass
@@ -470,7 +470,7 @@ class UnifiedAIHunter:
             COUNT(*) as total,
             SUM(CASE WHEN response_type IS NOT NULL THEN 1 ELSE 0 END) as responses,
             SUM(CASE WHEN response_type = 'interview_request' THEN 1 ELSE 0 END) as interviews
-        FROM unified_applications
+        FROM applications
         GROUP BY emphasis
         ''')
         

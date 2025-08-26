@@ -16,7 +16,7 @@ class DifferentiationEngine:
     """Create highly specific, memorable applications"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.matthew_stories = self._load_matthew_stories()
         self.company_research = {}
         
@@ -63,8 +63,8 @@ class DifferentiationEngine:
     def research_company(self, company_name: str, position: str) -> Dict:
         """Deep research on company - their challenges, recent news, tech stack"""
         research = {
-            'company': company_name,
-            'position': position,
+            'company': company,
+            'position': title,
             'recent_news': [],
             'tech_stack': [],
             'challenges': [],
@@ -183,22 +183,22 @@ class DifferentiationEngine:
     def create_memorable_email(self, job: Dict) -> Dict:
         """Create a completely unique, memorable email for this specific job"""
         company = job['company']
-        position = job['position']
+        title = job['position']
         
         # Research company
-        research = self.research_company(company, position)
+        research = self.research_company(company, title)
         
         # Get job description (from database or API)
-        job_description = job.get('description', position)
+        job_description = job.get('description', title)
         
         # Select most relevant story
         relevant_story = self.select_relevant_story(job_description, research)
         
         # Create memorable hook
-        hook = self.create_memorable_hook(company, position, research)
+        hook = self.create_memorable_hook(company, title, research)
         
         # Generate specific value props
-        value_props = self.generate_specific_value_prop(company, position, research)
+        value_props = self.generate_specific_value_prop(company, title, research)
         
         # Build the email
         subject = f"{position} - {relevant_story['metrics'][list(relevant_story['metrics'].keys())[0]]} Impact Leader"
@@ -212,9 +212,9 @@ class DifferentiationEngine:
 What makes me different:
 {chr(10).join(value_props)}
 
-One specific idea for {company}: {self._generate_specific_idea(company, position, research)}
+One specific idea for {company}: {self._generate_specific_idea(company, title, research)}
 
-I built an AI system to find this role, but I'm writing this personally because {company} deserves more than automation. You'll find my resume attached, but I'd prefer to show you what I can build.
+I built an AI system to find this position, but I'm writing this personally because {company} deserves more than automation. You'll find my resume attached, but I'd prefer to show you what I can build.
 
 Ready to discuss how my healthcare ML experience can accelerate {company}'s impact.
 
@@ -261,7 +261,7 @@ P.S. The ML system I built to discover this opportunity is open-sourced at [gith
         # Get job details from database
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM job_discoveries WHERE id = ?", (job_id,))
+        cursor.execute("SELECT * FROM jobs WHERE id = ?", (job_id,))
         job_row = cursor.fetchone()
         
         if not job_row:

@@ -14,11 +14,11 @@ def verify_consolidation():
     print('=== UNIFIED DATABASE VERIFICATION ===')
     
     # Check if unified database exists
-    if not os.path.exists('unified_talent_optimizer.db'):
+    if not os.path.exists("unified_platform.db"):
         print("❌ Unified database not found!")
         return False
     
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Get all tables
@@ -43,9 +43,9 @@ def verify_consolidation():
     
     # Jobs with high salaries
     cursor.execute('''
-        SELECT company, position, min_salary, max_salary 
+        SELECT company, title, salary_min, max_salary 
         FROM jobs 
-        WHERE min_salary > 350000 
+        WHERE salary_min > 350000 
         ORDER BY min_salary DESC 
         LIMIT 5
     ''')
@@ -55,7 +55,7 @@ def verify_consolidation():
         print(f'  {row[0]} - {row[1]} ({salary_range})')
     
     # Applications
-    cursor.execute('SELECT company, position, applied_date, status FROM applications ORDER BY applied_date DESC LIMIT 5')
+    cursor.execute('SELECT company, title, applied_date, status FROM applications ORDER BY applied_date DESC LIMIT 5')
     print('\nRecent Applications:')
     for row in cursor.fetchall():
         print(f'  {row[0]} - {row[1]} ({row[2]}) - {row[3]}')
@@ -120,13 +120,13 @@ def create_new_system_commands():
 # Quick status check:
 python3 -c "
 import sqlite3
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 cursor = conn.cursor()
 cursor.execute('SELECT COUNT(*) FROM jobs')
 jobs = cursor.fetchone()[0]
 cursor.execute('SELECT COUNT(*) FROM applications')
 apps = cursor.fetchone()[0]
-cursor.execute('SELECT COUNT(*) FROM responses')  
+cursor.execute('SELECT COUNT(*) FROM emails')  
 responses = cursor.fetchone()[0]
 print(f'Jobs: {jobs}, Applications: {apps}, Responses: {responses}')
 conn.close()
@@ -135,9 +135,9 @@ conn.close()
 # Find high-value jobs:
 python3 -c "
 import sqlite3
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 cursor = conn.cursor()
-cursor.execute('SELECT company, position, min_salary FROM jobs WHERE min_salary > 400000 ORDER BY min_salary DESC')
+cursor.execute('SELECT company, title, min_salary FROM jobs WHERE salary_min > 400000 ORDER BY min_salary DESC')
 for row in cursor.fetchall():
     print(f'{row[0]} - {row[1]}: \${row[2]:,}')
 conn.close()
@@ -146,9 +146,9 @@ conn.close()
 # Check application status:
 python3 -c "
 import sqlite3
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 cursor = conn.cursor()
-cursor.execute('SELECT company, position, applied_date, status FROM applications ORDER BY applied_date DESC')
+cursor.execute('SELECT company, title, applied_date, status FROM applications ORDER BY applied_date DESC')
 for row in cursor.fetchall():
     print(f'{row[0]} - {row[1]} ({row[2]}): {row[3]}')
 conn.close()

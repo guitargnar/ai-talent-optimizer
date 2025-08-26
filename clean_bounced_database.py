@@ -14,7 +14,7 @@ class DatabaseCleaner:
     """Clean and reset database after bounce crisis"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.bounce_log_path = "data/bounce_log.json"
         self.invalid_emails_path = "data/invalid_emails.json"
         self.cleanup_log_path = "data/database_cleanup_log.json"
@@ -42,22 +42,22 @@ class DatabaseCleaner:
         cursor = conn.cursor()
         
         # Get statistics
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
         total_applied = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE bounce_detected = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE bounce_detected = 1")
         total_bounced = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE response_received = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE response_received = 1")
         total_responses = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE interview_scheduled = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE interview_scheduled = 1")
         total_interviews = cursor.fetchone()[0]
         
         # Get list of bounced companies
         cursor.execute("""
-            SELECT company, position, applied_date 
-            FROM job_discoveries 
+            SELECT company, title, applied_date 
+            FROM jobs 
             WHERE bounce_detected = 1
             ORDER BY applied_date DESC
         """)
@@ -93,7 +93,7 @@ class DatabaseCleaner:
         
         # Mark bounced as invalid
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET application_invalid = 1,
                 cleanup_date = ?
             WHERE bounce_detected = 1
@@ -105,7 +105,7 @@ class DatabaseCleaner:
         for email in self.invalid_emails:
             # Try to find applications that might have used this email
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET application_invalid = 1,
                     bounce_detected = 1,
                     cleanup_date = ?
@@ -124,15 +124,15 @@ class DatabaseCleaner:
         cursor = conn.cursor()
         
         # Count false positives before reset
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE response_received = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE response_received = 1")
         false_responses = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE interview_scheduled = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE interview_scheduled = 1")
         false_interviews = cursor.fetchone()[0]
         
         # Reset false positive fields
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET response_received = 0,
                 response_date = NULL,
                 response_type = NULL,
@@ -164,7 +164,7 @@ class DatabaseCleaner:
         
         # Mark high-value bounced applications for re-application
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET needs_reapplication = 1
             WHERE application_invalid = 1
             AND relevance_score >= 0.5
@@ -174,8 +174,8 @@ class DatabaseCleaner:
         
         # Get list of companies to re-apply to
         cursor.execute("""
-            SELECT company, position, relevance_score 
-            FROM job_discoveries 
+            SELECT company, title, relevance_score 
+            FROM jobs 
             WHERE needs_reapplication = 1
             ORDER BY relevance_score DESC
             LIMIT 20
@@ -187,7 +187,7 @@ class DatabaseCleaner:
         conn.close()
         
         print(f"\n🔄 TOP COMPANIES TO RE-APPLY (with correct emails):")
-        for company, position, score in reapply_list:
+        for company, title, score in reapply_list:
             print(f"  • {company} - {position} (Score: {score:.2f})")
         
         return marked
@@ -270,13 +270,13 @@ class DatabaseCleaner:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
+            SELECT COUNT(*) FROM jobs 
             WHERE applied = 1 AND application_invalid = 0
         """)
         valid_applications = cursor.fetchone()[0]
         
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
+            SELECT COUNT(*) FROM jobs 
             WHERE applied = 0 AND relevance_score >= 0.5
         """)
         pending_high_value = cursor.fetchone()[0]

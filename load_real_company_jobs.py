@@ -68,7 +68,7 @@ def add_jobs_to_database(jobs, conn):
                 cursor.execute("""
                     UPDATE jobs SET
                         company = ?,
-                        position = ?,
+                        title = ?,
                         location = ?,
                         url = ?,
                         company_email = ?,
@@ -94,7 +94,7 @@ def add_jobs_to_database(jobs, conn):
                 # Insert new job (simplified to match actual table columns)
                 cursor.execute("""
                     INSERT INTO jobs (
-                        job_id, company, position, location, url,
+                        job_id, company, title, location, url,
                         company_email, relevance_score,
                         source, applied, email_verified, bounce_detected
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -130,7 +130,7 @@ def main():
     print("="*60)
     
     # Connect to database
-    db_path = "data/unified_jobs.db"
+    db_path = "unified_platform.db"
     conn = sqlite3.connect(db_path)
     
     try:
@@ -193,7 +193,7 @@ def main():
         
         # Show high-relevance jobs
         cursor.execute("""
-            SELECT company, position, relevance_score, company_email
+            SELECT company, title, relevance_score, company_email
             FROM jobs
             WHERE relevance_score >= 0.9
             AND source IN ('Greenhouse', 'Lever')
@@ -202,7 +202,7 @@ def main():
         """)
         
         print(f"\n🎯 Top Relevance Jobs (Matthew-specific):")
-        for company, position, score, email in cursor.fetchall():
+        for company, title, score, email in cursor.fetchall():
             print(f"   {score:.2f} - {company}: {position}")
             print(f"         Email: {email}")
         

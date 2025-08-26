@@ -68,7 +68,7 @@ class SystemHealthCheck:
         """Check database status"""
         self.print_header("Database Status")
         
-        db_path = "UNIFIED_AI_JOBS.db"
+        db_path = "unified_platform.db"
         if Path(db_path).exists():
             self.check_pass("Database exists")
             
@@ -77,18 +77,18 @@ class SystemHealthCheck:
                 cursor = conn.cursor()
                 
                 # Check total jobs
-                cursor.execute("SELECT COUNT(*) FROM job_discoveries")
+                cursor.execute("SELECT COUNT(*) FROM jobs")
                 total = cursor.fetchone()[0]
                 self.check_pass(f"Total jobs in database: {total}")
                 
                 # Check applied jobs
-                cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied=1")
+                cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied=1")
                 applied = cursor.fetchone()[0]
                 self.check_pass(f"Applications sent: {applied}")
                 
                 # Check today's applications
                 cursor.execute("""
-                    SELECT COUNT(*) FROM job_discoveries 
+                    SELECT COUNT(*) FROM jobs 
                     WHERE applied=1 AND DATE(applied_date) = DATE('now')
                 """)
                 today = cursor.fetchone()[0]
@@ -99,7 +99,7 @@ class SystemHealthCheck:
                 
                 # Check pending high-value jobs
                 cursor.execute("""
-                    SELECT COUNT(*) FROM job_discoveries 
+                    SELECT COUNT(*) FROM jobs 
                     WHERE applied=0 AND relevance_score >= 0.65
                 """)
                 pending = cursor.fetchone()[0]
@@ -209,12 +209,12 @@ class SystemHealthCheck:
         
         # Check if system ran today
         try:
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
             
             # Last job discovery
             cursor.execute("""
-                SELECT MAX(discovered_date) FROM job_discoveries
+                SELECT MAX(discovered_date) FROM jobs
             """)
             last_discovery = cursor.fetchone()[0]
             if last_discovery:
@@ -222,8 +222,8 @@ class SystemHealthCheck:
             
             # Last application
             cursor.execute("""
-                SELECT company, position, applied_date 
-                FROM job_discoveries 
+                SELECT company, title, applied_date 
+                FROM jobs 
                 WHERE applied=1 
                 ORDER BY applied_date DESC 
                 LIMIT 1

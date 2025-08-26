@@ -69,12 +69,12 @@ def add_researched_emails():
         print(f"\n✅ Added {added_count} new email addresses")
     
     # Check what we have now
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT company, position, relevance_score, verified_email
-        FROM job_discoveries
+        SELECT company, title, relevance_score, verified_email
+        FROM jobs
         WHERE applied = 0
         AND verified_email IS NOT NULL
         AND relevance_score >= 0.5
@@ -86,7 +86,7 @@ def add_researched_emails():
     
     if ready_jobs:
         print(f"\n🎯 HIGH-VALUE JOBS READY TO APPLY:")
-        for company, position, score, email in ready_jobs:
+        for company, title, score, email in ready_jobs:
             print(f"\n  Company: {company}")
             print(f"  Position: {position}")  
             print(f"  Score: {score:.2f}")

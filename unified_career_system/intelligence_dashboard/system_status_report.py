@@ -17,7 +17,7 @@ def generate_status_report():
     """Generate comprehensive status report"""
     
     # Connect to database
-    db_path = Path(__file__).parent.parent / 'data_layer' / 'unified_career.db'
+    db_path = Path(__file__).parent.parent / 'data_layer' / "unified_platform.db"
     
     if not db_path.exists():
         print(f"❌ Database not found at: {db_path}")
@@ -35,13 +35,13 @@ def generate_status_report():
     print("\n✅ PHASE 1: DATA LAYER")
     print("-" * 40)
     
-    cursor.execute("SELECT COUNT(*) FROM master_jobs")
+    cursor.execute("SELECT COUNT(*) FROM jobs")
     total_jobs = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(DISTINCT company) FROM master_jobs")
+    cursor.execute("SELECT COUNT(DISTINCT company) FROM jobs")
     total_companies = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(DISTINCT source) FROM master_jobs WHERE source IS NOT NULL")
+    cursor.execute("SELECT COUNT(DISTINCT source) FROM jobs WHERE source IS NOT NULL")
     total_sources = cursor.fetchone()[0]
     
     print(f"• Total Jobs: {total_jobs}")
@@ -51,7 +51,7 @@ def generate_status_report():
     # Top sources
     cursor.execute("""
         SELECT source, COUNT(*) as cnt 
-        FROM master_jobs 
+        FROM jobs 
         WHERE source IS NOT NULL
         GROUP BY source 
         ORDER BY cnt DESC 
@@ -67,10 +67,10 @@ def generate_status_report():
     print("\n✅ PHASE 2: ML INTEGRATION")
     print("-" * 40)
     
-    cursor.execute("SELECT COUNT(*) FROM master_jobs WHERE ml_score IS NOT NULL")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE ml_score IS NOT NULL")
     scored_jobs = cursor.fetchone()[0]
     
-    cursor.execute("SELECT AVG(ml_score), MAX(ml_score), MIN(ml_score) FROM master_jobs WHERE ml_score IS NOT NULL")
+    cursor.execute("SELECT AVG(ml_score), MAX(ml_score), MIN(ml_score) FROM jobs WHERE ml_score IS NOT NULL")
     ml_stats = cursor.fetchone()
     
     print(f"• Jobs with ML Scores: {scored_jobs}/{total_jobs}")
@@ -82,10 +82,10 @@ def generate_status_report():
     print("\n✅ PHASE 3: APPLICATION PIPELINE")
     print("-" * 40)
     
-    cursor.execute("SELECT COUNT(*) FROM master_applications")
+    cursor.execute("SELECT COUNT(*) FROM applications")
     total_apps = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(DISTINCT job_uid) FROM master_applications")
+    cursor.execute("SELECT COUNT(DISTINCT job_uid) FROM applications")
     unique_jobs_applied = cursor.fetchone()[0]
     
     print(f"• Total Applications: {total_apps}")
@@ -93,8 +93,8 @@ def generate_status_report():
     
     # Application methods
     cursor.execute("""
-        SELECT application_method, COUNT(*) as cnt 
-        FROM master_applications 
+        SELECT method, COUNT(*) as cnt 
+        FROM applications 
         WHERE application_method IS NOT NULL
         GROUP BY application_method
     """)
@@ -107,7 +107,7 @@ def generate_status_report():
     # Recent applications
     cursor.execute("""
         SELECT ma.applied_date, mj.company, mj.position 
-        FROM master_applications ma
+        FROM applications ma
         LEFT JOIN master_jobs mj ON ma.job_uid = mj.job_uid
         WHERE ma.applied_date IS NOT NULL
         ORDER BY ma.applied_date DESC
@@ -124,7 +124,7 @@ def generate_status_report():
     print("\n✅ PHASE 4: RESPONSE MANAGEMENT")
     print("-" * 40)
     
-    cursor.execute("SELECT COUNT(*) FROM master_applications WHERE response_type IS NOT NULL")
+    cursor.execute("SELECT COUNT(*) FROM applications WHERE response_type IS NOT NULL")
     responses = cursor.fetchone()[0]
     
     print(f"• Responses Received: {responses}/{total_apps}")
@@ -134,7 +134,7 @@ def generate_status_report():
     # Response types
     cursor.execute("""
         SELECT response_type, COUNT(*) as cnt 
-        FROM master_applications 
+        FROM applications 
         WHERE response_type IS NOT NULL
         GROUP BY response_type
     """)
@@ -149,7 +149,7 @@ def generate_status_report():
     print("-" * 40)
     
     # Company intelligence
-    cursor.execute("SELECT COUNT(*) FROM company_intelligence")
+    cursor.execute("SELECT COUNT(*) FROM companies")
     companies_tracked = cursor.fetchone()[0]
     
     cursor.execute("SELECT COUNT(*) FROM performance_metrics")
@@ -162,7 +162,7 @@ def generate_status_report():
     cursor.execute("""
         SELECT mj.company, COUNT(*) as job_count,
                COUNT(ma.job_uid) as applications
-        FROM master_jobs mj
+        FROM jobs mj
         LEFT JOIN master_applications ma ON mj.job_uid = ma.job_uid
         GROUP BY mj.company
         HAVING job_count > 5

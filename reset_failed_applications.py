@@ -7,7 +7,7 @@ import sqlite3
 
 def reset_bounced_applications():
     """Reset applications that bounced so we can try again with correct methods"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     print("🔄 RESETTING BOUNCED APPLICATIONS")
@@ -15,7 +15,7 @@ def reset_bounced_applications():
     
     # Reset applications that bounced (except the ones we just successfully sent)
     cursor.execute("""
-        UPDATE job_discoveries
+        UPDATE jobs
         SET applied = 0,
             application_invalid = 0,
             applied_date = NULL
@@ -27,7 +27,7 @@ def reset_bounced_applications():
     
     # Also reset companies without any email
     cursor.execute("""
-        UPDATE job_discoveries
+        UPDATE jobs
         SET applied = 0,
             application_invalid = 0
         WHERE applied = 1
@@ -41,13 +41,13 @@ def reset_bounced_applications():
     
     # Get stats on what's available now
     cursor.execute("""
-        SELECT COUNT(*) FROM job_discoveries WHERE applied = 0
+        SELECT COUNT(*) FROM jobs WHERE applied = 0
     """)
     available = cursor.fetchone()[0]
     
     cursor.execute("""
-        SELECT company, position, relevance_score
-        FROM job_discoveries
+        SELECT company, title, relevance_score
+        FROM jobs
         WHERE applied = 0
         AND relevance_score >= 0.5
         ORDER BY relevance_score DESC
@@ -64,7 +64,7 @@ def reset_bounced_applications():
     
     if top_jobs:
         print(f"\n🎯 TOP AVAILABLE JOBS:")
-        for company, position, score in top_jobs:
+        for company, title, score in top_jobs:
             print(f"  • {company} - {position} (Score: {score:.2f})")
     
     print("\n" + "="*60)

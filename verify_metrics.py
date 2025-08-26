@@ -16,7 +16,7 @@ class MetricVerifier:
     def __init__(self):
         self.verified_metrics = {}
         self.verification_log = []
-        self.truth_db = "verified_metrics.db"
+        self.truth_db = "unified_platform.db"
         self.init_truth_database()
         
     def init_truth_database(self):
@@ -25,7 +25,7 @@ class MetricVerifier:
         cursor = conn.cursor()
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS verified_metrics (
+            CREATE TABLE IF NOT EXISTS metrics (
                 metric_name TEXT PRIMARY KEY,
                 verified_value TEXT,
                 verification_method TEXT,
@@ -248,7 +248,7 @@ class MetricVerifier:
                 try:
                     mtime = datetime.fromtimestamp(f.stat().st_mtime).date()
                     if mtime == today:
-                        modified_today.append(f.name)
+                        modified_today.append(f.full_name)
                 except:
                     pass
             
@@ -318,7 +318,7 @@ class MetricVerifier:
             verification.get('error', None)
         ))
         
-        # If verified, update verified_metrics table
+        # If verified, UPDATE metrics table
         if verification.get('verified'):
             evidence_str = json.dumps(verification.get('evidence', {}))
             hash_val = hashlib.sha256(evidence_str.encode()).hexdigest()[:16]
@@ -348,7 +348,7 @@ class MetricVerifier:
         
         cursor.execute("""
             SELECT metric_name, verified_value, verified_at
-            FROM verified_metrics
+            FROM metrics
             WHERE verified_at > datetime('now', '-1 hour')
             ORDER BY verified_at DESC
         """)
@@ -383,14 +383,14 @@ class MetricVerifier:
         print(f"Verified: {verified_count}/{len(results)} metrics")
         
         print("\n✅ VERIFIED METRICS (Use These):")
-        for name, result in results.items():
+        for full_name, result in results.items():
             if result.get('verified'):
                 actual = result.get('actual', 0)
                 claimed = result.get('claimed', 'N/A')
                 print(f"  • {name}: {actual:,} (claimed: {claimed})")
         
         print("\n❌ UNVERIFIED METRICS (Do Not Use):")
-        for name, result in results.items():
+        for full_name, result in results.items():
             if not result.get('verified'):
                 print(f"  • {name}: Could not verify")
         

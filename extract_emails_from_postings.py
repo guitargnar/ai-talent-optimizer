@@ -15,7 +15,7 @@ class JobPostingEmailExtractor:
     """Extract real email addresses from job posting descriptions"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.extracted_emails_path = "data/extracted_emails.json"
         self.job_board_patterns_path = "data/job_board_patterns.json"
         
@@ -146,8 +146,8 @@ class JobPostingEmailExtractor:
         
         # Get jobs without verified emails
         cursor.execute("""
-            SELECT id, company, position, description, job_url
-            FROM job_discoveries
+            SELECT id, company, title, description, job_url
+            FROM jobs
             WHERE description IS NOT NULL
             AND (verified_email IS NULL OR verified_email = '')
             ORDER BY relevance_score DESC
@@ -164,7 +164,7 @@ class JobPostingEmailExtractor:
             'companies_with_contact': []
         }
         
-        for job_id, company, position, description, job_url in jobs:
+        for job_id, company, title, description, job_url in jobs:
             if not description:
                 continue
             
@@ -248,7 +248,7 @@ class JobPostingEmailExtractor:
         # Get high-value companies without emails
         cursor.execute("""
             SELECT DISTINCT company, MAX(relevance_score) as score
-            FROM job_discoveries
+            FROM jobs
             WHERE applied = 0
             AND relevance_score >= 0.5
             AND (verified_email IS NULL OR verified_email = '')

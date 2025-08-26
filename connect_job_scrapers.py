@@ -17,7 +17,7 @@ sys.path.append('/Users/matthewscott/SURVIVE/career-automation/real-tracker/care
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('job_scraper_integration.log'),
         logging.StreamHandler()
@@ -29,7 +29,7 @@ class JobScraperIntegration:
     """Integrates multiple job scrapers with unified AI hunter system"""
     
     def __init__(self):
-        self.unified_db_path = "UNIFIED_AI_JOBS.db"
+        self.unified_db_path = "unified_platform.db"
         self.ai_keywords = [
             "AI", "artificial intelligence", "machine learning", "ML",
             "deep learning", "neural network", "LLM", "large language model",
@@ -122,7 +122,7 @@ class JobScraperIntegration:
         
         for job in jobs:
             # Check position title
-            position = job.get('position', '').lower()
+            title = job.get('position', '').lower()
             description = job.get('description', '').lower()
             
             # Look for AI/ML keywords
@@ -139,7 +139,7 @@ class JobScraperIntegration:
         
         # Ensure job_discoveries table exists
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS job_discoveries (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             source TEXT,
             job_id TEXT UNIQUE,
@@ -164,7 +164,7 @@ class JobScraperIntegration:
             try:
                 cursor.execute('''
                 INSERT OR IGNORE INTO job_discoveries 
-                (source, job_id, company, position, location, remote_option,
+                (source, job_id, company, title, location, remote_option,
                  salary_range, url, description, discovered_date, relevance_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (

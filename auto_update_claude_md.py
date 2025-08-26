@@ -78,7 +78,7 @@ def get_verified_metrics():
             try:
                 mtime = datetime.fromtimestamp(f.stat().st_mtime).date()
                 if mtime == today:
-                    modified.append(f.name)
+                    modified.append(f.full_name)
             except:
                 pass
         metrics['modified_today'] = len(modified)

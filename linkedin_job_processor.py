@@ -29,7 +29,7 @@ class LinkedInJobProcessor:
     """Process and manage LinkedIn job URLs for Easy Apply automation"""
     
     def __init__(self):
-        self.db_path = Path('data/linkedin_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.job_urls_file = Path('linkedin_job_urls.txt')
         self.processed_urls_file = Path('processed_linkedin_urls.json')
         
@@ -114,7 +114,7 @@ class LinkedInJobProcessor:
         cursor = conn.cursor()
         
         query = """
-            SELECT url FROM linkedin_jobs 
+            SELECT url FROM jobs 
             WHERE applied = 0 
             AND url IS NOT NULL 
             AND url != ''

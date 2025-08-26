@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class EnhancedJobDiscovery:
     """Multi-source job discovery with intelligent email validation"""
     
-    def __init__(self, db_path: str = "data/unified_jobs.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = db_path
         self.session = requests.Session()
         self.session.headers.update({
@@ -247,7 +247,7 @@ class EnhancedJobDiscovery:
                         if any(keyword.lower() in title for keyword in ['engineer', 'scientist', 'architect', 'developer']):
                             job_data = {
                                 'job_id': f"greenhouse_{board_id}_{job.get('id')}",
-                                'company': company_name,
+                                'company': company,
                                 'position': job.get('title'),
                                 'location': job.get('location', {}).get('name', 'Remote'),
                                 'url': job.get('absolute_url'),
@@ -290,7 +290,7 @@ class EnhancedJobDiscovery:
                         if any(keyword.lower() in title for keyword in ['engineer', 'scientist', 'technical']):
                             job_data = {
                                 'job_id': f"lever_{company_id}_{job.get('id')}",
-                                'company': company_name,
+                                'company': company,
                                 'position': job.get('text'),
                                 'location': job.get('categories', {}).get('location', 'Remote'),
                                 'url': job.get('hostedUrl'),
@@ -424,7 +424,7 @@ class EnhancedJobDiscovery:
             try:
                 cursor.execute("""
                     INSERT OR IGNORE INTO jobs (
-                        job_id, company, position, location, remote_option,
+                        job_id, company, title, location, remote_option,
                         salary_range, url, description, source, discovered_date,
                         relevance_score, applied, company_email, email_verified
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -501,7 +501,7 @@ def run_job_discovery():
     
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s'
     )
     
     discovery = EnhancedJobDiscovery()

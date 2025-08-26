@@ -70,7 +70,7 @@ class CareerIntelligenceSystem:
         
         # Response tracking with parsing
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS responses (
+            CREATE TABLE IF NOT EXISTS emails (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 application_id INTEGER,
                 response_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -91,7 +91,7 @@ class CareerIntelligenceSystem:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 application_id INTEGER,
                 interaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                interaction_type TEXT,  -- email_sent, email_opened, link_clicked, profile_viewed
+                interaction_type TEXT,  -- status, email_opened, link_clicked, profile_viewed
                 details TEXT,
                 ip_address TEXT,
                 user_agent TEXT,
@@ -181,7 +181,7 @@ class CareerIntelligenceSystem:
         """Generate A/B test subject lines based on company profile"""
         subjects = []
         
-        company_name = company.get('name', 'your company')
+        company = company.get('name', 'your company')
         
         # The Consciousness Hook variants
         if company.get('ai_maturity_score', 0) >= 8:
@@ -219,7 +219,7 @@ class CareerIntelligenceSystem:
     def generate_personalized_opening(self, company: Dict, variant: str = 'achievement') -> str:
         """Generate personalized opening paragraph based on company intelligence"""
         
-        company_name = company.get('name', 'your company')
+        company = company.get('name', 'your company')
         
         openings = {
             'achievement': f"""
@@ -299,23 +299,23 @@ AI race. I bring both technical excellence and insider knowledge of healthcare's
         cursor = conn.cursor()
         
         # Get or create company record
-        cursor.execute("SELECT id FROM companies WHERE name = ?", (company_name,))
+        cursor.execute("SELECT id FROM companies WHERE full_name = ?", (company,))
         result = cursor.fetchone()
         
         if result:
             company_id = result[0]
         else:
             cursor.execute("""
-                INSERT INTO companies (name) VALUES (?)
-            """, (company_name,))
+                INSERT INTO companies (full_name) VALUES (?)
+            """, (company,))
             company_id = cursor.lastrowid
         
         # Insert application record
         cursor.execute("""
             INSERT INTO applications 
-            (company_id, position, email_subject, email_variant, application_method)
+            (company_id, title, email_subject, email_variant, method)
             VALUES (?, ?, ?, ?, 'email')
-        """, (company_id, position, email_subject, email_variant))
+        """, (company_id, title, email_subject, email_variant))
         
         application_id = cursor.lastrowid
         
@@ -349,7 +349,7 @@ AI race. I bring both technical excellence and insider knowledge of healthcare's
                 SUM(CASE WHEN status IN ('interview', 'offer') THEN 1 ELSE 0 END) as interviews,
                 SUM(CASE WHEN status = 'offer' THEN 1 ELSE 0 END) as offers
             FROM applications
-            WHERE DATE(application_date) = ?
+            WHERE DATE(applied_date) = ?
         """, (today,))
         
         metrics = cursor.fetchone()
@@ -364,7 +364,7 @@ AI race. I bring both technical excellence and insider knowledge of healthcare's
                 SELECT email_subject, COUNT(*) as responses
                 FROM applications
                 WHERE status IN ('responded', 'interview', 'offer')
-                AND DATE(application_date) >= DATE('now', '-7 days')
+                AND DATE(applied_date) >= DATE('now', '-7 days')
                 GROUP BY email_subject
                 ORDER BY responses DESC
                 LIMIT 1
@@ -394,11 +394,11 @@ AI race. I bring both technical excellence and insider knowledge of healthcare's
         
         cursor.execute("""
             SELECT 
-                a.id, c.name, a.position, a.application_date, a.follow_up_count
+                a.id, c.full_name, a.title, a.applied_date, a.follow_up_count
             FROM applications a
             JOIN companies c ON a.company_id = c.id
             WHERE a.status = 'sent'
-            AND a.application_date <= ?
+            AND a.applied_date <= ?
             AND (a.last_follow_up IS NULL OR a.last_follow_up <= ?)
             AND a.follow_up_count < 3
             ORDER BY c.ai_maturity_score DESC, a.application_date ASC

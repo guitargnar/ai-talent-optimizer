@@ -40,13 +40,13 @@ class DataMigrator:
         
         # Find all database files
         db_files = [
-            'UNIFIED_AI_JOBS.db',
-            'job_applications.db',
-            'principal_jobs_400k.db',
-            'REAL_JOBS.db',
-            'APPLICATION_TRACKING.db',
-            'COMPANY_RESEARCH.db',
-            'QUALITY_APPLICATIONS.db'
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db",
+            "unified_platform.db"
         ]
         
         for db_file in db_files:
@@ -88,8 +88,8 @@ class DataMigrator:
             self.stats['errors'] += 1
     
     def migrate_job_discoveries(self, cursor):
-        """Migrate from job_discoveries table format."""
-        cursor.execute("SELECT * FROM job_discoveries")
+        """Migrate FROM jobs table format."""
+        cursor.execute("SELECT * FROM jobs")
         rows = cursor.fetchall()
         
         session = self.new_db.get_session()
@@ -114,7 +114,7 @@ class DataMigrator:
                     job = Job(
                         job_id=job_id,
                         company=row['company'],
-                        position=row['position'],
+                        title=row['position'],
                         location=row.get('location'),
                         remote_option=row.get('remote_option'),
                         salary_range=row.get('salary_range'),
@@ -125,7 +125,7 @@ class DataMigrator:
                         relevance_score=float(row.get('relevance_score', 0)),
                         applied=bool(row.get('applied', 0)),
                         applied_date=self._parse_date(row.get('applied_date')),
-                        application_method=row.get('application_method'),
+                        method=row.get('application_method'),
                         company_email=row.get('actual_email_used') or row.get('verified_email'),
                         email_verified=bool(row.get('email_verified', 0)),
                         bounce_detected=bool(row.get('bounce_detected', 0)),
@@ -181,7 +181,7 @@ class DataMigrator:
                 job = Job(
                     job_id=job_id,
                     company=row.get('company'),
-                    position=row.get('title') or row.get('position'),
+                    title=row.get('title') or row.get('position'),
                     location=row.get('location'),
                     url=row.get('url'),
                     description=row.get('description'),
@@ -220,7 +220,7 @@ class DataMigrator:
                 job_id=job.id,
                 sent_date=self._parse_date(row.get('applied_date')) or datetime.now(),
                 resume_version=row.get('resume_version', 'unknown'),
-                email_sent=bool(row.get('applied')),
+                status=bool(row.get('applied')),
                 follow_up_count=int(row.get('follow_up_sent', 0)),
                 last_follow_up=self._parse_date(row.get('follow_up_date'))
             )
@@ -271,7 +271,7 @@ def main():
     Path('data').mkdir(exist_ok=True)
     
     # Backup existing unified database if it exists
-    unified_db = Path('data/unified_jobs.db')
+    unified_db = Path("unified_platform.db")
     if unified_db.exists():
         backup_path = f"data/unified_jobs_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
         import shutil

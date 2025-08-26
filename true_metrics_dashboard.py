@@ -21,7 +21,7 @@ class TrueMetricsDashboard:
     """Display only verified, accurate metrics - no false positives"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         
         # Use only accurate checkers
         self.response_checker = AccurateResponseChecker()
@@ -41,45 +41,46 @@ class TrueMetricsDashboard:
         cursor = conn.cursor()
         
         # Get basic counts
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         total_jobs = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM applications")
         total_applied = cursor.fetchone()[0]
         
         # Get verified email metrics
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE applied = 1 AND email_verified = 1
+            SELECT COUNT(*) FROM applications
+            WHERE email_to IS NOT NULL AND email_to != ''
         """)
         verified_emails = cursor.fetchone()[0]
         
         # Get bounce metrics
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE applied = 1 AND bounce_detected = 1
+            SELECT COUNT(*) FROM applications
+            WHERE status LIKE '%bounce%'
         """)
         bounced = cursor.fetchone()[0]
         
         # Get today's applications
         today = datetime.now().date().isoformat()
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE DATE(COALESCE(application_date, applied_date)) = ?
+            SELECT COUNT(*) FROM applications
+            WHERE DATE(applied_date) = ?
         """, (today,))
         today_applied = cursor.fetchone()[0]
         
         # Get high-value pending
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE applied = 0 AND relevance_score >= 0.65
+            SELECT COUNT(*) FROM jobs j
+            LEFT JOIN applications a ON j.id = a.job_id
+            WHERE a.id IS NULL AND j.priority_score >= 0.65
         """)
         high_value_pending = cursor.fetchone()[0]
         
         # Get follow-up metrics
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE applied = 1 AND follow_up_sent > 0
+            SELECT COUNT(*) FROM applications
+            WHERE followup_date_1 IS NOT NULL
         """)
         followups_sent = cursor.fetchone()[0]
         
@@ -183,11 +184,10 @@ class TrueMetricsDashboard:
         
         three_days_ago = (datetime.now() - timedelta(days=3)).isoformat()
         cursor.execute("""
-            SELECT COUNT(*) FROM job_discoveries 
-            WHERE applied = 1 
-            AND response_received = 0 
-            AND follow_up_sent = 0
-            AND COALESCE(application_date, applied_date) <= ?
+            SELECT COUNT(*) FROM applications
+            WHERE response_received = 0 
+            AND followup_date_1 IS NULL
+            AND applied_date <= ?
         """, (three_days_ago,))
         
         followup_needed = cursor.fetchone()[0]

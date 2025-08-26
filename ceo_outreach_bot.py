@@ -24,7 +24,7 @@ from email.mime.multipart import MIMEMultipart
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(full_name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class CEOOutreachBot:
     
     def __init__(self):
         """Initialize the CEO Outreach Bot"""
-        self.db_path = "ceo_outreach.db"
+        self.db_path = "unified_platform.db"
         self.contacts_csv = Path("CONTACT_DATABASE.csv")
         self.tracker_csv = Path("MASTER_TRACKER_400K.csv")
         
@@ -70,7 +70,7 @@ class CEOOutreachBot:
         cursor = conn.cursor()
         
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS ceo_contacts (
+        CREATE TABLE IF NOT EXISTS contacts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company TEXT NOT NULL,
             name TEXT,
@@ -158,16 +158,16 @@ class CEOOutreachBot:
                 # Usually format is "Name - Title - Company | LinkedIn"
                 if ' - ' in full_text:
                     parts = full_text.split(' - ')
-                    name = parts[0].strip()
+                    full_name = parts[0].strip()
                     title = parts[1].strip() if len(parts) > 1 else 'CEO'
                 else:
-                    name = full_text.split('|')[0].strip()
+                    full_name = full_text.split('|')[0].strip()
                     title = 'CEO'
                 
                 driver.quit()
                 
                 return {
-                    'name': name,
+                    'name': full_name,
                     'title': title,
                     'linkedin': linkedin_url,
                     'email': None  # Will try to find separately
@@ -200,7 +200,7 @@ class CEOOutreachBot:
             # Try to extract CEO name from search results
             results = driver.find_elements(By.CSS_SELECTOR, 'div.g')
             
-            ceo_name = None
+            full_name = None
             for result in results[:5]:
                 text = result.text.lower()
                 if 'ceo' in text or 'founder' in text or 'chief executive' in text:
@@ -214,9 +214,9 @@ class CEOOutreachBot:
                                 if word.lower() in ['ceo', 'founder', 'cofounder']:
                                     # Name might be before or after
                                     if i > 0 and words[i-1][0].isupper():
-                                        ceo_name = ' '.join(words[max(0, i-2):i])
+                                        full_name = ' '.join(words[max(0, i-2):i])
                                     elif i < len(words) - 1 and words[i+1][0].isupper():
-                                        ceo_name = ' '.join(words[i+1:min(i+3, len(words))])
+                                        full_name = ' '.join(words[i+1:min(i+3, len(words))])
                             if ceo_name:
                                 break
                 if ceo_name:
@@ -226,7 +226,7 @@ class CEOOutreachBot:
             
             if ceo_name:
                 return {
-                    'name': ceo_name,
+                    'name': full_name,
                     'title': 'CEO',
                     'linkedin': None,
                     'email': None
@@ -245,7 +245,7 @@ class CEOOutreachBot:
         
         # Get uncontacted CEOs
         cursor.execute("""
-        SELECT * FROM ceo_contacts 
+        SELECT * FROM contacts 
         WHERE contacted = 0 AND (name IS NOT NULL OR email IS NOT NULL)
         ORDER BY 
             CASE stage
@@ -266,7 +266,7 @@ class CEOOutreachBot:
             success = self._send_ceo_email(contact)
             if success:
                 self._mark_as_contacted(contact[0])  # contact[0] is the ID
-                logger.info(f"  ✅ Outreach sent to {contact[2]} at {contact[1]}")  # name, company
+                logger.info(f"  ✅ Outreach sent to {contact[2]} at {contact[1]}")  # full_name, company
                 
                 # Update CSV tracker
                 self._update_csv_tracker(contact)
@@ -277,7 +277,7 @@ class CEOOutreachBot:
     def _send_ceo_email(self, contact_record) -> bool:
         """Send personalized email to CEO"""
         company = contact_record[1]
-        name = contact_record[2] or "Hiring Team"
+        full_name = contact_record[2] or "Hiring Team"
         title = contact_record[3] or "CEO"
         email = contact_record[4]
         funding = contact_record[7]
@@ -322,7 +322,7 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
         logger.debug(f"  Body length: {len(body)} chars")
         
         # Store outreach record
-        self._store_outreach_record(company, name, subject, body)
+        self._store_outreach_record(company, full_name, subject, body)
         
         # In production, would use SMTP to send
         # self._send_via_smtp(email, subject, body)
@@ -361,14 +361,14 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
         for contact in contacts:
             # Check if contact already exists
             cursor.execute("""
-            SELECT id FROM ceo_contacts 
-            WHERE company = ? AND (name = ? OR name IS NULL)
+            SELECT id FROM contacts 
+            WHERE company = ? AND (full_name = ? OR name IS NULL)
             """, (contact['company'], contact.get('name')))
             
             if not cursor.fetchone():
                 cursor.execute("""
-                INSERT INTO ceo_contacts (
-                    company, name, title, email, linkedin,
+                INSERT INTO contacts (
+                    company, full_name, title, email, linkedin,
                     funding, stage, focus
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
@@ -387,7 +387,7 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
         cursor = conn.cursor()
         
         cursor.execute("""
-        UPDATE ceo_contacts 
+        UPDATE contacts 
         SET contacted = 1, contacted_at = CURRENT_TIMESTAMP 
         WHERE id = ?
         """, (contact_id,))
@@ -399,7 +399,7 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
         """Update CSV tracker with outreach status"""
         if self.contacts_df is not None:
             company = contact_record[1]
-            name = contact_record[2]
+            full_name = contact_record[2]
             
             # Update or add row
             mask = self.contacts_df['Company'] == company
@@ -435,7 +435,7 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
         # Get contacts that need follow-up (contacted 3+ days ago, no response)
         three_days_ago = datetime.now() - timedelta(days=3)
         cursor.execute("""
-        SELECT * FROM ceo_contacts 
+        SELECT * FROM contacts 
         WHERE contacted = 1 
         AND response_received = 0 
         AND contacted_at < ?
@@ -453,7 +453,7 @@ P.S. I built a 58-model AI orchestration system that's unprecedented in the indu
     def _send_follow_up(self, contact_record):
         """Send follow-up message"""
         company = contact_record[1]
-        name = contact_record[2] or "there"
+        full_name = contact_record[2] or "there"
         
         subject = f"Re: Fractional CTO - Quick follow-up"
         
@@ -478,7 +478,7 @@ P.S. I can share specific examples of how I saved Humana $1.2M through automatio
 """
         
         logger.info(f"  📧 Follow-up prepared for {company}")
-        self._store_outreach_record(company, name, subject, body)
+        self._store_outreach_record(company, full_name, subject, body)
     
     def generate_pipeline_report(self) -> str:
         """Generate a report of CEO outreach pipeline"""
@@ -486,19 +486,19 @@ P.S. I can share specific examples of how I saved Humana $1.2M through automatio
         cursor = conn.cursor()
         
         # Get statistics
-        cursor.execute("SELECT COUNT(*) FROM ceo_contacts")
+        cursor.execute("SELECT COUNT(*) FROM contacts")
         total_contacts = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM ceo_contacts WHERE contacted = 1")
+        cursor.execute("SELECT COUNT(*) FROM contacts WHERE contacted = 1")
         contacted = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM ceo_contacts WHERE response_received = 1")
+        cursor.execute("SELECT COUNT(*) FROM contacts WHERE response_received = 1")
         responses = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM ceo_contacts WHERE meeting_scheduled = 1")
+        cursor.execute("SELECT COUNT(*) FROM contacts WHERE meeting_scheduled = 1")
         meetings = cursor.fetchone()[0]
         
-        cursor.execute("SELECT company, name, stage, funding FROM ceo_contacts WHERE contacted = 0 LIMIT 5")
+        cursor.execute("SELECT company, full_name, stage, funding FROM contacts WHERE contacted = 0 LIMIT 5")
         next_targets = cursor.fetchall()
         
         conn.close()

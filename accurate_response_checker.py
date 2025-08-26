@@ -23,7 +23,7 @@ class AccurateResponseChecker:
         # Load environment variables
         load_dotenv()
         
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.verified_responses_path = "data/verified_responses.json"
         self.false_positives_path = "data/false_positives.json"
         
@@ -89,9 +89,8 @@ class AccurateResponseChecker:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT DISTINCT LOWER(company) 
-            FROM job_discoveries 
-            WHERE applied = 1
+            SELECT DISTINCT LOWER(company_name) 
+            FROM applications
         """)
         
         companies = {row[0] for row in cursor.fetchall()}
@@ -370,7 +369,7 @@ class AccurateResponseChecker:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied = 1")
         total_applied = cursor.fetchone()[0]
         
         conn.close()

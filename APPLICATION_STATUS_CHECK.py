@@ -79,7 +79,7 @@ def check_application_status():
         # Recent applications
         cursor.execute("""
             SELECT COUNT(*) FROM applications 
-            WHERE date(created_at) >= date('now', '-7 days')
+            WHERE date(discovered_date) >= date('now', '-7 days')
         """)
         recent_apps = cursor.fetchone()[0]
         
@@ -89,7 +89,7 @@ def check_application_status():
         
         # Check if applications are using the correct resume
         cursor.execute("""
-            SELECT resume_path, COUNT(*) 
+            SELECT resume_version, COUNT(*) 
             FROM applications 
             WHERE resume_path IS NOT NULL 
             GROUP BY resume_path
@@ -100,9 +100,9 @@ def check_application_status():
         resume_usage = cursor.fetchall()
         if resume_usage:
             print("\n📋 Resume Usage in Applications:")
-            for resume_path, count in resume_usage:
-                resume_name = Path(resume_path).name if resume_path else "Unknown"
-                if "2025" in str(resume_path):
+            for resume_version, count in resume_usage:
+                resume_name = Path(resume_version).name if resume_path else "Unknown"
+                if "2025" in str(resume_version):
                     print(f"   ⭐ {resume_name}: {count} applications")
                 else:
                     print(f"   ⚠️ {resume_name}: {count} applications (outdated)")

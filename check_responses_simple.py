@@ -46,9 +46,9 @@ def main():
                 json.dump(response_data, f, indent=2)
                 
             # Calculate response rate
-            conn = sqlite3.connect('unified_talent_optimizer.db')
+            conn = sqlite3.connect("unified_platform.db")
             cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) FROM job_discoveries WHERE applied=1")
+            cursor.execute("SELECT COUNT(*) FROM jobs WHERE applied=1")
             total_applied = cursor.fetchone()[0]
             conn.close()
             

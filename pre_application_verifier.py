@@ -52,7 +52,7 @@ class PreApplicationVerifier:
             try:
                 mtime = datetime.fromtimestamp(f.stat().st_mtime).date()
                 if mtime == today:
-                    modified.append(f.name)
+                    modified.append(f.full_name)
             except:
                 pass
         self.verified['modified_today'] = len(modified)
@@ -121,7 +121,7 @@ class PreApplicationVerifier:
     
     def update_profile_database(self):
         """Update profile database with current verified metrics"""
-        conn = sqlite3.connect('unified_talent_optimizer.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Update metrics with verified values
@@ -138,7 +138,7 @@ class PreApplicationVerifier:
         
         for metric_name, value, context in updates:
             cursor.execute("""
-                UPDATE platform_metrics 
+                UPDATE metrics 
                 SET metric_value = ?, context = ?, last_updated = CURRENT_TIMESTAMP
                 WHERE metric_name = ?
             """, (value, context, metric_name))

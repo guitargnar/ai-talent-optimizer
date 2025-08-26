@@ -16,7 +16,7 @@ YELLOW = '\033[93m'
 RED = '\033[91m'
 RESET = '\033[0m'
 
-def test_result(name, passed, details=""):
+def test_result(full_name, passed, details=""):
     """Print test result with color coding"""
     if passed:
         print(f"{GREEN}✅ PASS{RESET}: {name}")

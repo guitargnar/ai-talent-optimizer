@@ -9,7 +9,7 @@ def generate_report():
     """Generate comprehensive status report"""
     
     # Connect to database
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     conn.row_factory = sqlite3.Row
     
     print("📊 AI Job Hunter Status Report")
@@ -19,13 +19,13 @@ def generate_report():
     
     # Overall stats
     cursor = conn.cursor()
-    cursor.execute("SELECT COUNT(*) as total FROM job_discoveries")
+    cursor.execute("SELECT COUNT(*) as total FROM jobs")
     total = cursor.fetchone()['total']
     
-    cursor.execute("SELECT COUNT(*) as applied FROM job_discoveries WHERE applied = 1")
+    cursor.execute("SELECT COUNT(*) as applied FROM jobs WHERE applied = 1")
     applied = cursor.fetchone()['applied']
     
-    cursor.execute("SELECT COUNT(*) as pending FROM job_discoveries WHERE applied = 0")
+    cursor.execute("SELECT COUNT(*) as pending FROM jobs WHERE applied = 0")
     pending = cursor.fetchone()['pending']
     
     print("📈 Overall Statistics:")
@@ -38,8 +38,8 @@ def generate_report():
     # Applied jobs
     print("✅ Recent Applications:")
     cursor.execute("""
-        SELECT company, position, applied_date, salary_range 
-        FROM job_discoveries 
+        SELECT company, title, applied_date, salary_range 
+        FROM jobs 
         WHERE applied = 1 
         ORDER BY applied_date DESC 
         LIMIT 10
@@ -53,8 +53,8 @@ def generate_report():
     # High-value pending
     print("🎯 High-Value Pending Applications:")
     cursor.execute("""
-        SELECT company, position, relevance_score, salary_range 
-        FROM job_discoveries 
+        SELECT company, title, relevance_score, salary_range 
+        FROM jobs 
         WHERE applied = 0 AND relevance_score >= 0.65
         ORDER BY relevance_score DESC, salary_range DESC
         LIMIT 10

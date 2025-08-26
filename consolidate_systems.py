@@ -20,7 +20,7 @@ class SystemConsolidator:
     """Consolidates multiple job search systems into unified architecture"""
     
     def __init__(self):
-        self.unified_db_path = "UNIFIED_AI_JOBS.db"
+        self.unified_db_path = "unified_platform.db"
         self.consolidated_data = {
             'applications': [],
             'jobs': [],
@@ -152,7 +152,7 @@ class SystemConsolidator:
         }
         
         for resume_path in resume_paths:
-            filename = os.path.basename(resume_path)
+            filename = os.path.basename(resume_version)
             
             # Extract company and role from filename patterns
             if '_' in filename:
@@ -161,15 +161,15 @@ class SystemConsolidator:
                 # Common patterns: Matthew_Scott_Company_Role_Year
                 if len(parts) >= 3:
                     company = parts[2]
-                    role = '_'.join(parts[3:-1]) if len(parts) > 4 else parts[3] if len(parts) > 3 else 'Unknown'
+                    position = '_'.join(parts[3:-1]) if len(parts) > 4 else parts[3] if len(parts) > 3 else 'Unknown'
                     
                     resume_analysis['companies_targeted'].add(company)
-                    resume_analysis['roles_targeted'].add(role)
+                    resume_analysis['roles_targeted'].add(position)
             
             resume_analysis['versions'].append({
-                'path': resume_path,
+                'path': resume_version,
                 'filename': filename,
-                'created': datetime.fromtimestamp(os.path.getmtime(resume_path)).isoformat()
+                'created': datetime.fromtimestamp(os.path.getmtime(resume_version)).isoformat()
             })
         
         return resume_analysis
@@ -229,19 +229,19 @@ class SystemConsolidator:
         for app in self.consolidated_data['applications']:
             # Extract key fields
             company = app.get('data', {}).get('company', app.get('company', 'Unknown'))
-            position = app.get('data', {}).get('position', app.get('position', 'Unknown'))
+            title = app.get('data', {}).get('position', app.get('position', 'Unknown'))
             date = app.get('data', {}).get('sent_date', app.get('applied_date', ''))
             
             cursor.execute('''
             INSERT INTO applications_import 
-            (source_system, source_file, original_data, company, position, applied_date)
+            (source_system, source_file, original_data, company, title, applied_date)
             VALUES (?, ?, ?, ?, ?, ?)
             ''', (
                 app.get('source', 'unknown'),
                 app.get('file', app.get('_source_db', '')),
                 json.dumps(app),
                 company,
-                position,
+                title,
                 date
             ))
         

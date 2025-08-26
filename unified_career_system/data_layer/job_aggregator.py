@@ -30,14 +30,14 @@ class JobAggregator:
     """
     
     def __init__(self):
-        self.master_db = MasterDatabase("unified_career_system/data_layer/unified_career.db")
+        self.master_db = MasterDatabase("unified_platform.db")
         self.dedup_cache = set()
         self._load_existing_jobs()
         
     def _load_existing_jobs(self):
         """Load existing job UIDs for deduplication"""
         cursor = self.master_db.conn.cursor()
-        cursor.execute("SELECT job_uid FROM master_jobs")
+        cursor.execute("SELECT job_uid FROM jobs")
         self.dedup_cache = {row[0] for row in cursor.fetchall()}
         print(f"📊 Loaded {len(self.dedup_cache)} existing jobs for deduplication")
         
@@ -50,22 +50,22 @@ class JobAggregator:
         """
         # Normalize company and position
         company_norm = self._normalize_text(company)
-        position_norm = self._normalize_text(position)
+        position_norm = self._normalize_text(title)
         
         # Check exact match
         cursor = self.master_db.conn.cursor()
         cursor.execute("""
-        SELECT COUNT(*) FROM master_jobs
+        SELECT COUNT(*) FROM jobs
         WHERE LOWER(company) = LOWER(?)
-        AND LOWER(position) = LOWER(?)
-        """, (company, position))
+        AND LOWER(title) = LOWER(?)
+        """, (company, title))
         
         if cursor.fetchone()[0] > 0:
             return True
         
         # Check fuzzy match (similar positions at same company)
         cursor.execute("""
-        SELECT position FROM master_jobs
+        SELECT position FROM jobs
         WHERE LOWER(company) = LOWER(?)
         """, (company,))
         
@@ -141,8 +141,8 @@ class JobAggregator:
                             )
                             
                             self.master_db.conn.execute("""
-                            INSERT INTO master_jobs (
-                                job_uid, company, position, location,
+                            INSERT INTO jobs (
+                                job_uid, company, title, location,
                                 url, description, source, source_job_id
                             ) VALUES (?, ?, ?, ?, ?, ?, 'greenhouse', ?)
                             """, (
@@ -232,9 +232,9 @@ class JobAggregator:
         
         cursor.execute("""
         SELECT 
-            job_uid, company, position, location,
+            job_uid, company, title, location,
             salary_min, salary_max, ml_score, url
-        FROM master_jobs
+        FROM jobs
         WHERE applied = 0
         AND is_active = 1
         ORDER BY 
@@ -264,7 +264,7 @@ class JobAggregator:
         
         cursor = self.master_db.conn.cursor()
         cursor.execute("""
-        UPDATE master_jobs
+        UPDATE jobs
         SET is_active = 0
         WHERE discovered_date < ?
         AND applied = 0

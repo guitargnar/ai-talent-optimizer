@@ -91,7 +91,7 @@ class InterviewScheduler:
     - Send reminders
     """
     
-    def __init__(self, db_path: str = "unified_career_system/data_layer/unified_career.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         """Initialize the interview scheduler"""
         self.db_path = db_path
         self.master_db = MasterDatabase(db_path)
@@ -198,9 +198,9 @@ class InterviewScheduler:
         SELECT 
             a.application_uid,
             j.company,
-            j.position,
+            j.title,
             a.interview_dates
-        FROM master_applications a
+        FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE a.interview_scheduled = 1
         AND a.interview_dates IS NOT NULL
@@ -261,7 +261,7 @@ class InterviewScheduler:
             
         return InterviewRequest(
             company=company or details.get('company', 'Unknown'),
-            position=details.get('position', 'Unknown Position'),
+            title=details.get('position', 'Unknown Position'),
             interview_type=interview_type,
             duration_minutes=details.get('duration', 60),
             suggested_dates=details.get('dates', []),
@@ -451,7 +451,7 @@ class InterviewScheduler:
         scheduled = ScheduledInterview(
             interview_id=interview_id,
             company=request.company,
-            position=request.position,
+            title=request.title,
             interview_type=request.interview_type,
             scheduled_time=datetime.combine(selected_slot.date, selected_slot.start_time),
             duration_minutes=request.duration_minutes,
@@ -469,7 +469,7 @@ class InterviewScheduler:
         # Add to cache
         self.scheduled_interviews[interview_id] = {
             'company': request.company,
-            'position': request.position,
+            'position': request.title,
             'date': scheduled.scheduled_time,
             'type': request.interview_type.value
         }
@@ -513,13 +513,13 @@ class InterviewScheduler:
         # Find related application
         cursor.execute("""
         SELECT a.application_uid
-        FROM master_applications a
+        FROM applications a
         JOIN master_jobs j ON a.job_uid = j.job_uid
         WHERE j.company = ?
-        AND j.position = ?
+        AND j.title = ?
         ORDER BY a.applied_date DESC
         LIMIT 1
-        """, (interview.company, interview.position))
+        """, (interview.company, interview.title))
         
         result = cursor.fetchone()
         
@@ -528,7 +528,7 @@ class InterviewScheduler:
             
             # Update application with interview details
             cursor.execute("""
-            UPDATE master_applications
+            UPDATE applications
             SET interview_scheduled = 1,
                 interview_dates = ?,
                 interview_rounds = interview_rounds + 1,

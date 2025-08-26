@@ -9,7 +9,7 @@ from datetime import datetime
 
 def fix_bounce_data():
     """Reset bounce data to accurate state"""
-    conn = sqlite3.connect("UNIFIED_AI_JOBS.db")
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     print("🔧 FIXING BOUNCE DATA")
@@ -20,7 +20,7 @@ def fix_bounce_data():
         SELECT COUNT(*) as total,
                SUM(CASE WHEN applied = 1 THEN 1 ELSE 0 END) as applied,
                SUM(CASE WHEN bounce_detected = 1 THEN 1 ELSE 0 END) as bounced
-        FROM job_discoveries
+        FROM jobs
     """)
     total, applied, bounced = cursor.fetchone()
     print(f"\n📊 BEFORE FIX:")
@@ -31,7 +31,7 @@ def fix_bounce_data():
     
     # Reset all bounce flags where we haven't actually applied
     cursor.execute("""
-        UPDATE job_discoveries
+        UPDATE jobs
         SET bounce_detected = 0,
             bounce_reason = NULL
         WHERE applied = 0
@@ -41,7 +41,7 @@ def fix_bounce_data():
     
     # Reset bounces where no email was actually used
     cursor.execute("""
-        UPDATE job_discoveries
+        UPDATE jobs
         SET bounce_detected = 0,
             bounce_reason = NULL
         WHERE actual_email_used IS NULL OR actual_email_used = ''
@@ -52,7 +52,7 @@ def fix_bounce_data():
     # Get list of actually bounced emails (only from applied jobs)
     cursor.execute("""
         SELECT company, actual_email_used, bounce_reason
-        FROM job_discoveries
+        FROM jobs
         WHERE applied = 1 
         AND bounce_detected = 1
         AND actual_email_used IS NOT NULL
@@ -74,7 +74,7 @@ def fix_bounce_data():
         SELECT COUNT(*) as total,
                SUM(CASE WHEN applied = 1 THEN 1 ELSE 0 END) as applied,
                SUM(CASE WHEN bounce_detected = 1 THEN 1 ELSE 0 END) as bounced
-        FROM job_discoveries
+        FROM jobs
     """)
     total, applied, bounced = cursor.fetchone()
     
@@ -87,7 +87,7 @@ def fix_bounce_data():
     # Get jobs ready to apply to (high score, not applied, not bounced)
     cursor.execute("""
         SELECT COUNT(*) 
-        FROM job_discoveries
+        FROM jobs
         WHERE applied = 0
         AND relevance_score >= 0.65
         AND (bounce_detected = 0 OR bounce_detected IS NULL)

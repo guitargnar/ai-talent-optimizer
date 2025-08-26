@@ -16,7 +16,7 @@ import time
 class RealJobScraper:
     def __init__(self):
         """Initialize the job scraper with real sources"""
-        self.db_path = "REAL_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
@@ -98,7 +98,7 @@ class RealJobScraper:
                     title = job.get('title', '').lower()
                     if any(keyword in title for keyword in ['engineer', 'developer', 'architect', 'technical']):
                         job_data = {
-                            'company': company_name,
+                            'company': company,
                             'position': job.get('title'),
                             'location': job.get('location', {}).get('name', 'Remote'),
                             'remote': 'remote' in job.get('location', {}).get('name', '').lower(),
@@ -141,7 +141,7 @@ class RealJobScraper:
                     title = job.get('text', '').lower()
                     if any(keyword in title for keyword in ['engineer', 'developer', 'architect', 'technical']):
                         job_data = {
-                            'company': company_name,
+                            'company': company,
                             'position': job.get('text'),
                             'location': job.get('location', 'Remote'),
                             'remote': 'remote' in job.get('workplaceType', '').lower(),
@@ -217,7 +217,7 @@ class RealJobScraper:
                 
                 cursor.execute("""
                     INSERT OR IGNORE INTO jobs (
-                        company, position, location, remote, salary_min, salary_max,
+                        company, title, location, remote_type, salary_min, salary_max,
                         url, email, description, requirements, posted_date, source
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
@@ -285,7 +285,7 @@ class RealJobScraper:
         cursor.execute("SELECT COUNT(*) FROM jobs")
         total_jobs = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM jobs WHERE remote = 1")
+        cursor.execute("SELECT COUNT(*) FROM jobs WHERE remote_type = 1")
         remote_jobs = cursor.fetchone()[0]
         
         cursor.execute("SELECT COUNT(*) FROM jobs WHERE salary_min >= 150000")
@@ -317,7 +317,7 @@ class RealJobScraper:
         
         # Show some specific high-value targets
         cursor.execute("""
-            SELECT company, position, salary_min, salary_max, url
+            SELECT company, title, salary_min, salary_max, url
             FROM jobs
             WHERE applied = 0
             AND (
@@ -334,7 +334,7 @@ class RealJobScraper:
         if high_value_jobs:
             print("\n🎯 HIGH-VALUE TARGETS (Not Applied):")
             for job in high_value_jobs:
-                company, position, sal_min, sal_max, url = job
+                company, title, sal_min, sal_max, url = job
                 salary = f"${sal_min/1000:.0f}K-${sal_max/1000:.0f}K" if sal_min else "Not listed"
                 print(f"  • {company}: {position}")
                 print(f"    Salary: {salary}")

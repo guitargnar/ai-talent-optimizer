@@ -112,7 +112,7 @@ class StrategicCareerOrchestrator:
     """Main orchestrator with human-in-the-loop workflow"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.quality_system = QualityFirstApplicationSystem()
         self.dynamic_system = DynamicJobApplicationSystem()
         self.company_researcher = CompanyResearcher()
@@ -140,7 +140,7 @@ class StrategicCareerOrchestrator:
         
         # Create staged_applications table if not exists
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS staged_applications (
+            CREATE TABLE IF NOT EXISTS applications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 job_id INTEGER,
                 company TEXT NOT NULL,
@@ -162,7 +162,7 @@ class StrategicCareerOrchestrator:
         # Add status column to job_discoveries if not exists
         cursor.execute("""
             SELECT COUNT(*) FROM pragma_table_info('job_discoveries') 
-            WHERE name='application_status'
+            WHERE full_name='application_status'
         """)
         
         if cursor.fetchone()[0] == 0:
@@ -244,7 +244,7 @@ class StrategicCareerOrchestrator:
             research
         )
         
-        resume_path = self.quality_system.select_resume(
+        resume_version = self.quality_system.select_resume(
             job['company_name'],
             job['job_title']
         )
@@ -263,9 +263,9 @@ class StrategicCareerOrchestrator:
         cursor = conn.cursor()
         
         cursor.execute("""
-            INSERT INTO staged_applications (
-                job_id, company, role, email_to, 
-                email_subject, email_body, resume_path,
+            INSERT INTO applications (
+                job_id, company, position, email_to, 
+                email_subject, email_body, resume_version,
                 status, created_date, personalization_score
             ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_review', ?, ?)
         """, (
@@ -275,7 +275,7 @@ class StrategicCareerOrchestrator:
             job['email'] if job['email'] else None,  # Store NULL for portal-only
             subject if job['email'] else f"Cover Letter for {job['job_title']}",
             body,
-            resume_path,
+            resume_version,
             datetime.now().isoformat(),
             personalization_score
         ))
@@ -295,10 +295,10 @@ class StrategicCareerOrchestrator:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT sa.id, sa.company, sa.role, sa.email_to, sa.email_subject, 
-                   sa.email_body, sa.resume_path, sa.personalization_score,
+            SELECT sa.id, sa.company, sa.position, sa.email_to, sa.email_subject, 
+                   sa.email_body, sa.resume_version, sa.personalization_score,
                    sa.job_id
-            FROM staged_applications sa
+            FROM applications sa
             WHERE sa.status = 'pending_review'
             ORDER BY sa.personalization_score DESC
         """)
@@ -318,7 +318,7 @@ class StrategicCareerOrchestrator:
         Returns:
             Tuple of (is_portal_only, portal_url)
         """
-        app_id, company, role, email_to, subject, body, resume, score, job_id = app
+        app_id, company, position, email_to, subject, body, resume, score, job_id = app
         is_portal_only = (email_to is None or email_to == 'None' or email_to == '')
         portal_url = None
         
@@ -392,7 +392,7 @@ class StrategicCareerOrchestrator:
                 return 'failed'
         
         elif decision == 'p' and is_portal_only:
-            success = self._proceed_with_web_application(app_id, company, role, portal_url)
+            success = self._proceed_with_web_application(app_id, company, position, portal_url)
             if success:
                 print("✅ Marked for web application!")
                 self.session_stats['sent'] += 1
@@ -435,7 +435,7 @@ class StrategicCareerOrchestrator:
         print("="*60)
         
         for i, app in enumerate(pending, 1):
-            app_id, company, role, email_to, subject, body, resume, score, job_id = app
+            app_id, company, position, email_to, subject, body, resume, score, job_id = app
             
             # Display application details
             is_portal_only, portal_url = self._display_application_details(app, i, len(pending))
@@ -445,7 +445,7 @@ class StrategicCareerOrchestrator:
                 decision = self._get_user_decision(is_portal_only)
                 action = self._process_user_decision(
                     decision, is_portal_only, app_id, app, 
-                    company, role, portal_url
+                    company, position, portal_url
                 )
                 
                 if action == 'quit':
@@ -461,7 +461,7 @@ class StrategicCareerOrchestrator:
     
     def _send_staged_application(self, app_id: int, app_data: Tuple) -> bool:
         """Send a staged application"""
-        _, company, role, email_to, subject, body, resume_path, _, job_id = app_data
+        _, company, position, email_to, subject, body, resume_version, _, job_id = app_data
         
         try:
             # Use the quality system to send
@@ -481,13 +481,13 @@ class StrategicCareerOrchestrator:
             msg.attach(MIMEText(body, 'plain'))
             
             # Attach resume
-            if Path(resume_path).exists():
-                with open(resume_path, 'rb') as f:
+            if Path(resume_version).exists():
+                with open(resume_version, 'rb') as f:
                     part = MIMEBase('application', 'octet-stream')
                     part.set_payload(f.read())
                     encoders.encode_base64(part)
                     part.add_header('Content-Disposition', 
-                                  f'attachment; filename="{Path(resume_path).name}"')
+                                  f'attachment; filename="{Path(resume_version).name}"')
                     msg.attach(part)
             
             # Send email
@@ -501,19 +501,19 @@ class StrategicCareerOrchestrator:
             cursor = conn.cursor()
             
             cursor.execute("""
-                UPDATE staged_applications 
+                UPDATE applications 
                 SET status = 'sent', sent_date = ?
                 WHERE id = ?
             """, (datetime.now().isoformat(), app_id))
             
-            # Also update job_discoveries
+            # Also UPDATE jobs
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 1, 
                     applied_date = ?,
                     application_status = 'sent'
-                WHERE company = ? AND position = ?
-            """, (datetime.now().isoformat(), company, role))
+                WHERE company = ? AND title = ?
+            """, (datetime.now().isoformat(), company, position))
             
             conn.commit()
             conn.close()
@@ -530,7 +530,7 @@ class StrategicCareerOrchestrator:
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE staged_applications 
+            UPDATE applications 
             SET status = 'deleted' 
             WHERE id = ?
         """, (app_id,))
@@ -555,11 +555,11 @@ class StrategicCareerOrchestrator:
         if company in portal_urls:
             return f"https://{portal_urls[company]}"
         
-        # Try to get URL from job_discoveries table if we have job_id
+        # Try to get URL FROM jobs table if we have job_id
         if job_id:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("SELECT url FROM job_discoveries WHERE id = ?", (job_id,))
+            cursor.execute("SELECT url FROM jobs WHERE id = ?", (job_id,))
             result = cursor.fetchone()
             conn.close()
             if result and result[0]:
@@ -603,22 +603,22 @@ class StrategicCareerOrchestrator:
             cursor = conn.cursor()
             
             cursor.execute("""
-                UPDATE staged_applications 
+                UPDATE applications 
                 SET status = 'applied_via_portal', 
                     sent_date = ?,
                     notes = ?
                 WHERE id = ?
             """, (datetime.now().isoformat(), f"Applied via portal: {portal_url}", app_id))
             
-            # Also update job_discoveries
+            # Also UPDATE jobs
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 1, 
                     applied_date = ?,
                     application_status = 'portal_application',
-                    application_method = 'web_portal'
-                WHERE company = ? AND position = ?
-            """, (datetime.now().isoformat(), company, role))
+                    method = 'web_portal'
+                WHERE company = ? AND title = ?
+            """, (datetime.now().isoformat(), company, position))
             
             conn.commit()
             conn.close()
@@ -656,7 +656,7 @@ class StrategicCareerOrchestrator:
                 COUNT(CASE WHEN status = 'pending_review' THEN 1 END) as pending,
                 COUNT(CASE WHEN status = 'sent' THEN 1 END) as sent,
                 COUNT(CASE WHEN status = 'deleted' THEN 1 END) as deleted
-            FROM staged_applications
+            FROM applications
         """)
         
         pending, sent, deleted = cursor.fetchone()

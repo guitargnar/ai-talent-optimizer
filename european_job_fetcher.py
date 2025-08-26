@@ -41,7 +41,7 @@ class EuropeanJobFetcher:
         })
         
         # Database setup
-        self.db_path = Path('data/european_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.db_path.parent.mkdir(exist_ok=True)
         self._init_database()
         
@@ -183,7 +183,7 @@ class EuropeanJobFetcher:
         cursor = conn.cursor()
         
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS european_jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id TEXT UNIQUE NOT NULL,
             company TEXT NOT NULL,
@@ -361,7 +361,7 @@ class EuropeanJobFetcher:
                 
                 cursor.execute("""
                 INSERT OR REPLACE INTO european_jobs (
-                    job_id, company, position, location, country,
+                    job_id, company, title, location, country,
                     remote_option, visa_sponsor, salary_range, posted_date,
                     url, description, requirements, benefits
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -398,9 +398,9 @@ class EuropeanJobFetcher:
         cutoff_date = (datetime.now() - timedelta(days=days)).isoformat()
         
         cursor.execute("""
-        SELECT job_id, company, position, location, country,
+        SELECT job_id, company, title, location, country,
                visa_sponsor, salary_range, url, description, requirements
-        FROM european_jobs
+        FROM jobs
         WHERE discovered_date >= ?
         AND resume_generated = 0
         ORDER BY discovered_date DESC
@@ -476,7 +476,7 @@ class EuropeanJobFetcher:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             cursor.execute("""
-            UPDATE european_jobs 
+            UPDATE jobs 
             SET in_master_tracker = 1 
             WHERE job_id = ?
             """, (job['job_id'],))
@@ -639,11 +639,11 @@ VISA STATUS: """ + adjustments['visa_note']
         logger.info(f"Created tailored resume: {output_path}")
         
         # Update database
-        conn = sqlite3.connect(Path('data/european_jobs.db'))
+        conn = sqlite3.connect(Path("unified_platform.db"))
         cursor = conn.cursor()
         cursor.execute("""
-        UPDATE european_jobs 
-        SET resume_generated = 1, resume_path = ?
+        UPDATE jobs 
+        SET resume_generated = 1, resume_version = ?
         WHERE job_id = ?
         """, (str(output_path), job['job_id']))
         conn.commit()
@@ -681,10 +681,10 @@ def main():
         logger.info(f"\n{i}. {job['position']} at {job['company']} ({job['location']})")
         
         # Create tailored resume
-        resume_path = tailor.create_tailored_resume(job)
+        resume_version = tailor.create_tailored_resume(job)
         
         # Update master tracker
-        fetcher.update_master_tracker(job, resume_path)
+        fetcher.update_master_tracker(job, resume_version)
         
         # Rate limiting
         time.sleep(1)
@@ -694,21 +694,21 @@ def main():
     logger.info("SUMMARY REPORT")
     logger.info("="*60)
     
-    conn = sqlite3.connect(Path('data/european_jobs.db'))
+    conn = sqlite3.connect(Path("unified_platform.db"))
     cursor = conn.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs")
+    cursor.execute("SELECT COUNT(*) FROM jobs")
     total_jobs = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs WHERE resume_generated = 1")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE resume_generated = 1")
     resumes_created = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs WHERE in_master_tracker = 1")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE in_master_tracker = 1")
     in_tracker = cursor.fetchone()[0]
     
     cursor.execute("""
     SELECT company, COUNT(*) as count 
-    FROM european_jobs 
+    FROM jobs 
     GROUP BY company 
     ORDER BY count DESC 
     LIMIT 5

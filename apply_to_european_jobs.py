@@ -18,7 +18,7 @@ def main():
     print("="*60)
     
     # Get jobs from database
-    db_path = Path('data/european_jobs.db')
+    db_path = Path("unified_platform.db")
     if not db_path.exists():
         print("❌ No European jobs database found. Run fetch_european_jobs_now.py first")
         return
@@ -27,8 +27,8 @@ def main():
     cursor = conn.cursor()
     
     cursor.execute("""
-    SELECT company, position, location, salary_range, url, resume_path
-    FROM european_jobs
+    SELECT company, title, location, salary_range, url, resume_path
+    FROM jobs
     WHERE resume_generated = 1
     ORDER BY 
         CASE 
@@ -49,12 +49,12 @@ def main():
     print("-" * 60)
     
     # Display jobs
-    for i, (company, position, location, salary, url, resume_path) in enumerate(jobs, 1):
+    for i, (company, title, location, salary, url, resume_version) in enumerate(jobs, 1):
         print(f"\n{i}. {company}")
         print(f"   📍 {location}")
         print(f"   💼 {position}")
         print(f"   💰 {salary}")
-        print(f"   📄 Resume: {Path(resume_path).name if resume_path else 'Not generated'}")
+        print(f"   📄 Resume: {Path(resume_version).name if resume_path else 'Not generated'}")
         print(f"   🔗 {url}")
     
     print("\n" + "="*60)
@@ -82,7 +82,7 @@ def main():
             break
         elif choice.lower() == 'all':
             print("\n🚀 Opening all career pages...")
-            for company, position, location, salary, url, resume_path in jobs:
+            for company, title, location, salary, url, resume_path in jobs:
                 if url and url != 'https://example.com':
                     print(f"   Opening {company}...")
                     webbrowser.open(url)
@@ -91,7 +91,7 @@ def main():
             try:
                 idx = int(choice) - 1
                 if 0 <= idx < len(jobs):
-                    company, position, location, salary, url, resume_path = jobs[idx]
+                    company, title, location, salary, url, resume_version = jobs[idx]
                     
                     print(f"\n🎯 Opening {company} careers page...")
                     print(f"📄 Your resume is at: {resume_path}")
@@ -102,10 +102,10 @@ def main():
                         print(f"⚠️  No URL available, search for: {company} careers {position}")
                     
                     # Show resume snippet
-                    if resume_path and Path(resume_path).exists():
+                    if resume_path and Path(resume_version).exists():
                         print("\n📋 RESUME PREVIEW (first 20 lines):")
                         print("-" * 40)
-                        with open(resume_path, 'r') as f:
+                        with open(resume_version, 'r') as f:
                             lines = f.readlines()[:20]
                             for line in lines:
                                 print(line.rstrip())

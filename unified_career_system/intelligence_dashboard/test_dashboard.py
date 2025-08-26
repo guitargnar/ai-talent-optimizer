@@ -15,7 +15,7 @@ def test_database():
     """Test database connectivity and show basic stats"""
     
     # Connect to database
-    db_path = Path(__file__).parent.parent / 'data_layer' / 'unified_career.db'
+    db_path = Path(__file__).parent.parent / 'data_layer' / "unified_platform.db"
     
     if not db_path.exists():
         print(f"❌ Database not found at: {db_path}")
@@ -39,12 +39,12 @@ def test_database():
     
     # Count jobs
     try:
-        cursor.execute("SELECT COUNT(*) FROM master_jobs")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         job_count = cursor.fetchone()[0]
         print(f"\n📋 Jobs in database: {job_count}")
         
         # Show sample jobs
-        cursor.execute("SELECT company, position FROM master_jobs LIMIT 5")
+        cursor.execute("SELECT company, position FROM jobs LIMIT 5")
         jobs = cursor.fetchall()
         if jobs:
             print("\nSample jobs:")
@@ -55,7 +55,7 @@ def test_database():
     
     # Count applications
     try:
-        cursor.execute("SELECT COUNT(*) FROM master_applications")
+        cursor.execute("SELECT COUNT(*) FROM applications")
         app_count = cursor.fetchone()[0]
         print(f"\n📮 Applications tracked: {app_count}")
     except Exception as e:
@@ -63,14 +63,14 @@ def test_database():
     
     # Count companies
     try:
-        cursor.execute("SELECT COUNT(DISTINCT company) FROM master_jobs")
+        cursor.execute("SELECT COUNT(DISTINCT company) FROM jobs")
         company_count = cursor.fetchone()[0]
         print(f"\n🏢 Companies: {company_count}")
         
         # Top companies
         cursor.execute("""
             SELECT company, COUNT(*) as cnt 
-            FROM master_jobs 
+            FROM jobs 
             GROUP BY company 
             ORDER BY cnt DESC 
             LIMIT 5

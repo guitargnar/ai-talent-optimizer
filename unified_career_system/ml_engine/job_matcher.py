@@ -32,7 +32,7 @@ class IntelligentJobMatcher:
     - User preferences and constraints
     """
     
-    def __init__(self, db_path: str = "unified_career_system/data_layer/unified_career.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         """Initialize the job matcher with all ML components"""
         self.db_path = db_path
         self.master_db = MasterDatabase(db_path)
@@ -75,9 +75,9 @@ class IntelligentJobMatcher:
     def _load_resume_text(self) -> str:
         """Load resume text for ATS scoring"""
         # Try to load from file
-        resume_path = Path("/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer/resumes/current_resume.txt")
+        resume_version = Path("/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer/resumes/current_resume.txt")
         if resume_path.exists():
-            with open(resume_path, 'r') as f:
+            with open(resume_version, 'r') as f:
                 return f.read()
         
         # Fallback resume text
@@ -101,13 +101,13 @@ class IntelligentJobMatcher:
         
         # Load response rates by company
         cursor.execute("""
-        SELECT c.company_name, 
+        SELECT c.company, 
                COUNT(a.id) as applications,
                SUM(CASE WHEN a.response_received = 1 THEN 1 ELSE 0 END) as responses,
                AVG(a.days_to_response) as avg_response_time
-        FROM company_intelligence c
-        LEFT JOIN master_applications a ON c.company_name = 
-            (SELECT company FROM master_jobs WHERE job_uid = a.job_uid)
+        FROM companies c
+        LEFT JOIN master_applications a ON c.company = 
+            (SELECT company FROM jobs WHERE job_uid = a.job_uid)
         GROUP BY c.company_name
         """)
         
@@ -138,10 +138,10 @@ class IntelligentJobMatcher:
         # Step 1: Get active jobs from database
         cursor = self.master_db.conn.cursor()
         cursor.execute("""
-        SELECT job_uid, company, position, location, remote_type,
+        SELECT job_uid, company, title, location, remote_type,
                salary_min, salary_max, description, requirements,
                url, source, discovered_date, department, level
-        FROM master_jobs
+        FROM jobs
         WHERE is_active = 1 AND applied = 0
         ORDER BY discovered_date DESC
         LIMIT 500
@@ -420,7 +420,7 @@ class IntelligentJobMatcher:
         
         # Update application status
         cursor.execute("""
-        UPDATE master_applications
+        UPDATE applications
         SET outcome = ?, last_updated = CURRENT_TIMESTAMP
         WHERE job_uid = ?
         """, (outcome, job_uid))
@@ -428,11 +428,11 @@ class IntelligentJobMatcher:
         # Update company intelligence if responded
         if outcome in ['responded', 'interview', 'offer']:
             cursor.execute("""
-            UPDATE company_intelligence
+            UPDATE companies
             SET total_responses = total_responses + 1,
                 last_updated = CURRENT_TIMESTAMP
-            WHERE company_name = (
-                SELECT company FROM master_jobs WHERE job_uid = ?
+            WHERE company = (
+                SELECT company FROM jobs WHERE job_uid = ?
             )
             """, (job_uid,))
             

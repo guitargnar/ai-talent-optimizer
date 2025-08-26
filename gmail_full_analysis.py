@@ -124,16 +124,16 @@ class GmailApplicationAnalyzer:
             bcc = ''
             
             for header in headers:
-                name = header['name'].lower()
+                full_name = header['name'].lower()
                 value = header['value']
                 
-                if name == 'subject':
+                if full_name == 'subject':
                     subject = value
-                elif name == 'to':
+                elif full_name == 'to':
                     to_email = value
-                elif name == 'date':
+                elif full_name == 'date':
                     date_sent = value
-                elif name == 'bcc':
+                elif full_name == 'bcc':
                     bcc = value
             
             # Check if it's a job application
@@ -212,14 +212,14 @@ class GmailApplicationAnalyzer:
             date_received = ''
             
             for header in headers:
-                name = header['name'].lower()
+                full_name = header['name'].lower()
                 value = header['value']
                 
-                if name == 'subject':
+                if full_name == 'subject':
                     subject = value
-                elif name == 'from':
+                elif full_name == 'from':
                     from_email = value
-                elif name == 'date':
+                elif full_name == 'date':
                     date_received = value
             
             # Get message body
@@ -506,7 +506,7 @@ def main():
 def update_database_with_results(results):
     """Update the job tracking database with Gmail findings"""
     try:
-        conn = sqlite3.connect('UNIFIED_AI_JOBS.db')
+        conn = sqlite3.connect("unified_platform.db")
         cursor = conn.cursor()
         
         # Update response status for companies that responded
@@ -516,7 +516,7 @@ def update_database_with_results(results):
             
             if response_type == 'INTERVIEW_INVITATION':
                 cursor.execute("""
-                    UPDATE job_discoveries 
+                    UPDATE jobs 
                     SET response_received = 1, 
                         interview_scheduled = 1,
                         notes = 'Interview invitation received via Gmail'
@@ -524,7 +524,7 @@ def update_database_with_results(results):
                 """, (f'%{company}%',))
             elif response_type in ['REJECTION', 'ACKNOWLEDGMENT']:
                 cursor.execute("""
-                    UPDATE job_discoveries 
+                    UPDATE jobs 
                     SET response_received = 1,
                         notes = ?
                     WHERE company LIKE ?

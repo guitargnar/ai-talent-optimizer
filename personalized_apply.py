@@ -20,7 +20,7 @@ class PersonalizedApplicationSystem:
     """Send memorable applications that stand out"""
     
     def __init__(self):
-        self.db_path = "UNIFIED_AI_JOBS.db"
+        self.db_path = "unified_platform.db"
         self.bcc_tracker = BCCEmailTracker()
         self.differentiation = DifferentiationEngine()
         self.letter_generator = UniqueCoverLetterGenerator()
@@ -44,7 +44,7 @@ class PersonalizedApplicationSystem:
         
         # Focus on high-value companies and roles
         query = """
-        SELECT * FROM job_discoveries 
+        SELECT * FROM jobs 
         WHERE applied = 0 
         AND relevance_score >= 0.5
         AND (
@@ -97,18 +97,18 @@ class PersonalizedApplicationSystem:
             print("  ✓ Using unique letter generator")
         
         # Select best resume
-        resume_path = self._select_personalized_resume(job)
+        resume_version = self._select_personalized_resume(job)
         
         return {
             'subject': subject,
             'body': body,
-            'resume': resume_path,
+            'resume': resume_version,
             'personalization_notes': memorable_content.get('memorable_elements', [])
         }
     
     def _select_personalized_resume(self, job):
         """Select the most appropriate resume version"""
-        position = job['position'].lower()
+        title = job['position'].lower()
         company = job['company'].lower()
         
         if 'health' in company or 'medical' in position or 'clinical' in position:
@@ -120,11 +120,11 @@ class PersonalizedApplicationSystem:
         else:
             resume_type = 'default'
         
-        resume_path = self.resume_versions.get(resume_type, self.resume_versions['default'])
+        resume_version = self.resume_versions.get(resume_type, self.resume_versions['default'])
         
         if resume_path.exists():
             print(f"  ✓ Selected {resume_type} resume variant")
-            return str(resume_path)
+            return str(resume_version)
         else:
             print(f"  ! {resume_type} resume not found, using default")
             return str(self.resume_versions['default'])
@@ -137,7 +137,7 @@ class PersonalizedApplicationSystem:
         # Determine email address
         careers_email = job.get('apply_url', '')
         if '@' not in careers_email:
-            company_name = job['company'].lower().replace(' ', '').replace("'", "")
+            company = job['company'].lower().replace(' ', '').replace("'", "")
             careers_email = f"careers@{company_name}.com"
         
         print(f"\n📧 Sending personalized application to {careers_email}")
@@ -171,7 +171,7 @@ class PersonalizedApplicationSystem:
         cursor = conn.cursor()
         
         cursor.execute("""
-            UPDATE job_discoveries 
+            UPDATE jobs 
             SET applied = 1, 
                 applied_date = ?
             WHERE id = ?

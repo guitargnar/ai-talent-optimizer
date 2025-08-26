@@ -5,13 +5,13 @@ import sqlite3
 from automated_apply import AutomatedApplicationSystem
 
 # Get one unapplied job
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 # Find a technical role to test
 cursor.execute("""
-    SELECT * FROM job_discoveries 
+    SELECT * FROM jobs 
     WHERE applied = 0 
     AND (position LIKE '%Engineer%' OR position LIKE '%Scientist%')
     LIMIT 1
@@ -27,13 +27,13 @@ if job:
     
     # Test resume selection
     print("\n1️⃣ Testing resume selection:")
-    resume_path = system._select_resume_for_job(dict(job))
+    resume_version = system._select_resume_for_job(dict(job))
     print(f"Selected: {resume_path}")
     
     # Test if file exists
     from pathlib import Path
-    if Path(resume_path).exists():
-        print(f"✅ Resume file exists: {Path(resume_path).stat().st_size:,} bytes")
+    if Path(resume_version).exists():
+        print(f"✅ Resume file exists: {Path(resume_version).stat().st_size:,} bytes")
     else:
         print("❌ Resume file not found!")
         exit(1)

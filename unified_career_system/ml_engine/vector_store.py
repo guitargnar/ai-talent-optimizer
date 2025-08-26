@@ -350,10 +350,10 @@ class UnifiedVectorStore:
         
         # Get all active jobs
         cursor.execute("""
-        SELECT job_uid, company, position, description, requirements,
+        SELECT job_uid, company, title, description, requirements,
                location, remote_type, department, level, nice_to_have,
                url, source
-        FROM master_jobs
+        FROM jobs
         WHERE is_active = 1
         """)
         

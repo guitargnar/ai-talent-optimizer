@@ -13,7 +13,7 @@ from typing import Dict, List
 class DashboardGenerator:
     """Generate live dashboard for Project Ascent campaign"""
     
-    def __init__(self, db_path: str = "campaign_tracking.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = db_path
         self.dashboard_path = "campaign_dashboard.md"
     
@@ -41,7 +41,7 @@ class DashboardGenerator:
         # Today's stats
         today = datetime.now().date().isoformat()
         cursor.execute("""
-            SELECT * FROM campaign_metrics WHERE date = ?
+            SELECT * FROM metrics WHERE date = ?
         """, (today,))
         today_data = cursor.fetchone()
         
@@ -64,7 +64,7 @@ class DashboardGenerator:
                 SUM(responses_received) as week_responses,
                 SUM(interviews_scheduled) as week_interviews,
                 SUM(applications_submitted) as week_applications
-            FROM campaign_metrics
+            FROM metrics
             WHERE date >= ?
         """, (week_start,))
         week_data = cursor.fetchone()
@@ -126,7 +126,7 @@ class DashboardGenerator:
         # Check today's outreach
         today = datetime.now().date().isoformat()
         cursor.execute("""
-            SELECT messages_sent FROM campaign_metrics WHERE date = ?
+            SELECT messages_sent FROM metrics WHERE date = ?
         """, (today,))
         today_sent = cursor.fetchone()
         

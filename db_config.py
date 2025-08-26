@@ -1,6 +1,6 @@
 # Database Configuration
-DATABASE_PATH = "/Users/matthewscott/AI-ML-Portfolio/ai-talent-optimizer/job_applications.db"
-DATABASE_NAME = "job_applications.db"
+DATABASE_PATH = "unified_platform.db"
+DATABASE_NAME = "unified_platform.db"
 
 def get_db_connection():
     import sqlite3

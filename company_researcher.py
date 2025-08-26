@@ -16,7 +16,7 @@ from typing import Optional, Dict, List
 class CompanyResearcher:
     def __init__(self):
         """Initialize researcher with target companies"""
-        self.research_db = "COMPANY_RESEARCH.db"
+        self.research_db = "unified_platform.db"
         self._init_database()
         
         # High-value target companies for someone with your background
@@ -65,7 +65,7 @@ class CompanyResearcher:
         cursor = conn.cursor()
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS company_research (
+            CREATE TABLE IF NOT EXISTS companies (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 company_name TEXT NOT NULL,
                 category TEXT,
@@ -89,7 +89,7 @@ class CompanyResearcher:
         """)
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS key_contacts (
+            CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 company_name TEXT NOT NULL,
                 contact_name TEXT,
@@ -99,14 +99,14 @@ class CompanyResearcher:
                 contact_verified BOOLEAN DEFAULT 0,
                 added_date TEXT DEFAULT CURRENT_TIMESTAMP,
                 notes TEXT,
-                FOREIGN KEY (company_name) REFERENCES company_research(company_name)
+                FOREIGN KEY (company) REFERENCES company_research(company)
             )
         """)
         
         conn.commit()
         conn.close()
     
-    def research_company_template(self, company_name):
+    def research_company_template(self, company):
         """Generate research template for a company"""
         
         template = f"""
@@ -181,7 +181,7 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         
         cursor.execute("""
             INSERT OR REPLACE INTO company_research (
-                company_name, category, website, careers_page, 
+                company, category, website, careers_page, 
                 application_portal, linkedin_company_url, glassdoor_url,
                 recent_news, key_people, tech_stack, company_size,
                 founded_year, funding_stage, total_funding,
@@ -218,8 +218,8 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         cursor = conn.cursor()
         
         cursor.execute("""
-            INSERT INTO key_contacts (
-                company_name, contact_name, contact_title,
+            INSERT INTO contacts (
+                company, contact_name, contact_title,
                 contact_email, contact_linkedin, contact_verified, notes
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
@@ -260,7 +260,7 @@ Format: Name | Title | LinkedIn URL | Email (if found)
         
         print("\n💡 Focus on companies where you can add specific value!")
     
-    def generate_custom_pitch(self, company_name, company_info):
+    def generate_custom_pitch(self, company, company_info):
         """Generate a customized pitch for a specific company"""
         
         pitch_template = f"""
@@ -282,7 +282,7 @@ Matthew Scott
 """
         return pitch_template
     
-    def show_contacts(self, company_name=None):
+    def show_contacts(self, company=None):
         """Show contacts in database"""
         conn = sqlite3.connect(self.research_db)
         cursor = conn.cursor()
@@ -290,13 +290,13 @@ Matthew Scott
         if company_name:
             cursor.execute("""
                 SELECT contact_name, contact_title, contact_email, contact_linkedin
-                FROM key_contacts
-                WHERE company_name = ?
-            """, (company_name,))
+                FROM contacts
+                WHERE company = ?
+            """, (company,))
         else:
             cursor.execute("""
-                SELECT company_name, contact_name, contact_title, contact_email
-                FROM key_contacts
+                SELECT company, contact_name, contact_title, contact_email
+                FROM contacts
                 ORDER BY company_name
             """)
         
@@ -307,14 +307,14 @@ Matthew Scott
             print("\n📧 KEY CONTACTS:")
             for contact in contacts:
                 if company_name:
-                    name, title, email, linkedin = contact
+                    full_name, title, email, linkedin = contact
                     print(f"  • {name} - {title}")
                     if email:
                         print(f"    Email: {email}")
                     if linkedin:
                         print(f"    LinkedIn: {linkedin}")
                 else:
-                    company, name, title, email = contact
+                    company, full_name, title, email = contact
                     print(f"  • {company}: {name} ({title})")
                     if email:
                         print(f"    Email: {email}")
@@ -449,9 +449,9 @@ Matthew Scott
                     cursor = conn.cursor()
                     cursor.execute("""
                         INSERT OR REPLACE INTO companies 
-                        (company_name, careers_email, last_researched)
+                        (company, careers_email, last_researched)
                         VALUES (?, ?, ?)
-                    """, (company_name, email, datetime.now().isoformat()))
+                    """, (company, email, datetime.now().isoformat()))
                     conn.commit()
                     conn.close()
                 except Exception as e:
@@ -488,7 +488,7 @@ Matthew Scott
         domain = email.split('@')[1].split('.')[0]
         company_clean = company_name.lower().replace(' ', '').replace('-', '')
         
-        # If domain contains part of company name, likely valid
+        # If domain contains part of company full_name, likely valid
         if company_clean in domain or domain in company_clean:
             return True
         

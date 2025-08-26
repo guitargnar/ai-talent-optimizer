@@ -9,13 +9,13 @@ from datetime import datetime
 
 def reset_verified_companies():
     """Reset companies with verified emails for re-application"""
-    conn = sqlite3.connect('unified_talent_optimizer.db')
+    conn = sqlite3.connect("unified_platform.db")
     cursor = conn.cursor()
     
     # Get companies with verified emails that were marked as applied
     cursor.execute("""
         SELECT company, verified_email, relevance_score 
-        FROM job_discoveries 
+        FROM jobs 
         WHERE verified_email IS NOT NULL 
         AND verified_email != ''
         AND applied = 1
@@ -46,7 +46,7 @@ def reset_verified_companies():
         if confirm.lower() == 'yes':
             # Reset the applied status for companies with verified emails
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 0,
                     application_invalid = 0,
                     bounce_detected = 0,

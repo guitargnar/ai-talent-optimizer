@@ -164,9 +164,9 @@ class GuidedApplicationWorkflow:
         print("-"*70)
         
         # Show resume info
-        resume_path = self.resume_service.get_resume_for_job(job)
-        if resume_path and Path(resume_path).exists():
-            print(f"\n📎 Attachment: {Path(resume_path).name}")
+        resume_version = self.resume_service.get_resume_for_job(job)
+        if resume_path and Path(resume_version).exists():
+            print(f"\n📎 Attachment: {Path(resume_version).name}")
         else:
             print(f"\n⚠️ Resume not found")
     
@@ -205,14 +205,14 @@ class GuidedApplicationWorkflow:
         print("\n📤 Sending application...")
         
         # Get resume path
-        resume_path = self.resume_service.get_resume_for_job(job)
+        resume_version = self.resume_service.get_resume_for_job(job)
         
         # Send via email service
         success = self.email_service.send_application(
             to_email=job.company_email,
             subject=content['subject'],
             body=content['body'],
-            resume_path=resume_path
+            resume_version=resume_version
         )
         
         if success:
@@ -223,7 +223,7 @@ class GuidedApplicationWorkflow:
                 if db_job:
                     db_job.applied = True
                     db_job.applied_date = datetime.now()
-                    db_job.application_method = 'email'
+                    db_job.method = 'email'
                     db_job.status = 'applied'
                     session.commit()
             finally:

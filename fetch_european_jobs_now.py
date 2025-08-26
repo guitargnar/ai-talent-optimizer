@@ -26,7 +26,7 @@ class QuickEuropeanJobFetcher:
     """Simplified European job fetcher with sample data"""
     
     def __init__(self):
-        self.db_path = Path('data/european_jobs.db')
+        self.db_path = Path("unified_platform.db")
         self.db_path.parent.mkdir(exist_ok=True)
         self.tracker_path = Path('MASTER_TRACKER_400K.csv')
         self._init_database()
@@ -161,7 +161,7 @@ class QuickEuropeanJobFetcher:
         cursor = conn.cursor()
         
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS european_jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id TEXT UNIQUE NOT NULL,
             company TEXT NOT NULL,
@@ -193,7 +193,7 @@ class QuickEuropeanJobFetcher:
             try:
                 cursor.execute("""
                 INSERT OR IGNORE INTO european_jobs (
-                    job_id, company, position, location, country,
+                    job_id, company, title, location, country,
                     visa_sponsor, salary_range, url, description, requirements
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
@@ -363,8 +363,8 @@ Salary Expectation: {job.get('salary_range', 'Competitive')}
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""
-        UPDATE european_jobs 
-        SET resume_generated = 1, resume_path = ?
+        UPDATE jobs 
+        SET resume_generated = 1, resume_version = ?
         WHERE job_id = ?
         """, (str(output_path), job['job_id']))
         conn.commit()
@@ -422,7 +422,7 @@ Salary Expectation: {job.get('salary_range', 'Competitive')}
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             cursor.execute("""
-            UPDATE european_jobs 
+            UPDATE jobs 
             SET in_master_tracker = 1 
             WHERE job_id = ?
             """, (job['job_id'],))
@@ -448,9 +448,9 @@ def main():
     cursor = conn.cursor()
     
     cursor.execute("""
-    SELECT job_id, company, position, location, country,
+    SELECT job_id, company, title, location, country,
            visa_sponsor, salary_range, url, description, requirements
-    FROM european_jobs
+    FROM jobs
     WHERE resume_generated = 0
     """)
     
@@ -497,13 +497,13 @@ def main():
     conn = sqlite3.connect(fetcher.db_path)
     cursor = conn.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs")
+    cursor.execute("SELECT COUNT(*) FROM jobs")
     total = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs WHERE resume_generated = 1")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE resume_generated = 1")
     resumes = cursor.fetchone()[0]
     
-    cursor.execute("SELECT COUNT(*) FROM european_jobs WHERE in_master_tracker = 1")
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE in_master_tracker = 1")
     tracked = cursor.fetchone()[0]
     
     conn.close()

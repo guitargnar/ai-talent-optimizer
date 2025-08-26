@@ -20,7 +20,7 @@ class Config:
     LOGS_DIR = BASE_DIR / "logs"
     
     # Database
-    DATABASE_PATH = BASE_DIR / "ai_talent_optimizer.db"
+    DATABASE_PATH = BASE_DIR / "unified_platform.db"
     
     # Gmail OAuth (link to existing)
     GMAIL_CREDS_DIR = Path.home() / ".gmail_job_tracker"
@@ -81,7 +81,7 @@ Senior AI/ML Engineer | Production Systems Architect
     
     # Logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    LOG_FORMAT = "%(asctime)s - %(full_name)s - %(levelname)s - %(message)s"
     
     @classmethod
     def load_env(cls):

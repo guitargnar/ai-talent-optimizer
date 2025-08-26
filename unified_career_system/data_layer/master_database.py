@@ -20,7 +20,7 @@ class MasterDatabase:
     - Jaspermatters Intelligence (ML-analyzed jobs)
     """
     
-    def __init__(self, db_path: str = "unified_career.db"):
+    def __init__(self, db_path: str = "unified_platform.db"):
         self.db_path = Path(db_path)
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
@@ -32,7 +32,7 @@ class MasterDatabase:
         
         # Master jobs table - combines all sources
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS master_jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_uid TEXT UNIQUE NOT NULL,  -- Universal unique ID
             
@@ -99,7 +99,7 @@ class MasterDatabase:
         
         # Master applications table - tracks all applications
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS master_applications (
+        CREATE TABLE IF NOT EXISTS applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             application_uid TEXT UNIQUE NOT NULL,
             job_uid TEXT NOT NULL,
@@ -152,7 +152,7 @@ class MasterDatabase:
         
         # Company intelligence table
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS company_intelligence (
+        CREATE TABLE IF NOT EXISTS companies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company_name TEXT UNIQUE NOT NULL,
             
@@ -205,7 +205,7 @@ class MasterDatabase:
         
         # Email tracking table
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS email_tracking (
+        CREATE TABLE IF NOT EXISTS emails (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email_uid TEXT UNIQUE NOT NULL,
             
@@ -300,7 +300,7 @@ class MasterDatabase:
         
         # Import from unified_jobs table
         cursor.execute("""
-        SELECT job_id, company, position, location, remote_option,
+        SELECT job_id, company, title, location, remote_option,
                salary_range, url, description, source, discovered_date,
                relevance_score, applied, applied_date, company_email
         FROM jobs
@@ -314,8 +314,8 @@ class MasterDatabase:
             
             try:
                 self.conn.execute("""
-                INSERT INTO master_jobs (
-                    job_uid, company, position, location, remote_type,
+                INSERT INTO jobs (
+                    job_uid, company, title, location, remote_type,
                     url, description, source, discovered_date,
                     ml_score, applied, applied_date, source_job_id
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -351,7 +351,7 @@ class MasterDatabase:
                 # Insert job if not exists
                 self.conn.execute("""
                 INSERT OR IGNORE INTO master_jobs (
-                    job_uid, company, position, location,
+                    job_uid, company, title, location,
                     url, applied, applied_date, source
                 ) VALUES (?, ?, ?, ?, ?, 1, ?, 'survive')
                 """, (
@@ -368,9 +368,9 @@ class MasterDatabase:
                 
                 try:
                     self.conn.execute("""
-                    INSERT INTO master_applications (
+                    INSERT INTO applications (
                         application_uid, job_uid, applied_date,
-                        application_method, source_system
+                        method, source_system
                     ) VALUES (?, ?, ?, ?, 'survive')
                     """, (
                         app_uid, job_uid, row.get('Date Applied', ''),
@@ -389,10 +389,10 @@ class MasterDatabase:
         cursor = source_conn.cursor()
         
         cursor.execute("""
-        SELECT job_id, company, position, location, remote_option,
+        SELECT job_id, company, title, location, remote_option,
                posted_date, hours_ago, url, description, salary_range,
                applied, applied_date
-        FROM linkedin_jobs
+        FROM jobs
         """)
         
         jobs = cursor.fetchall()
@@ -403,8 +403,8 @@ class MasterDatabase:
             
             try:
                 self.conn.execute("""
-                INSERT INTO master_jobs (
-                    job_uid, company, position, location, remote_type,
+                INSERT INTO jobs (
+                    job_uid, company, title, location, remote_type,
                     posted_date, url, description, source,
                     applied, applied_date, source_job_id
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'linkedin', ?, ?, ?)
@@ -438,19 +438,19 @@ class MasterDatabase:
         stats = {}
         
         # Total jobs
-        cursor.execute("SELECT COUNT(*) FROM master_jobs")
+        cursor.execute("SELECT COUNT(*) FROM jobs")
         stats['total_jobs'] = cursor.fetchone()[0]
         
         # Jobs by source
         cursor.execute("""
         SELECT source, COUNT(*) 
-        FROM master_jobs 
+        FROM jobs 
         GROUP BY source
         """)
         stats['jobs_by_source'] = dict(cursor.fetchall())
         
         # Applications
-        cursor.execute("SELECT COUNT(*) FROM master_applications")
+        cursor.execute("SELECT COUNT(*) FROM applications")
         stats['total_applications'] = cursor.fetchone()[0]
         
         # Response rate
@@ -458,7 +458,7 @@ class MasterDatabase:
         SELECT 
             COUNT(*) as total,
             SUM(CASE WHEN response_received = 1 THEN 1 ELSE 0 END) as responses
-        FROM master_applications
+        FROM applications
         """)
         result = cursor.fetchone()
         if result[0] > 0:
@@ -469,7 +469,7 @@ class MasterDatabase:
         # Top companies
         cursor.execute("""
         SELECT company, COUNT(*) as count
-        FROM master_jobs
+        FROM jobs
         GROUP BY company
         ORDER BY count DESC
         LIMIT 10
@@ -488,16 +488,16 @@ def main():
     print("🚀 Initializing Master Database for Unified Career System")
     print("=" * 60)
     
-    db = MasterDatabase("unified_career_system/data_layer/unified_career.db")
+    db = MasterDatabase("unified_platform.db")
     
     # Import from AI Talent Optimizer
-    if Path("data/unified_jobs.db").exists():
-        imported = db.import_ai_talent_optimizer_jobs("data/unified_jobs.db")
+    if Path("unified_platform.db").exists():
+        imported = db.import_ai_talent_optimizer_jobs("unified_platform.db")
         print(f"✅ Imported {imported} jobs from AI Talent Optimizer")
     
     # Import from LinkedIn scraper
-    if Path("data/linkedin_jobs.db").exists():
-        imported = db.import_linkedin_jobs("data/linkedin_jobs.db")
+    if Path("unified_platform.db").exists():
+        imported = db.import_linkedin_jobs("unified_platform.db")
         print(f"✅ Imported {imported} jobs from LinkedIn scraper")
     
     # Import from SURVIVE (if CSV exists)

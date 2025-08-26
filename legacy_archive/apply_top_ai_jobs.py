@@ -6,13 +6,13 @@ import time
 from automated_apply import AutomatedApplicationSystem
 
 # Get top AI jobs
-conn = sqlite3.connect('unified_talent_optimizer.db')
+conn = sqlite3.connect("unified_platform.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 # Find best AI jobs
 cursor.execute("""
-    SELECT * FROM job_discoveries 
+    SELECT * FROM jobs 
     WHERE applied = 0 
     AND (
         position LIKE '%AI%' OR 
@@ -56,7 +56,7 @@ if jobs:
             success_count += 1
             # Mark as applied
             cursor.execute("""
-                UPDATE job_discoveries 
+                UPDATE jobs 
                 SET applied = 1, applied_date = datetime('now') 
                 WHERE id = ?
             """, (job['id'],))

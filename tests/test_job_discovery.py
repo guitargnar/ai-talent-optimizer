@@ -38,7 +38,7 @@ class TestJobDatabase:
                 application_date TEXT,
                 discovered_date TEXT DEFAULT CURRENT_TIMESTAMP,
                 source TEXT,
-                UNIQUE(company, position)
+                UNIQUE(company, title)
             )
         """
         )
@@ -79,8 +79,8 @@ class TestJobDatabase:
 
         cursor.executemany(
             """
-            INSERT INTO job_discoveries 
-            (company, position, description, url, salary_range, location, relevance_score, applied)
+            INSERT INTO jobs 
+            (company, title, description, url, salary_range, location, relevance_score, applied)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
             test_jobs,
@@ -148,8 +148,8 @@ class TestJobDatabase:
 
         cursor.execute(
             """
-            INSERT INTO job_discoveries
-            (company, position, description, url, salary_range, location, relevance_score)
+            INSERT INTO jobs
+            (company, title, description, url, salary_range, location, relevance_score)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
             new_job,
@@ -157,7 +157,7 @@ class TestJobDatabase:
         conn.commit()
 
         # Verify insertion
-        cursor.execute("SELECT * FROM job_discoveries WHERE company = 'Anthropic'")
+        cursor.execute("SELECT * FROM jobs WHERE company = 'Anthropic'")
         result = cursor.fetchone()
 
         assert result is not None
@@ -188,8 +188,8 @@ class TestJobDatabase:
         with pytest.raises(sqlite3.IntegrityError):
             cursor.execute(
                 """
-                INSERT INTO job_discoveries
-                (company, position, description, url, salary_range, location, relevance_score)
+                INSERT INTO jobs
+                (company, title, description, url, salary_range, location, relevance_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 duplicate_job,
@@ -207,8 +207,8 @@ class TestJobDatabase:
         # Get unapplied jobs sorted by relevance
         cursor.execute(
             """
-            SELECT company, position, relevance_score
-            FROM job_discoveries
+            SELECT company, title, relevance_score
+            FROM jobs
             WHERE applied = 0
             ORDER BY relevance_score DESC
         """
@@ -234,9 +234,9 @@ class TestJobDatabase:
         # Mark OpenAI job as applied
         cursor.execute(
             """
-            UPDATE job_discoveries
-            SET applied = 1, application_date = datetime('now')
-            WHERE company = 'OpenAI' AND position = 'ML Engineer'
+            UPDATE jobs
+            SET applied = 1, applied_date = datetime('now')
+            WHERE company = 'OpenAI' AND title = 'ML Engineer'
         """
         )
         conn.commit()
@@ -245,8 +245,8 @@ class TestJobDatabase:
         cursor.execute(
             """
             SELECT applied, application_date
-            FROM job_discoveries
-            WHERE company = 'OpenAI' AND position = 'ML Engineer'
+            FROM jobs
+            WHERE company = 'OpenAI' AND title = 'ML Engineer'
         """
         )
 
@@ -271,9 +271,9 @@ class TestJobDatabase:
                 COUNT(CASE WHEN applied = 1 THEN 1 END) as applied,
                 COUNT(DISTINCT company) as companies,
                 AVG(relevance_score) as avg_score,
-                MIN(CAST(SUBSTR(salary_range, 1, INSTR(salary_range, '-')-1) AS INTEGER)) as min_salary,
+                MIN(CAST(SUBSTR(salary_range, 1, INSTR(salary_range, '-')-1) AS INTEGER)) as salary_min,
                 MAX(CAST(SUBSTR(salary_range, INSTR(salary_range, '-')+1) AS INTEGER)) as max_salary
-            FROM job_discoveries
+            FROM jobs
         """
         )
 
